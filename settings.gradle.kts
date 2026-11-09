@@ -1,5 +1,13 @@
 pluginManagement {
     repositories {
+        maven("https://maven.aliyun.com/repository/google") {
+            name = "AliyunGoogle"
+            content {
+                includeGroupByRegex("androidx.*")
+                includeGroupByRegex("com\\.android.*")
+                includeGroupByRegex("com\\.google.*")
+            }
+        }
         google {
             content {
                 includeGroupByRegex("androidx.*")
@@ -15,6 +23,14 @@ pluginManagement {
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
+        maven("https://maven.aliyun.com/repository/google") {
+            name = "AliyunGoogle"
+            content {
+                includeGroupByRegex("androidx.*")
+                includeGroupByRegex("com\\.android.*")
+                includeGroupByRegex("com\\.google.*")
+            }
+        }
         google {
             content {
                 includeGroupByRegex("androidx.*")
