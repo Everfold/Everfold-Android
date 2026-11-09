@@ -20,7 +20,7 @@
           jdk = pkgs.temurin-bin-17;
           buildToolsVersion = "36.0.0";
           androidSdk = pkgs.androidenv.composeAndroidPackages {
-            platformVersions = [ "37.0" ];
+            platformVersions = [ "37" ];
             buildToolsVersions = [ buildToolsVersion ];
             includeEmulator = true;
             includeSystemImages = true;
