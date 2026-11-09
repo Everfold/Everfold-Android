@@ -5,8 +5,10 @@
   };
 
   outputs =
-    { flakelight, ... }:
+    { flakelight, ... }@inputs:
     flakelight ./. {
+      inherit inputs;
+
       nixpkgs.config = {
         allowUnfree = true;
         android_sdk.accept_license = true;
@@ -15,34 +17,34 @@
       devShell =
         pkgs:
         let
-          jdk = pkgs.openjdk25_headless;
-
-          gradle = pkgs.gradle_9.override {
-            java = jdk;
-          };
-
+          jdk = pkgs.jdk17;
+          buildToolsVersion = "36.0.0";
           androidSdk = pkgs.androidenv.composeAndroidPackages {
-            platformVersions = [ "36" ];
-            buildToolsVersions = [ "36.0.0" ];
+            platformVersions = [ "37" ];
+            buildToolsVersions = [ buildToolsVersion ];
             includeEmulator = false;
             includeSystemImages = false;
             includeSources = false;
+            includeNDK = false;
           };
+          sdk = "${androidSdk.androidsdk}/libexec/android-sdk";
         in
         {
-          packages = with pkgs; [
+          packages = [
             jdk
-            gradle
+            pkgs.android-cli
+            androidSdk.androidsdk
           ];
 
-          env = rec {
-            ANDROID_HOME = "${androidSdk.androidsdk}/libexec/android-sdk/";
-            ANDROID_SDK_ROOT = ANDROID_HOME;
+          env = {
+            JAVA_HOME = jdk.home;
+            ANDROID_HOME = sdk;
+            ANDROID_SDK_ROOT = sdk;
+            GRADLE_OPTS = "-Dorg.gradle.project.android.aapt2FromMavenOverride=${sdk}/build-tools/${buildToolsVersion}/aapt2";
           };
 
           shellHook = ''
             export ANDROID_AVD_HOME="$HOME/.android/avd"
-            export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$PATH"
             mkdir -p "$ANDROID_AVD_HOME"
           '';
         };
