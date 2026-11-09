@@ -28,6 +28,9 @@ direnv allow
 # AAB Release Bundle
 ./gradlew :app:bundleRelease
 
+# Check dependency updates
+./gradlew dependencyUpdates
+
 # Check formatting
 ./gradlew spotlessCheck
 

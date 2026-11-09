@@ -27,6 +27,7 @@ dependencyResolutionManagement {
 }
 
 plugins {
+    id("io.github.ben-manes.versions") version "0.67.0"
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 

@@ -1,4 +1,5 @@
 import com.diffplug.spotless.extra.wtp.EclipseWtpFormatterStep
+import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
@@ -7,6 +8,10 @@ plugins {
     alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.detekt) apply false
     alias(libs.plugins.spotless)
+}
+
+tasks.named<DependencyUpdatesTask>("dependencyUpdates") {
+    checkConstraints = true
 }
 
 // Prune directories in the file tree itself so Gradle never snapshots their contents.
