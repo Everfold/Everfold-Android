@@ -29,77 +29,77 @@ import com.example.everfold.ui.theme.EverfoldTheme
 
 @Composable
 fun MainScreen(
-  onItemClick: (NavKey) -> Unit,
-  modifier: Modifier = Modifier,
-  viewModel: MainScreenViewModel = viewModel { MainScreenViewModel(DefaultDataRepository()) },
+    onItemClick: (NavKey) -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: MainScreenViewModel = viewModel { MainScreenViewModel(DefaultDataRepository()) },
 ) {
-  val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-  when (val state = uiState) {
-    MainScreenUiState.Loading -> {
-      Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-      ) {
-        CircularProgressIndicator()
-      }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    when (val state = uiState) {
+        MainScreenUiState.Loading -> {
+            Box(
+                modifier = modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center,
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+        is MainScreenUiState.Success -> {
+            MainScreen(data = state.data, modifier = modifier)
+        }
+        is MainScreenUiState.Error -> {
+            Text("Error loading data: ${state.throwable.message}")
+        }
     }
-    is MainScreenUiState.Success -> {
-      MainScreen(data = state.data, modifier = modifier)
-    }
-    is MainScreenUiState.Error -> {
-      Text("Error loading data: ${state.throwable.message}")
-    }
-  }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun MainScreen(data: List<String>, modifier: Modifier = Modifier) {
-  Scaffold(
-    modifier = modifier,
-    topBar = {
-      CenterAlignedTopAppBar(
-        title = { Text(stringResource(R.string.app_name)) },
-        colors = TopAppBarDefaults.topAppBarColors(
-          containerColor = MaterialTheme.colorScheme.primaryContainer,
-          titleContentColor = MaterialTheme.colorScheme.primary
-        )
-      )
+    Scaffold(
+        modifier = modifier,
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = { Text(stringResource(R.string.app_name)) },
+                colors =
+                    TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        titleContentColor = MaterialTheme.colorScheme.primary,
+                    ),
+            )
+        },
+    ) { innerPadding ->
+
+        // App Content
+
+        Column(
+            modifier = Modifier.padding(innerPadding),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            data.forEach { Greeting(it) }
+            Button(
+                modifier = Modifier.padding(24.dp, 24.dp),
+                onClick = { /* Button clicked */ },
+            ) {
+                Text("OK")
+            }
+
+            // TODO: Extend app UI with more Jetpack Compose UI elements here
+
+        }
     }
-  ) { innerPadding ->
-
-    // App Content
-
-    Column(
-      modifier = Modifier.padding(innerPadding),
-      verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-      data.forEach { Greeting(it) }
-      Button(
-        modifier = Modifier.padding(24.dp, 24.dp),
-        onClick = { /* Button clicked */ }
-      ) {
-        Text("OK")
-      }
-
-      // TODO: Extend app UI with more Jetpack Compose UI elements here
-
-    }
-  }
 }
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
-  Text(
-    text = "Hello $name !",
-    modifier = modifier.padding(16.dp, 16.dp),
-    style = MaterialTheme.typography.bodyLarge
-  )
+    Text(
+        text = "Hello $name !",
+        modifier = modifier.padding(16.dp, 16.dp),
+        style = MaterialTheme.typography.bodyLarge,
+    )
 }
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun MainScreenPreview() {
-  EverfoldTheme { MainScreen(listOf("Android")) }
+    EverfoldTheme { MainScreen(listOf("Android")) }
 }
-

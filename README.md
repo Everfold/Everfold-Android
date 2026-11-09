@@ -28,6 +28,12 @@ direnv allow
 # AAB Release Bundle
 ./gradlew :app:bundleRelease
 
+# Check formatting
+./gradlew spotlessCheck
+
+# Apply formatting
+./gradlew spotlessApply
+
 # Unit Test
 ./gradlew :app:testDebugUnitTest
 
@@ -36,6 +42,9 @@ direnv allow
 
 # Check
 ./gradlew :app:check
+
+# Compose Preview
+android preview list :app
 
 # ADB Debug
 ./gradlew :app:installDebug
