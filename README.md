@@ -52,6 +52,9 @@ android preview list :app
 # ADB Debug
 ./gradlew :app:installDebug
 
+# Create Emulator
+avdmanager create avd --name everfold --device pixel_9_pro --package 'system-images;android-37;google_apis;x86_64'
+
 # Test on device
 ./gradlew :app:connectedDebugAndroidTest
 ```
