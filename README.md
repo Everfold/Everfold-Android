@@ -34,14 +34,14 @@ direnv allow
 # Apply formatting
 ./gradlew spotlessApply
 
+# Kotlin & Compose static analysis
+./gradlew :app:detekt
+
 # Unit Test
 ./gradlew :app:testDebugUnitTest
 
 # Lint
 ./gradlew :app:lintDebug
-
-# Check
-./gradlew :app:check
 
 # Compose Preview
 android preview list :app

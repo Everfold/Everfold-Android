@@ -1,0 +1,52 @@
+config:
+  validation: true
+  warningsAsErrors: true
+
+naming:
+  FunctionNaming:
+    ignoreAnnotated: ['Composable']
+  TopLevelPropertyNaming:
+    constantPattern: '[A-Z][A-Za-z0-9]*|[A-Z][_A-Z0-9]*'
+
+complexity:
+  LongParameterList:
+    ignoreDefaultParameters: true
+  TooManyFunctions:
+    ignoreAnnotatedFunctions: ['Preview']
+
+style:
+  MagicNumber:
+    ignorePropertyDeclaration: true
+  UnusedPrivateFunction:
+    ignoreAnnotated: ['Preview']
+
+Compose:
+  active: true
+  ComposableNaming:
+    active: true
+  ComposableParamOrder:
+    active: true
+  ModifierMissing:
+    active: true
+  ModifierNotUsedAtRoot:
+    active: true
+  ModifierWithoutDefault:
+    active: true
+  ModifierReused:
+    active: true
+  ModifierClickableOrder:
+    active: true
+  MutableStateParam:
+    active: true
+  MutableStateAutoboxing:
+    active: true
+  RememberMissing:
+    active: true
+  RememberContentMissing:
+    active: true
+  LambdaParameterInRestartableEffect:
+    active: true
+  PreviewPublic:
+    active: true
+  ViewModelForwarding:
+    active: true

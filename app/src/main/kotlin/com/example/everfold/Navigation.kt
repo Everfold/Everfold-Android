@@ -16,7 +16,7 @@ fun MainNavigation() {
         entryProvider =
             entryProvider {
                 entry<Main> {
-                    MainScreen(onItemClick = { navKey -> backStack.add(navKey) })
+                    MainScreen()
                 }
             },
     )

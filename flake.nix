@@ -17,7 +17,7 @@
       devShell =
         pkgs:
         let
-          jdk = pkgs.jdk17;
+          jdk = pkgs.temurin-bin-17;
           buildToolsVersion = "36.0.0";
           androidSdk = pkgs.androidenv.composeAndroidPackages {
             platformVersions = [ "37" ];
@@ -37,7 +37,7 @@
           ];
 
           env = {
-            JAVA_HOME = jdk.home;
+            JAVA_HOME = "${jdk.home}";
             ANDROID_HOME = sdk;
             ANDROID_SDK_ROOT = sdk;
             GRADLE_OPTS = "-Dorg.gradle.project.android.aapt2FromMavenOverride=${sdk}/build-tools/${buildToolsVersion}/aapt2";

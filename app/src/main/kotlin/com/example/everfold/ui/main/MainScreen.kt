@@ -22,14 +22,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation3.runtime.NavKey
 import com.example.everfold.R
 import com.example.everfold.data.DefaultDataRepository
 import com.example.everfold.ui.theme.EverfoldTheme
 
 @Composable
 fun MainScreen(
-    onItemClick: (NavKey) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: MainScreenViewModel = viewModel { MainScreenViewModel(DefaultDataRepository()) },
 ) {
@@ -82,9 +80,6 @@ internal fun MainScreen(data: List<String>, modifier: Modifier = Modifier) {
             ) {
                 Text("OK")
             }
-
-            // TODO: Extend app UI with more Jetpack Compose UI elements here
-
         }
     }
 }
@@ -100,6 +95,6 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun MainScreenPreview() {
+private fun MainScreenPreview() {
     EverfoldTheme { MainScreen(listOf("Android")) }
 }
