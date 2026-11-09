@@ -26,8 +26,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_26
+        targetCompatibility = JavaVersion.VERSION_26
     }
     buildFeatures {
         compose = true
@@ -44,7 +44,7 @@ android {
 }
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(26)
 }
 
 detekt {
@@ -56,7 +56,7 @@ detekt {
 }
 
 tasks.withType<dev.detekt.gradle.Detekt>().configureEach {
-    jvmTarget.set("17")
+    jvmTarget.set("26")
     exclude("**/build/**", "**/generated/**")
 }
 

@@ -17,7 +17,7 @@
       devShell =
         pkgs:
         let
-          jdk = pkgs.temurin-bin-17;
+          jdk = pkgs.temurin-bin-26;
           buildToolsVersion = "36.0.0";
           androidSdk = pkgs.androidenv.composeAndroidPackages {
             platformVersions = [ "37.0" ];
