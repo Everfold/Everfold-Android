@@ -1,7 +1,5 @@
 package com.everfold.kotlin.feature.onboarding
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,12 +11,10 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
@@ -34,6 +30,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.PermanentDrawerSheet
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
@@ -50,10 +47,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.isAltPressed
@@ -63,6 +62,8 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.disabled
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -207,31 +208,23 @@ internal fun OnboardingScreen(
             }.onFocusChanged { hasFocus = it.hasFocus }
             .focusRequester(focusRequester)
             .focusable(),
-        color = MaterialTheme.colorScheme.surfaceContainerLow,
     ) {
         BoxWithConstraints(
             Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing).imePadding(),
-            contentAlignment = Alignment.Center,
         ) {
             val wide = maxWidth >= 1000.dp
+            val contentWidth = maxWidth - (if (wide) 280.dp + 64.dp else 48.dp) - 12.dp
+            val preferenceColumns =
+                when {
+                    contentWidth >= 1200.dp -> 3
+                    contentWidth >= 720.dp -> 2
+                    else -> 1
+                }
             LaunchedEffect(wide) {
                 withFrameNanos { }
                 if (!hasFocus) focusRequester.requestFocus()
             }
-            Row(
-                Modifier
-                    .padding(if (wide) 24.dp else 0.dp)
-                    .widthIn(max = 1280.dp)
-                    .heightIn(max = if (wide) 820.dp else androidx.compose.ui.unit.Dp.Infinity)
-                    .fillMaxSize()
-                    .clip(RoundedCornerShape(if (wide) 28.dp else 0.dp))
-                    .background(MaterialTheme.colorScheme.surface)
-                    .border(
-                        if (wide) 1.dp else 0.dp,
-                        MaterialTheme.colorScheme.outlineVariant,
-                        RoundedCornerShape(if (wide) 28.dp else 0.dp),
-                    ),
-            ) {
+            Row(Modifier.fillMaxSize()) {
                 if (wide) {
                     SetupSidebar(step, furthestStep, cluster, navigate)
                 }
@@ -245,10 +238,7 @@ internal fun OnboardingScreen(
                         )
                     }
                     key(step) {
-                        OnboardingScrollArea(
-                            Modifier.weight(1f),
-                            centered = wide && (step == SetupStep.Welcome || step == SetupStep.Mode),
-                        ) {
+                        OnboardingScrollArea(Modifier.weight(1f, fill = !wide)) {
                             val title =
                                 when (step) {
                                     SetupStep.Welcome -> Res.string.onboarding_welcome
@@ -259,19 +249,19 @@ internal fun OnboardingScreen(
                             Text(localizedString(title), style = MaterialTheme.typography.headlineMedium)
                             when (step) {
                                 SetupStep.Welcome -> {
-                                    WelcomeFeatures(wide)
+                                    WelcomeFeatures(contentWidth >= 840.dp)
                                 }
 
                                 SetupStep.Preferences -> {
-                                    OnboardingPreferences(workspace, language, onLanguageChange, wide)
+                                    OnboardingPreferences(workspace, language, onLanguageChange, preferenceColumns)
                                 }
 
                                 SetupStep.Mode -> {
-                                    ModeSelection(cluster, { cluster = it }, wide)
+                                    ModeSelection(cluster, { cluster = it }, contentWidth >= 600.dp)
                                 }
 
                                 SetupStep.Cluster -> {
-                                    ClusterConnectionForm(form, wide = wide, onChange = {
+                                    ClusterConnectionForm(form, wide = contentWidth >= 600.dp, onChange = {
                                         form = it
                                         test = ConnectionTest.Idle
                                         showError = false
@@ -320,7 +310,7 @@ internal fun OnboardingScreen(
                     HorizontalDivider()
                     Row(
                         Modifier.fillMaxWidth().padding(top = 12.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
+                        horizontalArrangement = if (wide) Arrangement.spacedBy(12.dp, Alignment.End) else Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         TextButton(onClick = back, enabled = step != SetupStep.Welcome) { Text(localizedString(Res.string.previous_step)) }
@@ -532,8 +522,13 @@ private fun SetupSidebar(
     cluster: Boolean,
     onNavigate: (SetupStep) -> Unit,
 ) {
-    Surface(Modifier.width(252.dp).fillMaxHeight(), color = MaterialTheme.colorScheme.surfaceContainerLow) {
-        Column(Modifier.padding(24.dp).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    PermanentDrawerSheet(
+        Modifier.width(280.dp).fillMaxHeight(),
+        drawerShape = RectangleShape,
+        drawerContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+        windowInsets = WindowInsets(0),
+    ) {
+        Column(Modifier.padding(16.dp).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Text("Everfold", style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.primary)
             Text(localizedString(Res.string.setup_sidebar_hint), style = MaterialTheme.typography.bodyMedium)
             SetupStep.entries.take(if (cluster) 4 else 3).forEach { destination ->
@@ -544,38 +539,17 @@ private fun SetupSidebar(
                         SetupStep.Mode -> Res.string.setup_mode
                         SetupStep.Cluster -> Res.string.setup_cluster
                     }
-                Surface(
-                    shape = RoundedCornerShape(16.dp),
-                    color =
-                        if (destination ==
-                            step
-                        ) {
-                            MaterialTheme.colorScheme.secondaryContainer
-                        } else {
-                            MaterialTheme.colorScheme.surfaceContainerLow
+                val enabled = destination.ordinal <= furthestStep
+                NavigationDrawerItem(
+                    label = { Text(localizedString(label)) },
+                    selected = destination == step,
+                    onClick = { if (enabled) onNavigate(destination) },
+                    modifier =
+                        Modifier.alpha(if (enabled) 1f else 0.38f).focusProperties { canFocus = enabled }.semantics {
+                            if (!enabled) disabled()
                         },
-                ) {
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .selectable(destination == step, enabled = destination.ordinal <= furthestStep, role = Role.Tab, onClick = {
-                                onNavigate(destination)
-                            })
-                            .padding(16.dp),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    ) {
-                        val color =
-                            if (destination.ordinal <=
-                                furthestStep
-                            ) {
-                                MaterialTheme.colorScheme.onSurface
-                            } else {
-                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
-                            }
-                        Text((destination.ordinal + 1).toString(), color = color)
-                        Text(localizedString(label), color = color)
-                    }
-                }
+                    icon = { Text((destination.ordinal + 1).toString()) },
+                )
             }
             HorizontalDivider(Modifier.padding(vertical = 12.dp))
             Text(
@@ -592,26 +566,42 @@ private fun OnboardingPreferences(
     workspace: MockWorkspace,
     language: AppLanguage,
     onLanguageChange: (AppLanguage) -> Unit,
-    wide: Boolean,
+    columns: Int,
 ) {
-    SetupColumns(
-        wide,
-        first = {
+    FlowRow(
+        Modifier.fillMaxWidth(),
+        maxItemsInEachRow = columns,
+        horizontalArrangement = Arrangement.spacedBy(24.dp),
+        verticalArrangement = Arrangement.spacedBy(24.dp),
+    ) {
+        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(24.dp)) {
             LanguageSettings(language, onLanguageChange)
-            Text(localizedString(Res.string.appearance), style = MaterialTheme.typography.titleMedium)
-            Column(Modifier.selectableGroup(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                ThemeMode.entries.forEach { mode ->
-                    SetupChoice(mode.label, workspace.themeMode == mode, { workspace.setTheme(mode) })
-                }
+            if (columns == 2) OnboardingAppearance(workspace)
+        }
+        if (columns != 2) {
+            Column(Modifier.weight(1f)) {
+                OnboardingAppearance(workspace)
             }
-        },
-        second = {
+        }
+        Column(Modifier.weight(1f)) {
             ThemeColorSettings(
                 workspace.themeColor,
                 workspace::useSystemThemeColor,
                 workspace::selectThemePreset,
                 workspace::applyCustomThemeColor,
             )
-        },
-    )
+        }
+    }
+}
+
+@Composable
+private fun OnboardingAppearance(workspace: MockWorkspace) {
+    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        Text(localizedString(Res.string.appearance), style = MaterialTheme.typography.titleMedium)
+        Column(Modifier.selectableGroup(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            ThemeMode.entries.forEach { mode ->
+                SetupChoice(mode.label, workspace.themeMode == mode, { workspace.setTheme(mode) })
+            }
+        }
+    }
 }

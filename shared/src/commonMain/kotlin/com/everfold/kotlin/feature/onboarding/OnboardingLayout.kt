@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -45,11 +44,10 @@ import everfold.shared.generated.resources.onboarding_intro
 @Composable
 internal fun OnboardingScrollArea(
     modifier: Modifier = Modifier,
-    centered: Boolean = false,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val scroll = rememberScrollState()
-    Box(modifier.fillMaxWidth(), contentAlignment = if (centered) Alignment.Center else Alignment.TopStart) {
+    Box(modifier.fillMaxWidth()) {
         Column(
             Modifier.fillMaxWidth().verticalScroll(scroll).padding(top = 24.dp, bottom = 24.dp, end = 12.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp),
@@ -88,7 +86,7 @@ internal fun WelcomeFeatures(wide: Boolean) {
             features.forEach { (icon, title, detail) ->
                 Surface(Modifier.weight(1f), shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.surfaceContainerLow) {
                     Column(
-                        Modifier.fillMaxWidth().heightIn(min = if (wide) 224.dp else 0.dp).padding(20.dp),
+                        Modifier.fillMaxWidth().padding(20.dp),
                         verticalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
                         FeatureIcon(icon)
@@ -129,7 +127,6 @@ internal fun ModeSelection(
                     Modifier
                         .fillMaxWidth()
                         .selectable(selected, role = Role.RadioButton, onClick = { onChange(option) })
-                        .heightIn(min = if (wide) 248.dp else 0.dp)
                         .padding(24.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
