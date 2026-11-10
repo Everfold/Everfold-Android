@@ -11,7 +11,7 @@ import com.everfold.kotlin.ui.theme.EverfoldTheme
 @Preview
 fun App() {
     val workspace = viewModel { MockWorkspace() }
-    EverfoldTheme(mode = workspace.themeMode) {
+    EverfoldTheme(mode = workspace.themeMode, seed = workspace.themeColor.seed) {
         EverfoldApp(workspace)
     }
 }

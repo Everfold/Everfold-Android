@@ -13,6 +13,7 @@ enum class ThemeMode(val label: String) {
 @Composable
 fun EverfoldTheme(
     mode: ThemeMode = ThemeMode.System,
+    seed: Color = ThemePreset.Forest.seed,
     content: @Composable () -> Unit,
 ) {
     val dark = when (mode) {
@@ -20,6 +21,6 @@ fun EverfoldTheme(
         ThemeMode.Light -> false
         ThemeMode.Dark -> true
     }
-    val colors = rememberDynamicColorScheme(seedColor = Color(0xFF426653), isDark = dark)
+    val colors = rememberDynamicColorScheme(seedColor = seed, isDark = dark)
     MaterialTheme(colorScheme = colors, content = content)
 }

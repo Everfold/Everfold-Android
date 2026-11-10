@@ -8,15 +8,21 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.everfold.kotlin.ui.components.SettingsLayout
 import com.everfold.kotlin.ui.theme.ThemeMode
+import com.everfold.kotlin.ui.theme.ThemeColorSelection
+import com.everfold.kotlin.ui.theme.ThemePreset
 
 @Composable
 fun SettingsScreen(
     themeMode: ThemeMode,
+    themeColor: ThemeColorSelection,
     onThemeChange: (ThemeMode) -> Unit,
+    onPresetChange: (ThemePreset) -> Unit,
+    onCustomColorChange: (Color) -> Unit,
 ) {
     SettingsLayout("设置", "让这个空间更适合你。") {
         Text("外观", style = MaterialTheme.typography.titleMedium)
@@ -32,6 +38,7 @@ fun SettingsScreen(
                 }
             }
         }
+        ThemeColorSettings(themeColor, onPresetChange, onCustomColorChange)
         Text("关于", style = MaterialTheme.typography.titleMedium)
         Surface(shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.surfaceContainerLow) {
             Column(Modifier.fillMaxWidth().padding(24.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {

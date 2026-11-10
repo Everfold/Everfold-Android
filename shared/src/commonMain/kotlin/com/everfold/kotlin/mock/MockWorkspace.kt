@@ -5,10 +5,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.compose.ui.graphics.Color
 import com.everfold.kotlin.feature.conversation.ChatMessage
 import com.everfold.kotlin.feature.conversation.ConversationUiState
 import com.everfold.kotlin.feature.conversation.MessageRole
 import com.everfold.kotlin.ui.theme.ThemeMode
+import com.everfold.kotlin.ui.theme.ThemeColorSelection
+import com.everfold.kotlin.ui.theme.ThemePreset
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -18,6 +21,8 @@ class MockWorkspace : ViewModel() {
     var conversations by mutableStateOf(sampleConversations())
         private set
     var themeMode by mutableStateOf(ThemeMode.System)
+        private set
+    var themeColor by mutableStateOf(ThemeColorSelection())
         private set
     var connectionMode by mutableStateOf("本地运行")
         private set
@@ -37,6 +42,8 @@ class MockWorkspace : ViewModel() {
 
     fun updateDraft(id: String, value: String) = update(id) { it.copy(draft = value) }
     fun setTheme(mode: ThemeMode) { themeMode = mode }
+    fun selectThemePreset(preset: ThemePreset) { themeColor = themeColor.copy(preset = preset) }
+    fun applyCustomThemeColor(color: Color) { themeColor = ThemeColorSelection(preset = null, customSeed = color) }
     fun changeConnectionMode(mode: String) { connectionMode = mode; connectionPreview = false }
     fun updateRemoteAddress(value: String) { remoteAddress = value; connectionPreview = false }
     fun toggleConnectionPreview() { connectionPreview = !connectionPreview }

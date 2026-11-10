@@ -86,7 +86,10 @@ fun EverfoldApp(workspace: MockWorkspace) {
                             )
                             AppDestination.Settings -> SettingsScreen(
                                 themeMode = workspace.themeMode,
+                                themeColor = workspace.themeColor,
                                 onThemeChange = workspace::setTheme,
+                                onPresetChange = workspace::selectThemePreset,
+                                onCustomColorChange = workspace::applyCustomThemeColor,
                             )
                         }
                     }
