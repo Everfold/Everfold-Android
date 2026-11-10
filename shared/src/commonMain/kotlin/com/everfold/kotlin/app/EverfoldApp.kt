@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -65,7 +64,6 @@ import com.everfold.kotlin.ui.localization.localizedString
 import everfold.shared.generated.resources.Res
 import everfold.shared.generated.resources.connected_preview
 import everfold.shared.generated.resources.connection_local
-import everfold.shared.generated.resources.new_session
 import everfold.shared.generated.resources.not_connected
 import everfold.shared.generated.resources.resize_sessions
 import everfold.shared.generated.resources.sample_reply
@@ -81,26 +79,30 @@ fun EverfoldApp(
     val reply = localizedString(Res.string.sample_reply)
     var destination by rememberSaveable { mutableStateOf(AppDestination.Sessions) }
     var showArchived by rememberSaveable { mutableStateOf(false) }
-    var selectedId by rememberSaveable { mutableStateOf("welcome") }
-    var conversationOpen by rememberSaveable { mutableStateOf(false) }
+    var selectedId by rememberSaveable { mutableStateOf<String?>(null) }
+    var conversationOpen by rememberSaveable { mutableStateOf(true) }
 
     var focusComposer by rememberSaveable { mutableStateOf(true) }
     var sessionsVisible by rememberSaveable { mutableStateOf(true) }
     var sessionWidth by rememberSaveable { mutableFloatStateOf(300f) }
     var sessionQuery by rememberSaveable { mutableStateOf("") }
     var searchRequest by rememberSaveable { mutableIntStateOf(0) }
+    var composerFocusRequest by rememberSaveable { mutableIntStateOf(0) }
+    val openNewConversation: () -> Unit = {
+        focusComposer = true
+        destination = AppDestination.Sessions
+        sessionQuery = ""
+        showArchived = false
+        selectedId = null
+        conversationOpen = true
+        composerFocusRequest++
+    }
     Surface(
         modifier.fillMaxSize().onPreviewKeyEvent {
             if (it.type == KeyEventType.KeyDown && (it.isCtrlPressed || it.isMetaPressed)) {
                 when (it.key) {
                     Key.N -> {
-                        focusComposer = true
-                        destination = AppDestination.Sessions
-                        sessionQuery = ""
-                        showArchived = false
-                        selectedId = workspace.createConversation()
-                        conversationOpen =
-                            true
+                        openNewConversation()
                         true
                     }
 
@@ -141,7 +143,7 @@ fun EverfoldApp(
             val density = LocalDensity.current.density
             val resizeLabel = localizedString(Res.string.resize_sessions)
             val visibleSessions = workspace.conversations.filter { it.isArchived == showArchived }
-            val selected = visibleSessions.firstOrNull { it.id == selectedId } ?: visibleSessions.firstOrNull()
+            val selected = visibleSessions.firstOrNull { it.id == selectedId }
             val showingConversation = destination == AppDestination.Sessions && (wide || conversationOpen)
             NavigationBackHandler(
                 state = rememberNavigationEventState(NavigationEventInfo.None),
@@ -196,7 +198,6 @@ fun EverfoldApp(
                                                             .firstOrNull { session ->
                                                                 session.isArchived == it
                                                             }?.id
-                                                            .orEmpty()
                                                     conversationOpen = false
                                                 },
                                                 onToggleArchive = { id ->
@@ -206,7 +207,6 @@ fun EverfoldApp(
                                                             workspace.conversations
                                                                 .firstOrNull { it.isArchived == showArchived }
                                                                 ?.id
-                                                                .orEmpty()
                                                         conversationOpen = false
                                                     }
                                                 },
@@ -227,18 +227,11 @@ fun EverfoldApp(
                                                             workspace.conversations
                                                                 .firstOrNull { it.isArchived == showArchived }
                                                                 ?.id
-                                                                .orEmpty()
                                                         conversationOpen = false
                                                     }
                                                 },
                                                 onTogglePin = workspace::togglePinned,
-                                                onCreate = {
-                                                    focusComposer = true
-                                                    sessionQuery = ""
-                                                    showArchived = false
-                                                    selectedId = workspace.createConversation()
-                                                    conversationOpen = true
-                                                },
+                                                onCreate = openNewConversation,
                                             )
                                         }
                                     }
@@ -284,9 +277,11 @@ fun EverfoldApp(
                                             VerticalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
                                         }
                                     }
-                                    if (showingConversation && selected != null) {
+                                    if (showingConversation) {
                                         ConversationScreen(
-                                            state = selected,
+                                            state = selected ?: workspace.newConversation,
+                                            showPreviewMenu = selected != null,
+                                            inputFocusRequest = composerFocusRequest,
                                             showBack = !wide,
                                             autoFocusInput = focusComposer,
                                             showSessionToggle = wide,
@@ -296,9 +291,28 @@ fun EverfoldApp(
                                                 sessionsVisible = !sessionsVisible
                                             },
                                             onBack = { conversationOpen = false },
-                                            onDraftChange = { workspace.updateDraft(selected.id, it) },
-                                            onSend = { workspace.send(selected.id, reply) },
-                                            onStop = { workspace.stop(selected.id) },
+                                            onDraftChange = {
+                                                if (selected ==
+                                                    null
+                                                ) {
+                                                    workspace.updateNewConversationDraft(it)
+                                                } else {
+                                                    workspace.updateDraft(selected.id, it)
+                                                }
+                                            },
+                                            onSend = {
+                                                if (selected == null) {
+                                                    workspace.submitNewConversation(reply)?.let {
+                                                        selectedId = it
+                                                        showArchived = false
+                                                        sessionQuery = ""
+                                                        focusComposer = true
+                                                    }
+                                                } else {
+                                                    workspace.send(selected.id, reply)
+                                                }
+                                            },
+                                            onStop = { selected?.let { workspace.stop(it.id) } },
                                             connectionLabel =
                                                 localizedString(
                                                     when {
@@ -307,28 +321,16 @@ fun EverfoldApp(
                                                         else -> Res.string.not_connected
                                                     },
                                                 ),
-                                            onRetry = { workspace.retry(selected.id, reply) },
+                                            onRetry = { selected?.let { workspace.retry(it.id, reply) } },
                                             onPreviewState = {
-                                                if (it == AgentRunState.Running) {
+                                                if (selected != null && it == AgentRunState.Running) {
                                                     workspace.retry(selected.id, reply)
-                                                } else {
+                                                } else if (selected != null) {
                                                     workspace.previewRunState(selected.id, it)
                                                 }
                                             },
                                             modifier = Modifier.weight(1f),
                                         )
-                                    }
-                                    if (wide && selected == null) {
-                                        Box(Modifier.weight(1f).fillMaxHeight(), contentAlignment = Alignment.Center) {
-                                            Button(onClick = {
-                                                sessionQuery = ""
-                                                showArchived = false
-                                                selectedId = workspace.createConversation()
-                                                conversationOpen = true
-                                            }) {
-                                                Text(localizedString(Res.string.new_session))
-                                            }
-                                        }
                                     }
                                 }
                             }

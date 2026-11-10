@@ -12,10 +12,59 @@ import kotlinx.coroutines.test.setMain
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SessionActionsTest {
+    @Test
+    fun homeDraftDoesNotCreateSessionsUntilSubmitted() =
+        runTest {
+            Dispatchers.setMain(StandardTestDispatcher(testScheduler))
+            try {
+                val workspace = MockWorkspace()
+                val original = workspace.conversations
+                val homeId = workspace.newConversation.id
+                workspace.updateNewConversationDraft("  ")
+                assertNull(workspace.submitNewConversation("Reply"))
+                workspace.updateNewConversationDraft("  My first idea  ")
+                workspace.updateDraft("welcome", "Existing draft")
+                assertEquals(original.size, workspace.conversations.size)
+                assertEquals("  My first idea  ", workspace.newConversation.draft)
+                workspace.togglePinned("reading")
+                val id = assertNotNull(workspace.submitNewConversation("Reply"))
+                assertEquals(original.size + 1, workspace.conversations.size)
+                assertEquals("reading", workspace.conversations.first().id)
+                val created = workspace.conversations.first { it.id == id }
+                assertEquals(UiText.Literal("My first idea"), created.title)
+                assertEquals("My first idea", created.messages.first().text)
+                assertTrue(created.isResponding)
+                assertEquals("", workspace.newConversation.draft)
+                assertEquals(homeId, workspace.newConversation.id)
+                assertNull(workspace.submitNewConversation("Duplicate"))
+                assertEquals(original.size + 1, workspace.conversations.size)
+                assertEquals("Existing draft", workspace.conversations.first { it.id == "welcome" }.draft)
+                advanceUntilIdle()
+                assertEquals(
+                    "Reply",
+                    workspace.conversations
+                        .first { it.id == id }
+                        .messages
+                        .last()
+                        .text,
+                )
+                workspace.conversations.toList().forEach { workspace.deleteConversation(it.id) }
+                workspace.updateNewConversationDraft("Start again")
+                val next = assertNotNull(workspace.submitNewConversation("Another reply"))
+                assertTrue(next != id)
+                advanceUntilIdle()
+                assertEquals(1, workspace.conversations.size)
+            } finally {
+                Dispatchers.resetMain()
+            }
+        }
+
     @Test
     fun archivingAndRestoringPreserveContentDraftAndPin() {
         val workspace = MockWorkspace()
@@ -59,14 +108,14 @@ class SessionActionsTest {
         val workspace = MockWorkspace()
         workspace.togglePinned("reading")
         assertEquals("reading", workspace.conversations.first().id)
-        val id = workspace.createConversation()
+        val id = "week"
         assertEquals("reading", workspace.conversations.first().id)
         workspace.renameConversation(id, "  My plan  ")
         workspace.renameConversation(id, " ")
         assertEquals(UiText.Literal("My plan"), workspace.conversations.first { it.id == id }.title)
         workspace.conversations.toList().forEach { workspace.deleteConversation(it.id) }
         assertTrue(workspace.conversations.isEmpty())
-        assertTrue(workspace.createConversation().isNotBlank())
+        assertTrue(workspace.newConversation.messages.isEmpty())
     }
 
     @Test
@@ -75,10 +124,9 @@ class SessionActionsTest {
             Dispatchers.setMain(StandardTestDispatcher(testScheduler))
             try {
                 val workspace = MockWorkspace()
-                val named = workspace.createConversation()
+                workspace.updateNewConversationDraft("First message")
+                val named = assertNotNull(workspace.submitNewConversation("Reply"))
                 workspace.renameConversation(named, "My title")
-                workspace.updateDraft(named, "First message")
-                workspace.send(named, "Reply")
                 workspace.updateDraft("welcome", "hello")
                 workspace.updateDraft("week", "plan")
                 workspace.send("welcome", "A long reply that is still streaming")

@@ -89,9 +89,11 @@ fun ConversationScreen(
     sessionsVisible: Boolean,
     onToggleSessions: () -> Unit,
     modifier: Modifier = Modifier,
+    showPreviewMenu: Boolean = true,
+    inputFocusRequest: Int = 0,
 ) {
     val inputFocus = remember { FocusRequester() }
-    LaunchedEffect(state.id, autoFocusInput) {
+    LaunchedEffect(state.id, autoFocusInput, inputFocusRequest) {
         if (desktopUi && autoFocusInput) {
             withFrameNanos { }
             inputFocus.requestFocus()
@@ -119,7 +121,7 @@ fun ConversationScreen(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-            key(state.id) { AgentPreviewMenu(onPreviewState) }
+            if (showPreviewMenu) key(state.id) { AgentPreviewMenu(onPreviewState) }
         }
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
         key(state.id) { AgentStatusBar(state.runState, onRetry) }

@@ -19,8 +19,8 @@ import com.everfold.kotlin.ui.theme.ThemeMode
 import com.everfold.kotlin.ui.theme.ThemePreset
 import everfold.shared.generated.resources.Res
 import everfold.shared.generated.resources.just_now
-import everfold.shared.generated.resources.new_conversation
 import everfold.shared.generated.resources.new_conversation_hint
+import everfold.shared.generated.resources.new_session
 import everfold.shared.generated.resources.reply_complete
 import everfold.shared.generated.resources.reply_stopped
 import kotlinx.coroutines.Job
@@ -55,19 +55,28 @@ class MockWorkspace : ViewModel() {
     private var nextId = 0
     private val replies = mutableMapOf<String, Job>()
 
-    fun createConversation(): String {
+    var newConversation by mutableStateOf(
+        ConversationUiState(
+            id = "new-conversation",
+            title = UiText.Resource(Res.string.new_session),
+            preview = UiText.Resource(Res.string.new_conversation_hint),
+            updatedLabel = UiText.Resource(Res.string.just_now),
+        ),
+    )
+        private set
+
+    fun updateNewConversationDraft(value: String) {
+        newConversation = newConversation.copy(draft = value)
+    }
+
+    fun submitNewConversation(reply: String): String? {
+        val input = newConversation.draft.trim()
+        if (input.isEmpty()) return null
         val id = "new-${++nextId}"
-        conversations =
-            listOf(
-                ConversationUiState(
-                    id,
-                    UiText.Resource(Res.string.new_conversation),
-                    UiText.Resource(Res.string.new_conversation_hint),
-                    UiText.Resource(Res.string.just_now),
-                ),
-            ) +
-            conversations
-        conversations = conversations.sortedByDescending { it.isPinned }
+        val session = newConversation.copy(id = id, title = UiText.Literal(input.take(24)))
+        conversations = (listOf(session) + conversations).sortedByDescending { it.isPinned }
+        newConversation = newConversation.copy(draft = "")
+        send(id, reply)
         return id
     }
 
@@ -138,14 +147,6 @@ class MockWorkspace : ViewModel() {
         val messageId = "message-${++nextId}"
         update(id) {
             it.copy(
-                title =
-                    if (it.messages.isEmpty() &&
-                        it.title == UiText.Resource(Res.string.new_conversation)
-                    ) {
-                        UiText.Literal(input.take(24))
-                    } else {
-                        it.title
-                    },
                 preview = UiText.Literal(input),
                 updatedLabel = UiText.Resource(Res.string.just_now),
                 draft = "",
