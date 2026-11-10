@@ -10,6 +10,8 @@ import com.everfold.kotlin.feature.connections.ConnectionMode
 import com.everfold.kotlin.feature.conversation.ChatMessage
 import com.everfold.kotlin.feature.conversation.ConversationUiState
 import com.everfold.kotlin.feature.conversation.MessageRole
+import com.everfold.kotlin.feature.onboarding.ClusterMethod
+import com.everfold.kotlin.feature.onboarding.ClusterSetup
 import com.everfold.kotlin.ui.localization.UiText
 import com.everfold.kotlin.ui.theme.ThemeColorMode
 import com.everfold.kotlin.ui.theme.ThemeColorSelection
@@ -27,6 +29,25 @@ import kotlinx.coroutines.launch
 
 /** In-memory UI fixtures. This class never creates an Agent or opens a connection. */
 class MockWorkspace : ViewModel() {
+    var initialized by mutableStateOf(false)
+        private set
+    var clusterSetup: ClusterSetup? = null
+        private set
+
+    fun completeSetup(setup: ClusterSetup?) {
+        clusterSetup = setup
+        connectionMode = if (setup == null) ConnectionMode.Local else ConnectionMode.Remote
+        remoteAddress =
+            when {
+                setup == null -> ""
+                setup.method == ClusterMethod.Cloud -> "https://cloud.example.com"
+                setup.ip.isBlank() -> ""
+                else -> if (':' in setup.ip) "[${setup.ip.trim()}]:${setup.port}" else "${setup.ip.trim()}:${setup.port}"
+            }
+        connectionPreview = setup != null
+        initialized = true
+    }
+
     var conversations by mutableStateOf(sampleConversations())
         private set
     var themeMode by mutableStateOf(ThemeMode.System)

@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.everfold.kotlin.app.EverfoldApp
+import com.everfold.kotlin.feature.onboarding.OnboardingScreen
 import com.everfold.kotlin.mock.MockWorkspace
 import com.everfold.kotlin.ui.localization.AppLanguage
 import com.everfold.kotlin.ui.localization.AppLanguageEnvironment
@@ -20,7 +21,11 @@ fun App(modifier: Modifier = Modifier) {
     val workspace = viewModel { MockWorkspace() }
     AppLanguageEnvironment(language) {
         EverfoldTheme(mode = workspace.themeMode, color = workspace.themeColor) {
-            EverfoldApp(workspace, language, { language = it }, modifier)
+            if (workspace.initialized) {
+                EverfoldApp(workspace, language, { language = it }, modifier)
+            } else {
+                OnboardingScreen(workspace, language, { language = it }, workspace::completeSetup, modifier)
+            }
         }
     }
 }
