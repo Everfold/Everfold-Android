@@ -18,7 +18,7 @@
         pkgs:
         let
           jdk = pkgs.temurin-bin-25;
-          buildToolsVersion = "36.0.0";
+          buildToolsVersion = "37.0.0";
           androidSdk = pkgs.androidenv.composeAndroidPackages {
             platformVersions = [ "37.0" ];
             buildToolsVersions = [ buildToolsVersion ];
@@ -36,10 +36,6 @@
             jdk
             pkgs.android-cli
             androidSdk.androidsdk
-
-            (pkgs.kotlin-cli.override {
-              jdk25 = jdk;
-            })
           ];
 
           env = {

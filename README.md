@@ -19,45 +19,27 @@ direnv allow
 ### Project
 
 ```bash
-# Debug Build
-./gradlew :app:assembleDebug
+# Init
+./kotlin
 
-# Release Build
-./gradlew :app:assembleRelease
+# Android
+./kotlin build -m androidApp
+./kotlin run -m androidApp
 
-# AAB Release Bundle
-./gradlew :app:bundleRelease
+# Desktop
+./kotlin build -m desktopApp
+./kotlin run -m desktopApp
 
-# Check dependency updates
-./gradlew dependencyUpdates
+# iOS
+./kotlin build -m iosApp
+./kotlin run -m iosApp
 
-# Check formatting
-./gradlew spotlessCheck
+# Check
+./kotlin check
 
-# Apply formatting
-./gradlew spotlessApply
+# Test
+./kotlin test
 
-# Kotlin & Compose static analysis
-./gradlew :app:detekt
-
-# Unit Test
-./gradlew :app:testDebugUnitTest
-
-# Lint
-./gradlew :app:lintDebug
-
-# Compose Preview
-android preview list :app
-
-# ADB Debug
-./gradlew :app:installDebug
-
-# Create Emulator
-avdmanager create avd --name everfold-37 --device pixel_9_pro --package 'system-images;android-37.0;google_apis;x86_64'
-
-# Start Emulator
-emulator -avd everfold-37 -gpu host
-
-# Test on device
-./gradlew :app:connectedDebugAndroidTest
+# Update
+./kotlin update
 ```
