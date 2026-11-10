@@ -259,7 +259,7 @@ private fun WelcomeContent(
             Image(
                 painter = painterResource(Res.drawable.logo),
                 contentDescription = null,
-                modifier = Modifier.size(40.dp),
+                modifier = Modifier.size(75.dp),
                 alpha = 0.75f,
             )
         }
