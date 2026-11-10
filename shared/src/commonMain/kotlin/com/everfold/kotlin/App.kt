@@ -1,5 +1,8 @@
 package com.everfold.kotlin
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -16,15 +19,23 @@ import com.everfold.kotlin.ui.localization.AppLanguageEnvironment
 import com.everfold.kotlin.ui.theme.EverfoldTheme
 
 @Composable
-fun App(modifier: Modifier = Modifier) {
+fun App(
+    modifier: Modifier = Modifier,
+    titleBar: @Composable () -> Unit = {},
+) {
     var language by rememberSaveable { mutableStateOf(AppLanguage.System) }
     val workspace = viewModel { MockWorkspace() }
     AppLanguageEnvironment(language) {
         EverfoldTheme(mode = workspace.themeMode, color = workspace.themeColor) {
-            if (workspace.initialized) {
-                EverfoldApp(workspace, language, { language = it }, modifier)
-            } else {
-                OnboardingScreen(workspace, language, { language = it }, workspace::completeSetup, modifier)
+            Column(modifier.fillMaxSize()) {
+                titleBar()
+                Box(Modifier.weight(1f)) {
+                    if (workspace.initialized) {
+                        EverfoldApp(workspace, language, { language = it })
+                    } else {
+                        OnboardingScreen(workspace, language, { language = it }, workspace::completeSetup)
+                    }
+                }
             }
         }
     }

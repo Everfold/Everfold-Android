@@ -12,4 +12,10 @@
     <string name="today">今天</string>
     <string name="yesterday">昨天</string>
 
+    <!-- 桌面窗口操作 -->
+    <string name="window_minimize">最小化</string>
+    <string name="window_maximize">最大化</string>
+    <string name="window_restore">还原</string>
+    <string name="window_close">关闭窗口</string>
+
 </resources>
