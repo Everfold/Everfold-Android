@@ -42,11 +42,11 @@ fun SettingsScreen(
     modifier: Modifier = Modifier,
 ) {
     SettingsLayout(localizedString(Res.string.nav_settings), localizedString(Res.string.settings_subtitle), modifier) {
-        LanguageSettings(language, onLanguageChange)
         BoxWithConstraints(Modifier.fillMaxWidth()) {
             AppearanceSettings(themeMode, onThemeChange, horizontal = maxWidth >= (380 * LocalDensity.current.fontScale).dp)
         }
         ThemeColorSettings(themeColor, onSystemColorChange, onPresetChange, onCustomColorChange)
+        LanguageSettings(language, onLanguageChange)
         Text(localizedString(Res.string.about), style = MaterialTheme.typography.titleMedium)
         Surface(shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.surfaceContainerLow) {
             Column(Modifier.fillMaxWidth().padding(24.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
