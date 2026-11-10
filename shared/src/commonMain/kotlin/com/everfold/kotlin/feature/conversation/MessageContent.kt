@@ -1,12 +1,14 @@
 package com.everfold.kotlin.feature.conversation
 
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -16,12 +18,16 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.everfold.kotlin.ui.localization.localizedString
 import com.mikepenz.markdown.compose.components.markdownComponents
@@ -31,9 +37,55 @@ import com.mikepenz.markdown.m3.Markdown
 import com.mikepenz.markdown.model.rememberMarkdownState
 import everfold.shared.generated.resources.Res
 import everfold.shared.generated.resources.code_block
+import everfold.shared.generated.resources.collapse_prompt
 import everfold.shared.generated.resources.copied
 import everfold.shared.generated.resources.copy_code
+import everfold.shared.generated.resources.expand_prompt
 import kotlinx.coroutines.delay
+
+@Composable
+internal fun UserPrompt(
+    message: ChatMessage,
+    onHeightChange: (Int) -> Unit,
+) {
+    var expanded by rememberSaveable(message.id) { mutableStateOf(false) }
+    var layout by remember(message.id) { mutableStateOf<TextLayoutResult?>(null) }
+    val measurer = rememberTextMeasurer()
+    val style = MaterialTheme.typography.bodyLarge
+    BoxWithConstraints(Modifier.padding(16.dp)) {
+        val measured = measurer.measure(message.text, style = style, maxLines = 9, constraints = constraints)
+        val collapsible = measured.lineCount > 8
+        Column(horizontalAlignment = Alignment.End) {
+            SelectionContainer {
+                Text(
+                    message.text,
+                    style = style,
+                    maxLines = if (collapsible && !expanded) 6 else Int.MAX_VALUE,
+                    overflow = TextOverflow.Ellipsis,
+                    onTextLayout = { layout = it },
+                )
+            }
+            if (collapsible) {
+                TextButton(onClick = {
+                    layout?.let { current ->
+                        val next =
+                            measurer.measure(
+                                message.text,
+                                style = style,
+                                maxLines = if (expanded) 6 else Int.MAX_VALUE,
+                                overflow = TextOverflow.Ellipsis,
+                                constraints = current.layoutInput.constraints,
+                            )
+                        onHeightChange(next.size.height - current.size.height)
+                    }
+                    expanded = !expanded
+                }) {
+                    Text(localizedString(if (expanded) Res.string.collapse_prompt else Res.string.expand_prompt))
+                }
+            }
+        }
+    }
+}
 
 @Composable
 internal fun MessageMarkdown(content: String) {

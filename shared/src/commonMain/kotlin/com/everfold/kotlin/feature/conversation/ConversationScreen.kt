@@ -201,6 +201,7 @@ fun ConversationScreen(
 internal fun MessageItem(
     message: ChatMessage,
     modifier: Modifier = Modifier,
+    onPromptHeightChange: (Int) -> Unit = {},
 ) {
     val user = message.role == MessageRole.User
     Column(modifier, horizontalAlignment = if (user) Alignment.End else Alignment.Start) {
@@ -217,15 +218,18 @@ internal fun MessageItem(
             shape = RoundedCornerShape(20.dp),
             color = if (user) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surface,
         ) {
-            SelectionContainer {
-                if (user || message.text.isEmpty()) {
-                    Text(
-                        message.text.ifEmpty { localizedString(Res.string.thinking) },
-                        Modifier.padding(if (user) 16.dp else 0.dp),
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
-                } else {
-                    MessageMarkdown(message.text)
+            if (user) {
+                UserPrompt(message, onPromptHeightChange)
+            } else {
+                SelectionContainer {
+                    if (message.text.isEmpty()) {
+                        Text(
+                            message.text.ifEmpty { localizedString(Res.string.thinking) },
+                            style = MaterialTheme.typography.bodyLarge,
+                        )
+                    } else {
+                        MessageMarkdown(message.text)
+                    }
                 }
             }
         }

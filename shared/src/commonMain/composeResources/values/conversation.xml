@@ -45,4 +45,8 @@
     <string name="copied">已复制</string>
     <string name="code_block">代码</string>
 
+    <!-- 长用户消息 -->
+    <string name="expand_prompt">展开全文</string>
+    <string name="collapse_prompt">收起</string>
+
 </resources>

@@ -72,7 +72,26 @@ internal fun ConversationMessages(
             }
             items(state.messages.asReversed(), key = { it.id }) { message ->
                 Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.TopCenter) {
-                    MessageItem(message, Modifier.widthIn(max = 760.dp).fillMaxWidth())
+                    MessageItem(
+                        message,
+                        Modifier.widthIn(max = 760.dp).fillMaxWidth(),
+                        onPromptHeightChange = { heightChange ->
+                            followLatest = false
+                            val info = list.layoutInfo
+                            val item = info.visibleItemsInfo.firstOrNull { it.key == message.id }
+                            if (item != null) {
+                                // Reverse layout anchors items from the bottom. Preserve the prompt's top
+                                // edge, or bring it into view when collapsing from below a long prompt.
+                                val top =
+                                    (info.viewportEndOffset - item.offset - item.size)
+                                        .coerceAtLeast(info.beforeContentPadding)
+                                list.requestScrollToItem(
+                                    item.index,
+                                    item.size + heightChange - info.viewportEndOffset + top,
+                                )
+                            }
+                        },
+                    )
                 }
             }
         }
