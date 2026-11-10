@@ -12,6 +12,11 @@
     <string name="preview_version">v0.0.114514</string>
     <string name="preview_notice">What should we write here?</string>
 
+    <string name="official_website">Official website</string>
+    <string name="github_repository">GitHub repository</string>
+    <string name="open_source_license">Open-source license</string>
+    <string name="open_in_browser">Open in browser</string>
+
     <!-- 语言选项（语言名称使用该语言自身的写法） -->
     <string name="language">Language</string>
     <string name="language_chinese">简体中文</string>
