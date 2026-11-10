@@ -39,4 +39,24 @@
     <string name="simulate_failure">Simulate connection failure</string>
     <string name="invalid_connection">Enter a valid IP, a port from 1 to 65535, and the required authentication details.</string>
 
+    <!-- 表单校验与模拟结果 -->
+    <string name="error_ip">Enter a valid IPv4 or IPv6 address.</string>
+    <string name="error_port">Enter a port between 1 and 65535.</string>
+    <string name="error_account">Enter your username.</string>
+    <string name="error_password">Enter your password.</string>
+    <string name="error_certificate">Import the required file.</string>
+    <string name="show_password">Show</string>
+    <string name="hide_password">Hide</string>
+    <string name="replace_file">Replace file</string>
+    <string name="remove_file">Remove</string>
+    <string name="preview_result">Simulated test result</string>
+    <string name="preview_success">Success</string>
+    <string name="preview_timeout">Connection timeout</string>
+    <string name="preview_credentials">Invalid credentials</string>
+    <string name="preview_certificate">Invalid certificate</string>
+    <string name="failure_timeout_hint">Connection timed out. Check the IP, port and node availability, then retry.</string>
+    <string name="failure_credentials_hint">Authentication failed. Check your username and password, then retry.</string>
+    <string name="failure_certificate_hint">Certificate verification failed. Check that the required certificates and keys match, then import them again.</string>
+    <string name="retry_connection">Retry connection</string>
+
 </resources>

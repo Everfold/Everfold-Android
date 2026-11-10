@@ -25,6 +25,11 @@ pluginManagement {
 
 dependencyResolutionManagement {
     repositories {
+        // Resolve all Markdown platform artifacts from the publishing repository.
+        exclusiveContent {
+            forRepository { mavenCentral() }
+            filter { includeGroup("com.mikepenz") }
+        }
         maven("https://maven.aliyun.com/repository/google") {
             mavenContent {
                 includeGroupAndSubgroups("androidx")

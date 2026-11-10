@@ -16,21 +16,30 @@ data class ClusterSetup(
     val clientPublicKey: String? = null,
     val clientPrivateKey: String? = null,
 ) {
-    val isValid: Boolean
-        get() {
-            if (method == ClusterMethod.Cloud) return hasCredentials
-            if (method == ClusterMethod.Lan && ip.isBlank() && port.isBlank()) return true
-            if (!validIp(ip.trim()) || port.toIntOrNull() !in 1..65535) return false
-            if (method == ClusterMethod.Lan) return true
-            return when (auth) {
-                ClusterAuth.None -> true
-                ClusterAuth.Password -> hasCredentials
-                ClusterAuth.Certificate -> serverCertificate != null
-                ClusterAuth.Mtls -> caCertificate != null && clientPublicKey != null && clientPrivateKey != null
+    val invalidFields: Set<ClusterField>
+        get() =
+            buildSet {
+                if (method != ClusterMethod.Cloud && !(method == ClusterMethod.Lan && ip.isBlank() && port.isBlank())) {
+                    if (!validIp(ip.trim())) add(ClusterField.Ip)
+                    if (port.trim().toIntOrNull() !in 1..65535) add(ClusterField.Port)
+                }
+                if (method == ClusterMethod.Cloud || (method == ClusterMethod.Central && auth == ClusterAuth.Password)) {
+                    if (account.isBlank()) add(ClusterField.Account)
+                    if (password.isEmpty()) add(ClusterField.Password)
+                }
+                if (method == ClusterMethod.Central) {
+                    if (auth == ClusterAuth.Certificate && serverCertificate.isNullOrBlank()) add(ClusterField.ServerCertificate)
+                    if (auth == ClusterAuth.Mtls) {
+                        if (caCertificate.isNullOrBlank()) add(ClusterField.CaCertificate)
+                        if (clientPublicKey.isNullOrBlank()) add(ClusterField.ClientPublicKey)
+                        if (clientPrivateKey.isNullOrBlank()) add(ClusterField.ClientPrivateKey)
+                    }
+                }
             }
-        }
-    private val hasCredentials: Boolean get() = account.isNotBlank() && password.isNotEmpty()
+    val isValid: Boolean get() = invalidFields.isEmpty()
 }
+
+enum class ClusterField { Ip, Port, Account, Password, ServerCertificate, CaCertificate, ClientPublicKey, ClientPrivateKey }
 
 internal fun validIp(value: String): Boolean {
     if (':' !in value) {

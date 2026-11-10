@@ -2,7 +2,6 @@ package com.everfold.kotlin.feature.onboarding
 
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
@@ -18,22 +17,16 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationDrawerItem
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.PermanentDrawerSheet
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -61,68 +54,33 @@ import androidx.compose.ui.input.key.isMetaPressed
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.key.type
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.disabled
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.compose.NavigationBackHandler
 import androidx.navigationevent.compose.rememberNavigationEventState
 import com.everfold.kotlin.feature.connections.ClusterConnectionForm
 import com.everfold.kotlin.feature.connections.ClusterSetup
+import com.everfold.kotlin.feature.connections.ConnectionPreviewOptions
+import com.everfold.kotlin.feature.connections.ConnectionPreviewResult
+import com.everfold.kotlin.feature.connections.description
 import com.everfold.kotlin.feature.settings.AppearanceSettings
 import com.everfold.kotlin.feature.settings.LanguageSettings
 import com.everfold.kotlin.feature.settings.ThemeColorSettings
 import com.everfold.kotlin.mock.MockWorkspace
 import com.everfold.kotlin.ui.localization.AppLanguage
 import com.everfold.kotlin.ui.localization.localizedString
-import com.everfold.kotlin.ui.theme.ThemeMode
 import everfold.shared.generated.resources.Res
-import everfold.shared.generated.resources.account
-import everfold.shared.generated.resources.appearance
-import everfold.shared.generated.resources.auth_certificate
-import everfold.shared.generated.resources.auth_method
-import everfold.shared.generated.resources.auth_mtls
-import everfold.shared.generated.resources.auth_none
-import everfold.shared.generated.resources.auth_password
-import everfold.shared.generated.resources.ca_certificate
-import everfold.shared.generated.resources.cancel
-import everfold.shared.generated.resources.choose_file
-import everfold.shared.generated.resources.client_private_key
-import everfold.shared.generated.resources.client_public_key
-import everfold.shared.generated.resources.cluster_central
-import everfold.shared.generated.resources.cluster_cloud
-import everfold.shared.generated.resources.cluster_hint
-import everfold.shared.generated.resources.cluster_lan
-import everfold.shared.generated.resources.connection_failure
 import everfold.shared.generated.resources.connection_preview_notice
 import everfold.shared.generated.resources.connection_success
 import everfold.shared.generated.resources.enter_home
-import everfold.shared.generated.resources.feature_agent
-import everfold.shared.generated.resources.feature_agent_detail
-import everfold.shared.generated.resources.feature_modes
-import everfold.shared.generated.resources.feature_modes_detail
-import everfold.shared.generated.resources.feature_sessions
-import everfold.shared.generated.resources.feature_sessions_detail
-import everfold.shared.generated.resources.import_hint
-import everfold.shared.generated.resources.import_preview
-import everfold.shared.generated.resources.invalid_connection
-import everfold.shared.generated.resources.ip_address
-import everfold.shared.generated.resources.lan_hint
-import everfold.shared.generated.resources.mode_cluster
-import everfold.shared.generated.resources.mode_offline
 import everfold.shared.generated.resources.next_step
-import everfold.shared.generated.resources.no_file
-import everfold.shared.generated.resources.offline_hint
-import everfold.shared.generated.resources.onboarding_intro
 import everfold.shared.generated.resources.onboarding_welcome
-import everfold.shared.generated.resources.password
-import everfold.shared.generated.resources.port
 import everfold.shared.generated.resources.previous_step
-import everfold.shared.generated.resources.scan_file
-import everfold.shared.generated.resources.scan_preview
+import everfold.shared.generated.resources.retry_connection
 import everfold.shared.generated.resources.setup_cluster
 import everfold.shared.generated.resources.setup_mode
 import everfold.shared.generated.resources.setup_nav_preferences
@@ -131,10 +89,8 @@ import everfold.shared.generated.resources.setup_preferences
 import everfold.shared.generated.resources.setup_shortcuts
 import everfold.shared.generated.resources.setup_sidebar_hint
 import everfold.shared.generated.resources.setup_step
-import everfold.shared.generated.resources.simulate_failure
 import everfold.shared.generated.resources.test_connection
 import everfold.shared.generated.resources.testing_connection
-import everfold.shared.generated.resources.use_sample
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.StringResource
 
@@ -157,12 +113,12 @@ internal fun OnboardingScreen(
     var cluster by remember { mutableStateOf(false) }
     var form by remember { mutableStateOf(ClusterSetup()) }
     var test by remember { mutableStateOf(ConnectionTest.Idle) }
-    var failTest by remember { mutableStateOf(false) }
+    var previewResult by remember { mutableStateOf(ConnectionPreviewResult.Success) }
     var showError by remember { mutableStateOf(false) }
-    LaunchedEffect(test, form, failTest, step) {
+    LaunchedEffect(test, form, previewResult, step) {
         if (test == ConnectionTest.Testing) {
             delay(900)
-            test = if (failTest) ConnectionTest.Failure else ConnectionTest.Success
+            test = if (previewResult == ConnectionPreviewResult.Success) ConnectionTest.Success else ConnectionTest.Failure
         }
     }
     val navigate: (SetupStep) -> Unit = {
@@ -256,7 +212,15 @@ internal fun OnboardingScreen(
                                 }
 
                                 SetupStep.Preferences -> {
-                                    OnboardingPreferences(workspace, language, onLanguageChange, preferenceColumns)
+                                    OnboardingPreferences(
+                                        workspace,
+                                        language,
+                                        onLanguageChange,
+                                        preferenceColumns,
+                                        appearanceHorizontal =
+                                            (contentWidth - 24.dp * (preferenceColumns - 1)) / preferenceColumns >=
+                                                (380 * LocalDensity.current.fontScale).dp,
+                                    )
                                 }
 
                                 SetupStep.Mode -> {
@@ -264,25 +228,16 @@ internal fun OnboardingScreen(
                                 }
 
                                 SetupStep.Cluster -> {
-                                    ClusterConnectionForm(form, wide = contentWidth >= 600.dp, onChange = {
+                                    ClusterConnectionForm(form, wide = contentWidth >= 600.dp, showErrors = showError, onChange = {
+                                        if (form.method != it.method || form.auth != it.auth) showError = false
                                         form = it
                                         test = ConnectionTest.Idle
-                                        showError = false
                                     })
                                     Text(localizedString(Res.string.connection_preview_notice), style = MaterialTheme.typography.bodySmall)
-                                    Row(verticalAlignment = Alignment.CenterVertically) {
-                                        Text(localizedString(Res.string.simulate_failure), Modifier.weight(1f))
-                                        Switch(failTest, onCheckedChange = {
-                                            failTest = it
-                                            test = ConnectionTest.Idle
-                                        })
-                                    }
-                                    if (showError) {
-                                        Text(
-                                            localizedString(Res.string.invalid_connection),
-                                            color = MaterialTheme.colorScheme.error,
-                                        )
-                                    }
+                                    ConnectionPreviewOptions(previewResult, onSelect = {
+                                        previewResult = it
+                                        test = ConnectionTest.Idle
+                                    })
                                     when (test) {
                                         ConnectionTest.Testing -> {
                                             LinearProgressIndicator(Modifier.fillMaxWidth())
@@ -297,7 +252,7 @@ internal fun OnboardingScreen(
 
                                         ConnectionTest.Failure -> {
                                             Text(
-                                                localizedString(Res.string.connection_failure),
+                                                localizedString(previewResult.description),
                                                 color = MaterialTheme.colorScheme.error,
                                             )
                                         }
@@ -320,6 +275,7 @@ internal fun OnboardingScreen(
                         val actionLabel =
                             when {
                                 step == SetupStep.Cluster && test == ConnectionTest.Testing -> Res.string.testing_connection
+                                step == SetupStep.Cluster && test == ConnectionTest.Failure -> Res.string.retry_connection
                                 step == SetupStep.Cluster && test != ConnectionTest.Success -> Res.string.test_connection
                                 finish -> Res.string.enter_home
                                 else -> Res.string.next_step
@@ -411,6 +367,7 @@ private fun OnboardingPreferences(
     language: AppLanguage,
     onLanguageChange: (AppLanguage) -> Unit,
     columns: Int,
+    appearanceHorizontal: Boolean,
 ) {
     FlowRow(
         Modifier.fillMaxWidth(),
@@ -420,11 +377,11 @@ private fun OnboardingPreferences(
     ) {
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(24.dp)) {
             LanguageSettings(language, onLanguageChange)
-            if (columns == 2) OnboardingAppearance(workspace)
+            if (columns == 2) OnboardingAppearance(workspace, appearanceHorizontal)
         }
         if (columns != 2) {
             Column(Modifier.weight(1f)) {
-                OnboardingAppearance(workspace)
+                OnboardingAppearance(workspace, appearanceHorizontal)
             }
         }
         Column(Modifier.weight(1f)) {
@@ -439,6 +396,9 @@ private fun OnboardingPreferences(
 }
 
 @Composable
-private fun OnboardingAppearance(workspace: MockWorkspace) {
-    AppearanceSettings(workspace.themeMode, workspace::setTheme)
+private fun OnboardingAppearance(
+    workspace: MockWorkspace,
+    horizontal: Boolean,
+) {
+    AppearanceSettings(workspace.themeMode, workspace::setTheme, horizontal)
 }

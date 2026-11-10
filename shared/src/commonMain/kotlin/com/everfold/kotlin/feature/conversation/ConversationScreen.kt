@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.FilledIconButton
@@ -58,9 +57,7 @@ import com.everfold.kotlin.ui.localization.resolve
 import everfold.shared.generated.resources.Res
 import everfold.shared.generated.resources.back_sessions
 import everfold.shared.generated.resources.conversation_notice
-import everfold.shared.generated.resources.conversation_space
 import everfold.shared.generated.resources.copy_message
-import everfold.shared.generated.resources.generating_reply
 import everfold.shared.generated.resources.hide_sessions
 import everfold.shared.generated.resources.logo
 import everfold.shared.generated.resources.message_placeholder
@@ -69,7 +66,6 @@ import everfold.shared.generated.resources.send_message
 import everfold.shared.generated.resources.send_shortcut
 import everfold.shared.generated.resources.show_sessions
 import everfold.shared.generated.resources.stop_reply
-import everfold.shared.generated.resources.stopped_hint
 import everfold.shared.generated.resources.suggestion_ideas
 import everfold.shared.generated.resources.suggestion_problem
 import everfold.shared.generated.resources.suggestion_week

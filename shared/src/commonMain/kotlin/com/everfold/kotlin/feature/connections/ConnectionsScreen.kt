@@ -14,7 +14,6 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,15 +30,13 @@ import com.everfold.kotlin.ui.components.SettingsLayout
 import com.everfold.kotlin.ui.localization.localizedString
 import everfold.shared.generated.resources.Res
 import everfold.shared.generated.resources.connected_preview
-import everfold.shared.generated.resources.connection_failure
 import everfold.shared.generated.resources.connection_mode
 import everfold.shared.generated.resources.connection_notice
 import everfold.shared.generated.resources.connection_preview_notice
 import everfold.shared.generated.resources.connections_subtitle
-import everfold.shared.generated.resources.invalid_connection
 import everfold.shared.generated.resources.nav_connections
 import everfold.shared.generated.resources.not_connected
-import everfold.shared.generated.resources.simulate_failure
+import everfold.shared.generated.resources.retry_connection
 import everfold.shared.generated.resources.test_connection
 import everfold.shared.generated.resources.testing_connection
 import kotlinx.coroutines.delay
@@ -56,15 +53,15 @@ fun ConnectionsScreen(
 ) {
     var testing by remember(mode, setup) { mutableStateOf(false) }
     var failed by remember(mode, setup) { mutableStateOf(false) }
-    var showError by remember(mode, setup) { mutableStateOf(false) }
-    var failTest by remember { mutableStateOf(false) }
+    var showError by remember(mode, setup.method, setup.auth) { mutableStateOf(false) }
+    var previewResult by remember { mutableStateOf(ConnectionPreviewResult.Success) }
     val updateConnection by rememberUpdatedState(onConnectionChange)
-    LaunchedEffect(testing, mode, setup, failTest) {
+    LaunchedEffect(testing, mode, setup, previewResult) {
         if (testing) {
             delay(900)
             testing = false
-            failed = failTest
-            updateConnection(!failTest)
+            failed = previewResult != ConnectionPreviewResult.Success
+            updateConnection(previewResult == ConnectionPreviewResult.Success)
         }
     }
     SettingsLayout(localizedString(Res.string.nav_connections), localizedString(Res.string.connections_subtitle), modifier) {
@@ -104,24 +101,20 @@ fun ConnectionsScreen(
         }
         if (mode == ConnectionMode.Remote) {
             BoxWithConstraints(Modifier.fillMaxWidth()) {
-                ClusterConnectionForm(setup, wide = maxWidth >= 600.dp, onChange = onSetupChange)
+                ClusterConnectionForm(setup, wide = maxWidth >= 600.dp, onChange = onSetupChange, showErrors = showError)
             }
             Text(localizedString(Res.string.connection_preview_notice), style = MaterialTheme.typography.bodySmall)
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(localizedString(Res.string.simulate_failure), Modifier.weight(1f))
-                Switch(failTest, onCheckedChange = {
-                    failTest = it
-                    testing = false
-                    failed = false
-                    onConnectionChange(false)
-                })
-            }
-            if (showError) Text(localizedString(Res.string.invalid_connection), color = MaterialTheme.colorScheme.error)
+            ConnectionPreviewOptions(previewResult, onSelect = {
+                previewResult = it
+                testing = false
+                failed = false
+                onConnectionChange(false)
+            })
             if (testing) LinearProgressIndicator(Modifier.fillMaxWidth())
             Text(
                 localizedString(
                     if (failed) {
-                        Res.string.connection_failure
+                        previewResult.description
                     } else if (previewConnected) {
                         Res.string.connected_preview
                     } else {
@@ -138,7 +131,17 @@ fun ConnectionsScreen(
                     testing = true
                 }
             }, enabled = !testing) {
-                Text(localizedString(if (testing) Res.string.testing_connection else Res.string.test_connection))
+                Text(
+                    localizedString(
+                        if (testing) {
+                            Res.string.testing_connection
+                        } else if (failed) {
+                            Res.string.retry_connection
+                        } else {
+                            Res.string.test_connection
+                        },
+                    ),
+                )
             }
         } else {
             Text(localizedString(Res.string.connection_notice), color = MaterialTheme.colorScheme.onSurfaceVariant)
