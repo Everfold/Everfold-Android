@@ -78,6 +78,9 @@ fun ConversationScreen(
     onDraftChange: (String) -> Unit,
     onSend: () -> Unit,
     onStop: () -> Unit,
+    connectionLabel: String,
+    onRetry: () -> Unit,
+    onPreviewState: (AgentRunState) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var scrollRequest by remember(state.id) { mutableIntStateOf(0) }
@@ -91,13 +94,7 @@ fun ConversationScreen(
             Column(Modifier.weight(1f).padding(horizontal = 12.dp)) {
                 Text(state.title.resolve(), style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Text(
-                    if (state.isResponding) {
-                        localizedString(
-                            Res.string.generating_reply,
-                        )
-                    } else {
-                        localizedString(Res.string.conversation_space)
-                    },
+                    connectionLabel,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -111,6 +108,7 @@ fun ConversationScreen(
             }
         }
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+        AgentStatusBar(state.runState, onRetry, onPreviewState)
         if (state.messages.isEmpty()) {
             WelcomeContent(onDraftChange, Modifier.weight(1f))
         } else {

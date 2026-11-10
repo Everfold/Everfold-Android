@@ -17,6 +17,10 @@ data class ConversationUiState(
     val updatedLabel: UiText,
     val messages: List<ChatMessage> = emptyList(),
     val draft: String = "",
-    val isResponding: Boolean = false,
-    val responseStopped: Boolean = false,
-)
+    val runState: AgentRunState = AgentRunState.Idle,
+) {
+    val isResponding: Boolean get() = runState == AgentRunState.Running
+    val responseStopped: Boolean get() = runState == AgentRunState.Stopped
+}
+
+enum class AgentRunState { Idle, Running, Waiting, Completed, Stopped, Failed }

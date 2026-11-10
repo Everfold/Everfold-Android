@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.everfold.kotlin.feature.connections.ClusterMethod
 import com.everfold.kotlin.feature.connections.ClusterSetup
 import com.everfold.kotlin.feature.connections.ConnectionMode
+import com.everfold.kotlin.feature.conversation.AgentRunState
 import com.everfold.kotlin.feature.conversation.ChatMessage
 import com.everfold.kotlin.feature.conversation.ConversationUiState
 import com.everfold.kotlin.feature.conversation.MessageRole
@@ -119,8 +120,7 @@ class MockWorkspace : ViewModel() {
                 preview = UiText.Literal(input),
                 updatedLabel = UiText.Resource(Res.string.just_now),
                 draft = "",
-                isResponding = true,
-                responseStopped = false,
+                runState = AgentRunState.Running,
                 messages =
                     it.messages +
                         listOf(
@@ -129,6 +129,42 @@ class MockWorkspace : ViewModel() {
                         ),
             )
         }
+        streamReply(id, messageId, reply)
+    }
+
+    fun retry(
+        id: String,
+        reply: String,
+    ) {
+        val session = conversations.firstOrNull { it.id == id } ?: return
+        if (session.isResponding) return
+        val messageId = "message-${++nextId}"
+        update(id) { it.copy(runState = AgentRunState.Running, messages = it.messages + ChatMessage(messageId, MessageRole.Assistant, "")) }
+        streamReply(id, messageId, reply)
+    }
+
+    fun previewRunState(
+        id: String,
+        state: AgentRunState,
+    ) {
+        replies.remove(id)?.cancel()
+        update(id) {
+            it.copy(
+                runState = state,
+                messages =
+                    it.messages.filterNot { message ->
+                        message.role == MessageRole.Assistant &&
+                            message.text.isEmpty()
+                    },
+            )
+        }
+    }
+
+    private fun streamReply(
+        id: String,
+        messageId: String,
+        reply: String,
+    ) {
         replies[id] =
             viewModelScope.launch {
                 delay(350)
@@ -139,7 +175,7 @@ class MockWorkspace : ViewModel() {
                     }
                     delay(45)
                 }
-                update(id) { it.copy(isResponding = false, preview = UiText.Resource(Res.string.reply_complete)) }
+                update(id) { it.copy(runState = AgentRunState.Completed, preview = UiText.Resource(Res.string.reply_complete)) }
                 replies.remove(id)
             }
     }
@@ -148,8 +184,7 @@ class MockWorkspace : ViewModel() {
         replies.remove(id)?.cancel()
         update(id) {
             it.copy(
-                isResponding = false,
-                responseStopped = true,
+                runState = AgentRunState.Stopped,
                 preview = UiText.Resource(Res.string.reply_stopped),
                 messages = it.messages.filterNot { message -> message.role == MessageRole.Assistant && message.text.isEmpty() },
             )

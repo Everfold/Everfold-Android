@@ -29,4 +29,21 @@
 
     <string name="jump_to_latest">回到最新消息</string>
 
+    <!-- Agent 执行状态 -->
+    <string name="agent_idle">准备就绪</string>
+    <string name="agent_running">执行中</string>
+    <string name="agent_waiting">等待你的输入</string>
+    <string name="agent_completed">已完成</string>
+    <string name="agent_stopped">已停止</string>
+    <string name="agent_failed">执行失败</string>
+    <string name="execution_details">执行详情</string>
+    <string name="preview_agent_states">演示执行状态</string>
+    <string name="agent_continue">继续执行</string>
+    <string name="agent_retry">重试</string>
+    <string name="agent_waiting_hint">请补充要求，或确认继续执行。</string>
+    <string name="agent_failed_hint">示例任务执行失败，可以重试。连接状态未改变。</string>
+    <string name="agent_step_prepare">整理输入 · 示例步骤</string>
+    <string name="agent_step_reply">生成回复 · 示例步骤</string>
+    <string name="agent_preview_note">以下操作仅演示界面状态。</string>
+
 </resources>

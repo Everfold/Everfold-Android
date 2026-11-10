@@ -31,7 +31,9 @@ import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.compose.NavigationBackHandler
 import androidx.navigationevent.compose.rememberNavigationEventState
 import com.everfold.kotlin.app.navigation.AppDestination
+import com.everfold.kotlin.feature.connections.ConnectionMode
 import com.everfold.kotlin.feature.connections.ConnectionsScreen
+import com.everfold.kotlin.feature.conversation.AgentRunState
 import com.everfold.kotlin.feature.conversation.ConversationScreen
 import com.everfold.kotlin.feature.sessions.SessionsScreen
 import com.everfold.kotlin.feature.settings.SettingsScreen
@@ -40,6 +42,9 @@ import com.everfold.kotlin.ui.components.AppIcon
 import com.everfold.kotlin.ui.localization.AppLanguage
 import com.everfold.kotlin.ui.localization.localizedString
 import everfold.shared.generated.resources.Res
+import everfold.shared.generated.resources.connected_preview
+import everfold.shared.generated.resources.connection_local
+import everfold.shared.generated.resources.not_connected
 import everfold.shared.generated.resources.sample_reply
 
 /** UI composition root. Only this layer knows that the data source is a mock. */
@@ -119,6 +124,22 @@ fun EverfoldApp(
                                             onDraftChange = { workspace.updateDraft(selected.id, it) },
                                             onSend = { workspace.send(selected.id, reply) },
                                             onStop = { workspace.stop(selected.id) },
+                                            connectionLabel =
+                                                localizedString(
+                                                    when {
+                                                        workspace.connectionMode == ConnectionMode.Local -> Res.string.connection_local
+                                                        workspace.connectionPreview -> Res.string.connected_preview
+                                                        else -> Res.string.not_connected
+                                                    },
+                                                ),
+                                            onRetry = { workspace.retry(selected.id, reply) },
+                                            onPreviewState = {
+                                                if (it == AgentRunState.Running) {
+                                                    workspace.retry(selected.id, reply)
+                                                } else {
+                                                    workspace.previewRunState(selected.id, it)
+                                                }
+                                            },
                                             modifier = Modifier.weight(1f),
                                         )
                                     }

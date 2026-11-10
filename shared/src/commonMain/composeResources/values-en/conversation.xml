@@ -29,4 +29,21 @@
 
     <string name="jump_to_latest">Jump to latest</string>
 
+    <!-- Agent 执行状态 -->
+    <string name="agent_idle">Ready</string>
+    <string name="agent_running">Running</string>
+    <string name="agent_waiting">Waiting for your input</string>
+    <string name="agent_completed">Completed</string>
+    <string name="agent_stopped">Stopped</string>
+    <string name="agent_failed">Failed</string>
+    <string name="execution_details">Execution details</string>
+    <string name="preview_agent_states">Preview execution states</string>
+    <string name="agent_continue">Continue</string>
+    <string name="agent_retry">Retry</string>
+    <string name="agent_waiting_hint">Add your requirements or confirm to continue.</string>
+    <string name="agent_failed_hint">The sample task failed. You can retry; the connection status is unchanged.</string>
+    <string name="agent_step_prepare">Prepare input · sample step</string>
+    <string name="agent_step_reply">Generate reply · sample step</string>
+    <string name="agent_preview_note">These actions only demonstrate UI states.</string>
+
 </resources>
