@@ -24,7 +24,6 @@ import everfold.shared.generated.resources.follow_system
 import everfold.shared.generated.resources.language
 import everfold.shared.generated.resources.language_chinese
 import everfold.shared.generated.resources.language_english
-import everfold.shared.generated.resources.language_hint
 
 @Composable
 internal fun LanguageSettings(
@@ -56,10 +55,5 @@ internal fun LanguageSettings(
                 }
             }
         }
-        Text(
-            localizedString(Res.string.language_hint),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
     }
 }

@@ -39,9 +39,7 @@ import everfold.shared.generated.resources.Res
 import everfold.shared.generated.resources.adjust
 import everfold.shared.generated.resources.custom_color
 import everfold.shared.generated.resources.follow_system
-import everfold.shared.generated.resources.system_color_hint
 import everfold.shared.generated.resources.theme_color
-import everfold.shared.generated.resources.theme_description
 
 @Composable
 internal fun ThemeColorSettings(
@@ -53,11 +51,6 @@ internal fun ThemeColorSettings(
     var showCustomDialog by rememberSaveable { mutableStateOf(false) }
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Text(localizedString(Res.string.theme_color), style = MaterialTheme.typography.titleMedium)
-        Text(
-            localizedString(Res.string.theme_description),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
         Surface(shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.surfaceContainerLow) {
             Column(Modifier.fillMaxWidth().selectableGroup().padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Row(
@@ -72,11 +65,6 @@ internal fun ThemeColorSettings(
                     RadioButton(selection.mode == ThemeColorMode.System, onClick = null)
                     Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         Text(localizedString(Res.string.follow_system), style = MaterialTheme.typography.titleSmall)
-                        Text(
-                            localizedString(Res.string.system_color_hint),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
                     }
                 }
                 HorizontalDivider(Modifier.padding(vertical = 8.dp))
