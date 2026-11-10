@@ -38,13 +38,20 @@ import com.everfold.kotlin.feature.sessions.SessionsScreen
 import com.everfold.kotlin.feature.settings.SettingsScreen
 import com.everfold.kotlin.mock.MockWorkspace
 import com.everfold.kotlin.ui.components.AppIcon
+import com.everfold.kotlin.ui.localization.AppLanguage
+import com.everfold.kotlin.ui.localization.localizedString
+import everfold.shared.generated.resources.Res
+import everfold.shared.generated.resources.sample_reply
 
 /** UI composition root. Only this layer knows that the data source is a mock. */
 @Composable
 fun EverfoldApp(
     workspace: MockWorkspace,
+    language: AppLanguage,
+    onLanguageChange: (AppLanguage) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val reply = localizedString(Res.string.sample_reply)
     var destination by rememberSaveable { mutableStateOf(AppDestination.Sessions) }
     var selectedId by rememberSaveable { mutableStateOf("welcome") }
     var conversationOpen by rememberSaveable { mutableStateOf(false) }
@@ -81,7 +88,7 @@ fun EverfoldApp(
                                 selected = destination == item,
                                 onClick = { destination = item },
                                 icon = { AppIcon(item.icon) },
-                                label = { Text(item.label) },
+                                label = { Text(localizedString(item.label)) },
                                 modifier = Modifier.padding(bottom = 12.dp),
                             )
                         }
@@ -118,7 +125,7 @@ fun EverfoldApp(
                                             showBack = !wide,
                                             onBack = { conversationOpen = false },
                                             onDraftChange = { workspace.updateDraft(selected.id, it) },
-                                            onSend = { workspace.send(selected.id) },
+                                            onSend = { workspace.send(selected.id, reply) },
                                             onStop = { workspace.stop(selected.id) },
                                             modifier = Modifier.weight(1f),
                                         )
@@ -139,6 +146,8 @@ fun EverfoldApp(
 
                             AppDestination.Settings -> {
                                 SettingsScreen(
+                                    language = language,
+                                    onLanguageChange = onLanguageChange,
                                     themeMode = workspace.themeMode,
                                     themeColor = workspace.themeColor,
                                     onThemeChange = workspace::setTheme,
@@ -155,7 +164,7 @@ fun EverfoldApp(
                                     selected = destination == item,
                                     onClick = { destination = item },
                                     icon = { AppIcon(item.icon) },
-                                    label = { Text(item.label) },
+                                    label = { Text(localizedString(item.label)) },
                                 )
                             }
                         }

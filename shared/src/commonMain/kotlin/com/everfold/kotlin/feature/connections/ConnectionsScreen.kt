@@ -20,26 +20,38 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.everfold.kotlin.ui.components.SettingsLayout
+import com.everfold.kotlin.ui.localization.localizedString
+import everfold.shared.generated.resources.Res
+import everfold.shared.generated.resources.address_preview_hint
+import everfold.shared.generated.resources.connected_preview
+import everfold.shared.generated.resources.connection_mode
+import everfold.shared.generated.resources.connection_notice
+import everfold.shared.generated.resources.connections_subtitle
+import everfold.shared.generated.resources.nav_connections
+import everfold.shared.generated.resources.not_connected
+import everfold.shared.generated.resources.preview_connection
+import everfold.shared.generated.resources.reset_connection
+import everfold.shared.generated.resources.server_address
 
 @Composable
 fun ConnectionsScreen(
-    mode: String,
+    mode: ConnectionMode,
     address: String,
     previewConnected: Boolean,
-    onModeChange: (String) -> Unit,
+    onModeChange: (ConnectionMode) -> Unit,
     onAddressChange: (String) -> Unit,
     onTogglePreview: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    SettingsLayout("连接", "选择你的 Agent 在哪里运行。", modifier) {
-        Text("运行方式", style = MaterialTheme.typography.titleMedium)
+    SettingsLayout(localizedString(Res.string.nav_connections), localizedString(Res.string.connections_subtitle), modifier) {
+        Text(localizedString(Res.string.connection_mode), style = MaterialTheme.typography.titleMedium)
         Column(Modifier.selectableGroup(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            listOf("本地运行" to "在当前设备上使用 Agent", "远程连接" to "连接另一台设备或服务器上的 Agent").forEach { (name, detail) ->
+            ConnectionMode.entries.forEach { item ->
                 Surface(
                     shape = RoundedCornerShape(20.dp),
                     color =
                         if (mode ==
-                            name
+                            item
                         ) {
                             MaterialTheme.colorScheme.secondaryContainer
                         } else {
@@ -50,40 +62,57 @@ fun ConnectionsScreen(
                         Modifier
                             .fillMaxWidth()
                             .selectable(
-                                mode == name,
+                                mode == item,
                                 role = Role.RadioButton,
-                                onClick = { onModeChange(name) },
+                                onClick = { onModeChange(item) },
                             ).padding(16.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
-                        RadioButton(selected = mode == name, onClick = null)
+                        RadioButton(selected = mode == item, onClick = null)
                         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                            Text(name, style = MaterialTheme.typography.titleMedium)
-                            Text(detail, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(localizedString(item.label), style = MaterialTheme.typography.titleMedium)
+                            Text(
+                                localizedString(item.description),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
                         }
                     }
                 }
             }
         }
-        if (mode == "远程连接") {
+        if (mode == ConnectionMode.Remote) {
             OutlinedTextField(
                 address,
                 onAddressChange,
                 Modifier.fillMaxWidth(),
-                label = { Text("服务器地址") },
+                label = { Text(localizedString(Res.string.server_address)) },
                 singleLine = true,
-                supportingText = { Text("仅用于界面预览，不会发送网络请求") },
+                supportingText = { Text(localizedString(Res.string.address_preview_hint)) },
             )
         }
         Surface(shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.surfaceContainerLow) {
             Column(Modifier.fillMaxWidth().padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                Text(if (previewConnected) "已连接 · 示例状态" else "尚未连接", style = MaterialTheme.typography.titleMedium)
                 Text(
-                    "当前为界面预览。本地运行和远程连接将在 Agent 库接入后开放。",
+                    if (previewConnected) localizedString(Res.string.connected_preview) else localizedString(Res.string.not_connected),
+                    style = MaterialTheme.typography.titleMedium,
+                )
+                Text(
+                    localizedString(Res.string.connection_notice),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
-                OutlinedButton(onClick = onTogglePreview) { Text(if (previewConnected) "重置预览状态" else "预览连接状态") }
+                OutlinedButton(onClick = onTogglePreview) {
+                    Text(
+                        if (previewConnected) {
+                            localizedString(
+                                Res.string.reset_connection,
+                            )
+                        } else {
+                            localizedString(Res.string.preview_connection)
+                        },
+                    )
+                }
             }
         }
     }

@@ -43,6 +43,25 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.everfold.kotlin.ui.components.AppIcon
 import com.everfold.kotlin.ui.components.AppSymbol
+import com.everfold.kotlin.ui.localization.localizedString
+import com.everfold.kotlin.ui.localization.resolve
+import everfold.shared.generated.resources.Res
+import everfold.shared.generated.resources.back_sessions
+import everfold.shared.generated.resources.conversation_notice
+import everfold.shared.generated.resources.conversation_space
+import everfold.shared.generated.resources.generating_reply
+import everfold.shared.generated.resources.message_placeholder
+import everfold.shared.generated.resources.preview_badge
+import everfold.shared.generated.resources.send_message
+import everfold.shared.generated.resources.stop_reply
+import everfold.shared.generated.resources.stopped_hint
+import everfold.shared.generated.resources.suggestion_ideas
+import everfold.shared.generated.resources.suggestion_problem
+import everfold.shared.generated.resources.suggestion_week
+import everfold.shared.generated.resources.thinking
+import everfold.shared.generated.resources.welcome_subtitle
+import everfold.shared.generated.resources.welcome_title
+import everfold.shared.generated.resources.you
 
 @Composable
 fun ConversationScreen(
@@ -56,17 +75,27 @@ fun ConversationScreen(
 ) {
     Column(modifier.fillMaxSize()) {
         Row(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 16.dp), verticalAlignment = Alignment.CenterVertically) {
-            if (showBack) IconButton(onClick = onBack) { AppIcon(AppSymbol.Back, description = "返回会话列表") }
+            if (showBack) IconButton(onClick = onBack) { AppIcon(AppSymbol.Back, description = localizedString(Res.string.back_sessions)) }
             Column(Modifier.weight(1f).padding(horizontal = 12.dp)) {
-                Text(state.title, style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(state.title.resolve(), style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Text(
-                    if (state.isResponding) "正在生成示例回复…" else "Everfold · 对话空间",
+                    if (state.isResponding) {
+                        localizedString(
+                            Res.string.generating_reply,
+                        )
+                    } else {
+                        localizedString(Res.string.conversation_space)
+                    },
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
             Surface(color = MaterialTheme.colorScheme.surfaceContainerHigh, shape = RoundedCornerShape(8.dp)) {
-                Text("预览", Modifier.padding(horizontal = 10.dp, vertical = 5.dp), style = MaterialTheme.typography.labelSmall)
+                Text(
+                    localizedString(Res.string.preview_badge),
+                    Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                    style = MaterialTheme.typography.labelSmall,
+                )
             }
         }
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
@@ -89,7 +118,7 @@ fun ConversationScreen(
                     if (state.responseStopped) {
                         item {
                             Text(
-                                "已停止生成，你可以继续发送消息。",
+                                localizedString(Res.string.stopped_hint),
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 style = MaterialTheme.typography.bodySmall,
                             )
@@ -119,7 +148,7 @@ fun ConversationScreen(
                                         false
                                     }
                                 },
-                            placeholder = { Text("写下你的问题或想法…") },
+                            placeholder = { Text(localizedString(Res.string.message_placeholder)) },
                             maxLines = 5,
                             colors =
                                 TextFieldDefaults.colors(
@@ -136,13 +165,20 @@ fun ConversationScreen(
                         ) {
                             AppIcon(
                                 if (state.isResponding) AppSymbol.Stop else AppSymbol.Send,
-                                description = if (state.isResponding) "停止回复" else "发送消息",
+                                description =
+                                    if (state.isResponding) {
+                                        localizedString(
+                                            Res.string.stop_reply,
+                                        )
+                                    } else {
+                                        localizedString(Res.string.send_message)
+                                    },
                             )
                         }
                     }
                 }
                 Text(
-                    "示例对话 · 内容仅保留在本次运行中",
+                    localizedString(Res.string.conversation_notice),
                     Modifier.align(Alignment.CenterHorizontally).padding(top = 8.dp),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -162,7 +198,7 @@ private fun MessageItem(
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             if (!user) AppIcon(AppSymbol.Spark, modifier = Modifier.size(18.dp))
             Text(
-                if (user) "你" else "Everfold",
+                if (user) localizedString(Res.string.you) else "Everfold",
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -174,7 +210,7 @@ private fun MessageItem(
         ) {
             SelectionContainer {
                 Text(
-                    message.text.ifEmpty { "正在思考…" },
+                    message.text.ifEmpty { localizedString(Res.string.thinking) },
                     Modifier.padding(if (user) 16.dp else 0.dp),
                     style = MaterialTheme.typography.bodyLarge,
                 )
@@ -188,6 +224,12 @@ private fun WelcomeContent(
     onSuggestion: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val suggestions =
+        listOf(
+            localizedString(Res.string.suggestion_ideas),
+            localizedString(Res.string.suggestion_week),
+            localizedString(Res.string.suggestion_problem),
+        )
     LazyColumn(
         modifier.fillMaxWidth(),
         contentPadding = PaddingValues(28.dp),
@@ -196,9 +238,15 @@ private fun WelcomeContent(
     ) {
         item { Spacer(Modifier.height(24.dp)) }
         item { AppIcon(AppSymbol.Spark, modifier = Modifier.size(40.dp)) }
-        item { Text("从一个想法开始", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Medium) }
-        item { Text("一起思考、整理，再向前一步。", color = MaterialTheme.colorScheme.onSurfaceVariant) }
-        items(listOf("帮我整理今天的想法", "一起制定这周的计划", "把一个复杂问题拆成小步骤")) { suggestion ->
+        item {
+            Text(
+                localizedString(Res.string.welcome_title),
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Medium,
+            )
+        }
+        item { Text(localizedString(Res.string.welcome_subtitle), color = MaterialTheme.colorScheme.onSurfaceVariant) }
+        items(suggestions) { suggestion ->
             OutlinedButton(onClick = { onSuggestion(suggestion) }, modifier = Modifier.widthIn(max = 420.dp).fillMaxWidth()) {
                 Text(suggestion)
             }

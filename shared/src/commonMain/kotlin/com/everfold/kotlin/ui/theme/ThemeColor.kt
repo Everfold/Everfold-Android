@@ -2,17 +2,26 @@ package com.everfold.kotlin.ui.theme
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import everfold.shared.generated.resources.Res
+import everfold.shared.generated.resources.custom
+import everfold.shared.generated.resources.preset_amber
+import everfold.shared.generated.resources.preset_forest
+import everfold.shared.generated.resources.preset_iris
+import everfold.shared.generated.resources.preset_ocean
+import everfold.shared.generated.resources.preset_rose
+import everfold.shared.generated.resources.preset_teal
+import org.jetbrains.compose.resources.StringResource
 
 enum class ThemePreset(
-    val label: String,
+    val label: StringResource,
     val seed: Color,
 ) {
-    Forest("松绿", Color(0xFF426653)),
-    Ocean("海蓝", Color(0xFF386A9D)),
-    Iris("鸢紫", Color(0xFF76558D)),
-    Rose("玫瑰", Color(0xFF9C4F69)),
-    Amber("琥珀", Color(0xFF866016)),
-    Teal("青碧", Color(0xFF006A6A)),
+    Forest(Res.string.preset_forest, Color(0xFF426653)),
+    Ocean(Res.string.preset_ocean, Color(0xFF386A9D)),
+    Iris(Res.string.preset_iris, Color(0xFF76558D)),
+    Rose(Res.string.preset_rose, Color(0xFF9C4F69)),
+    Amber(Res.string.preset_amber, Color(0xFF866016)),
+    Teal(Res.string.preset_teal, Color(0xFF006A6A)),
 }
 
 data class ThemeColorSelection(
@@ -20,7 +29,7 @@ data class ThemeColorSelection(
     val customSeed: Color = ThemePreset.Forest.seed,
 ) {
     val seed: Color get() = preset?.seed ?: customSeed
-    val label: String get() = preset?.label ?: "自定义"
+    val label: StringResource get() = preset?.label ?: Res.string.custom
 }
 
 internal fun Color.toHexColor(): String = "#" + (toArgb() and 0xFFFFFF).toString(16).uppercase().padStart(6, '0')

@@ -27,6 +27,16 @@ import androidx.compose.ui.unit.dp
 import com.everfold.kotlin.feature.conversation.ConversationUiState
 import com.everfold.kotlin.ui.components.AppIcon
 import com.everfold.kotlin.ui.components.AppSymbol
+import com.everfold.kotlin.ui.localization.localizedString
+import com.everfold.kotlin.ui.localization.resolve
+import everfold.shared.generated.resources.Res
+import everfold.shared.generated.resources.nav_sessions
+import everfold.shared.generated.resources.new_session
+import everfold.shared.generated.resources.no_sessions
+import everfold.shared.generated.resources.recent_sessions
+import everfold.shared.generated.resources.replying
+import everfold.shared.generated.resources.search_sessions
+import everfold.shared.generated.resources.sessions_subtitle
 
 @Composable
 fun SessionsScreen(
@@ -37,26 +47,35 @@ fun SessionsScreen(
     modifier: Modifier = Modifier,
 ) {
     var query by rememberSaveable { mutableStateOf("") }
-    val filtered = sessions.filter { it.title.contains(query, ignoreCase = true) }
+    val titles = sessions.map { it.title.resolve() }
+    val filtered = sessions.filterIndexed { index, _ -> titles[index].contains(query, ignoreCase = true) }
     Column(modifier.padding(horizontal = 16.dp)) {
         Row(Modifier.fillMaxWidth().padding(top = 24.dp, bottom = 20.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
-                Text("会话", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.SemiBold)
-                Text("让每个想法都有下文", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(
+                    localizedString(Res.string.nav_sessions),
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.SemiBold,
+                )
+                Text(
+                    localizedString(Res.string.sessions_subtitle),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
-            FilledTonalIconButton(onClick = onCreate) { AppIcon(AppSymbol.Plus, description = "新建会话") }
+            FilledTonalIconButton(onClick = onCreate) { AppIcon(AppSymbol.Plus, description = localizedString(Res.string.new_session)) }
         }
         OutlinedTextField(
             value = query,
             onValueChange = { query = it },
             singleLine = true,
-            placeholder = { Text("搜索会话") },
+            placeholder = { Text(localizedString(Res.string.search_sessions)) },
             leadingIcon = { AppIcon(AppSymbol.Search) },
             shape = RoundedCornerShape(16.dp),
             modifier = Modifier.fillMaxWidth(),
         )
         Text(
-            "最近的会话 · ${filtered.size}",
+            localizedString(Res.string.recent_sessions, filtered.size),
             Modifier.padding(top = 24.dp, bottom = 12.dp),
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -76,16 +95,21 @@ fun SessionsScreen(
                         },
                 ) {
                     Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                        Text(session.title, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
                         Text(
-                            session.preview,
+                            session.title.resolve(),
+                            style = MaterialTheme.typography.titleSmall,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                        Text(
+                            session.preview.resolve(),
                             style = MaterialTheme.typography.bodySmall,
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                         Text(
-                            if (session.isResponding) "正在回复…" else session.updatedLabel,
+                            if (session.isResponding) localizedString(Res.string.replying) else session.updatedLabel.resolve(),
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.primary,
                         )
@@ -94,7 +118,11 @@ fun SessionsScreen(
             }
             if (filtered.isEmpty()) {
                 item {
-                    Text("没有找到会话，试试其他关键词。", Modifier.padding(vertical = 24.dp), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(
+                        localizedString(Res.string.no_sessions),
+                        Modifier.padding(vertical = 24.dp),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
                 }
             }
         }

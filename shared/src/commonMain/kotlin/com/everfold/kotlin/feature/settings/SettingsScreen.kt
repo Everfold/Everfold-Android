@@ -20,12 +20,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.everfold.kotlin.ui.components.SettingsLayout
+import com.everfold.kotlin.ui.localization.AppLanguage
+import com.everfold.kotlin.ui.localization.localizedString
 import com.everfold.kotlin.ui.theme.ThemeColorSelection
 import com.everfold.kotlin.ui.theme.ThemeMode
 import com.everfold.kotlin.ui.theme.ThemePreset
+import everfold.shared.generated.resources.Res
+import everfold.shared.generated.resources.about
+import everfold.shared.generated.resources.app_tagline
+import everfold.shared.generated.resources.appearance
+import everfold.shared.generated.resources.nav_settings
+import everfold.shared.generated.resources.preview_notice
+import everfold.shared.generated.resources.preview_version
+import everfold.shared.generated.resources.settings_subtitle
 
 @Composable
 fun SettingsScreen(
+    language: AppLanguage,
+    onLanguageChange: (AppLanguage) -> Unit,
     themeMode: ThemeMode,
     themeColor: ThemeColorSelection,
     onThemeChange: (ThemeMode) -> Unit,
@@ -33,8 +45,9 @@ fun SettingsScreen(
     onCustomColorChange: (Color) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    SettingsLayout("设置", "让这个空间更适合你。", modifier) {
-        Text("外观", style = MaterialTheme.typography.titleMedium)
+    SettingsLayout(localizedString(Res.string.nav_settings), localizedString(Res.string.settings_subtitle), modifier) {
+        LanguageSettings(language, onLanguageChange)
+        Text(localizedString(Res.string.appearance), style = MaterialTheme.typography.titleMedium)
         Surface(shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.surfaceContainerLow) {
             Column(Modifier.fillMaxWidth().selectableGroup().padding(vertical = 8.dp)) {
                 ThemeMode.entries.forEach { mode ->
@@ -47,21 +60,21 @@ fun SettingsScreen(
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
                         RadioButton(themeMode == mode, onClick = null)
-                        Text(mode.label)
+                        Text(localizedString(mode.label))
                     }
                 }
             }
         }
         ThemeColorSettings(themeColor, onPresetChange, onCustomColorChange)
-        Text("关于", style = MaterialTheme.typography.titleMedium)
+        Text(localizedString(Res.string.about), style = MaterialTheme.typography.titleMedium)
         Surface(shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.surfaceContainerLow) {
             Column(Modifier.fillMaxWidth().padding(24.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text("Everfold", style = MaterialTheme.typography.titleLarge)
-                Text("你的 Agent 对话空间", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(localizedString(Res.string.app_tagline), color = MaterialTheme.colorScheme.onSurfaceVariant)
                 HorizontalDivider()
-                Text("UI 预览版", style = MaterialTheme.typography.labelLarge)
+                Text(localizedString(Res.string.preview_version), style = MaterialTheme.typography.labelLarge)
                 Text(
-                    "会话、回复和连接状态均为示例数据。关闭应用后，本次修改会重置。",
+                    localizedString(Res.string.preview_notice),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

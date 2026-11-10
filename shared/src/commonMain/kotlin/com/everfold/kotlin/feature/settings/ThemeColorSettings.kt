@@ -30,9 +30,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import com.everfold.kotlin.ui.localization.localizedString
 import com.everfold.kotlin.ui.theme.ThemeColorSelection
 import com.everfold.kotlin.ui.theme.ThemePreset
 import com.everfold.kotlin.ui.theme.toHexColor
+import everfold.shared.generated.resources.Res
+import everfold.shared.generated.resources.adjust
+import everfold.shared.generated.resources.custom_color
+import everfold.shared.generated.resources.reset_color
+import everfold.shared.generated.resources.theme_color
+import everfold.shared.generated.resources.theme_description
 
 @Composable
 internal fun ThemeColorSettings(
@@ -43,11 +50,11 @@ internal fun ThemeColorSettings(
     var showCustomDialog by rememberSaveable { mutableStateOf(false) }
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Text("主题色", Modifier.weight(1f), style = MaterialTheme.typography.titleMedium)
-            Text(selection.label, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
+            Text(localizedString(Res.string.theme_color), Modifier.weight(1f), style = MaterialTheme.typography.titleMedium)
+            Text(localizedString(selection.label), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
         }
         Text(
-            "以所选颜色生成适合浅色与深色的整套配色。",
+            localizedString(Res.string.theme_description),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -68,7 +75,7 @@ internal fun ThemeColorSettings(
                                 verticalArrangement = Arrangement.spacedBy(8.dp),
                             ) {
                                 ColorSwatch(preset.seed, selected)
-                                Text(preset.label, style = MaterialTheme.typography.labelLarge)
+                                Text(localizedString(preset.label), style = MaterialTheme.typography.labelLarge)
                             }
                         }
                     }
@@ -85,19 +92,23 @@ internal fun ThemeColorSettings(
                 ) {
                     ColorSwatch(selection.customSeed, selection.preset == null)
                     Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        Text("自定义颜色", style = MaterialTheme.typography.titleSmall)
+                        Text(localizedString(Res.string.custom_color), style = MaterialTheme.typography.titleSmall)
                         Text(
                             selection.customSeed.toHexColor(),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
-                    Text("调整", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
+                    Text(
+                        localizedString(Res.string.adjust),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
                 }
             }
         }
         TextButton(onClick = { onPresetChange(ThemePreset.Forest) }, enabled = selection.preset != ThemePreset.Forest) {
-            Text("恢复默认 · 松绿")
+            Text(localizedString(Res.string.reset_color))
         }
     }
     if (showCustomDialog) {

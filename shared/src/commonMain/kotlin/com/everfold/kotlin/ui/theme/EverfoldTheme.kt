@@ -5,13 +5,18 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.materialkolor.rememberDynamicColorScheme
+import everfold.shared.generated.resources.Res
+import everfold.shared.generated.resources.follow_system
+import everfold.shared.generated.resources.theme_dark
+import everfold.shared.generated.resources.theme_light
+import org.jetbrains.compose.resources.StringResource
 
 enum class ThemeMode(
-    val label: String,
+    val label: StringResource,
 ) {
-    System("跟随系统"),
-    Light("浅色"),
-    Dark("深色"),
+    System(Res.string.follow_system),
+    Light(Res.string.theme_light),
+    Dark(Res.string.theme_dark),
 }
 
 @Composable

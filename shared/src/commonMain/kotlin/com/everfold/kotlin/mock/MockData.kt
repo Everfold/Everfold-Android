@@ -3,14 +3,19 @@ package com.everfold.kotlin.mock
 import com.everfold.kotlin.feature.conversation.ChatMessage
 import com.everfold.kotlin.feature.conversation.ConversationUiState
 import com.everfold.kotlin.feature.conversation.MessageRole
+import com.everfold.kotlin.ui.localization.UiText
+import everfold.shared.generated.resources.Res
+import everfold.shared.generated.resources.just_now
+import everfold.shared.generated.resources.today
+import everfold.shared.generated.resources.yesterday
 
 internal fun sampleConversations() =
     listOf(
         ConversationUiState(
             id = "welcome",
-            title = "一起整理今天的想法",
-            preview = "把想法变成清晰、可以执行的下一步。",
-            updatedLabel = "刚刚",
+            title = UiText.Literal("一起整理今天的想法"),
+            preview = UiText.Literal("把想法变成清晰、可以执行的下一步。"),
+            updatedLabel = UiText.Resource(Res.string.just_now),
             messages =
                 listOf(
                     ChatMessage("welcome-1", MessageRole.User, "我想把最近的想法整理一下，你可以怎么帮我？"),
@@ -26,9 +31,9 @@ internal fun sampleConversations() =
         ),
         ConversationUiState(
             id = "week",
-            title = "这周的工作安排",
-            preview = "留出专注时间，也给变化留一点空间。",
-            updatedLabel = "今天",
+            title = UiText.Literal("这周的工作安排"),
+            preview = UiText.Literal("留出专注时间，也给变化留一点空间。"),
+            updatedLabel = UiText.Resource(Res.string.today),
             messages =
                 listOf(
                     ChatMessage("week-1", MessageRole.User, "帮我拟一份轻量的每周工作计划。"),
@@ -43,9 +48,9 @@ internal fun sampleConversations() =
         ),
         ConversationUiState(
             id = "reading",
-            title = "阅读笔记与灵感",
-            preview = "从记录到理解，让每次阅读留下点什么。",
-            updatedLabel = "昨天",
+            title = UiText.Literal("阅读笔记与灵感"),
+            preview = UiText.Literal("从记录到理解，让每次阅读留下点什么。"),
+            updatedLabel = UiText.Resource(Res.string.yesterday),
             messages =
                 listOf(
                     ChatMessage(
@@ -57,8 +62,3 @@ internal fun sampleConversations() =
                 ),
         ),
     )
-
-internal const val SAMPLE_REPLY =
-    "收到，我们可以一起把这个想法继续展开。\n\n" +
-        "先明确你最希望得到的结果，再把它拆成两三个小步骤。你也可以补充背景、约束或已有的材料。\n\n" +
-        "这是一段用于预览对话体验的示例回复，尚未调用 Agent。"

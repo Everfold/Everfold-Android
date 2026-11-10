@@ -6,12 +6,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.everfold.kotlin.feature.connections.ConnectionMode
 import com.everfold.kotlin.feature.conversation.ChatMessage
 import com.everfold.kotlin.feature.conversation.ConversationUiState
 import com.everfold.kotlin.feature.conversation.MessageRole
+import com.everfold.kotlin.ui.localization.UiText
 import com.everfold.kotlin.ui.theme.ThemeColorSelection
 import com.everfold.kotlin.ui.theme.ThemeMode
 import com.everfold.kotlin.ui.theme.ThemePreset
+import everfold.shared.generated.resources.Res
+import everfold.shared.generated.resources.just_now
+import everfold.shared.generated.resources.new_conversation
+import everfold.shared.generated.resources.new_conversation_hint
+import everfold.shared.generated.resources.reply_complete
+import everfold.shared.generated.resources.reply_stopped
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -24,7 +32,7 @@ class MockWorkspace : ViewModel() {
         private set
     var themeColor by mutableStateOf(ThemeColorSelection())
         private set
-    var connectionMode by mutableStateOf("本地运行")
+    var connectionMode by mutableStateOf(ConnectionMode.Local)
         private set
     var remoteAddress by mutableStateOf("https://agent.example.com")
         private set
@@ -36,7 +44,16 @@ class MockWorkspace : ViewModel() {
 
     fun createConversation(): String {
         val id = "new-${++nextId}"
-        conversations = listOf(ConversationUiState(id, "新会话", "从一个问题或想法开始", "刚刚")) + conversations
+        conversations =
+            listOf(
+                ConversationUiState(
+                    id,
+                    UiText.Resource(Res.string.new_conversation),
+                    UiText.Resource(Res.string.new_conversation_hint),
+                    UiText.Resource(Res.string.just_now),
+                ),
+            ) +
+            conversations
         return id
     }
 
@@ -57,7 +74,7 @@ class MockWorkspace : ViewModel() {
         themeColor = ThemeColorSelection(preset = null, customSeed = color)
     }
 
-    fun changeConnectionMode(mode: String) {
+    fun changeConnectionMode(mode: ConnectionMode) {
         connectionMode = mode
         connectionPreview = false
     }
@@ -71,16 +88,19 @@ class MockWorkspace : ViewModel() {
         connectionPreview = !connectionPreview
     }
 
-    fun send(id: String) {
+    fun send(
+        id: String,
+        reply: String,
+    ) {
         val session = conversations.firstOrNull { it.id == id } ?: return
         val input = session.draft.trim()
         if (input.isEmpty() || session.isResponding) return
         val messageId = "message-${++nextId}"
         update(id) {
             it.copy(
-                title = if (it.messages.isEmpty()) input.take(24) else it.title,
-                preview = input,
-                updatedLabel = "刚刚",
+                title = if (it.messages.isEmpty()) UiText.Literal(input.take(24)) else it.title,
+                preview = UiText.Literal(input),
+                updatedLabel = UiText.Resource(Res.string.just_now),
                 draft = "",
                 isResponding = true,
                 responseStopped = false,
@@ -95,14 +115,14 @@ class MockWorkspace : ViewModel() {
         replies[id] =
             viewModelScope.launch {
                 delay(350)
-                for (length in 1..SAMPLE_REPLY.length step 3) {
-                    val text = SAMPLE_REPLY.take((length + 2).coerceAtMost(SAMPLE_REPLY.length))
+                for (length in 1..reply.length step 3) {
+                    val text = reply.take((length + 2).coerceAtMost(reply.length))
                     update(id) { state ->
                         state.copy(messages = state.messages.map { if (it.id == messageId) it.copy(text = text) else it })
                     }
                     delay(45)
                 }
-                update(id) { it.copy(isResponding = false, preview = "示例回复已完成") }
+                update(id) { it.copy(isResponding = false, preview = UiText.Resource(Res.string.reply_complete)) }
                 replies.remove(id)
             }
     }
@@ -113,7 +133,7 @@ class MockWorkspace : ViewModel() {
             it.copy(
                 isResponding = false,
                 responseStopped = true,
-                preview = "已停止生成",
+                preview = UiText.Resource(Res.string.reply_stopped),
                 messages = it.messages.filterNot { message -> message.role == MessageRole.Assistant && message.text.isEmpty() },
             )
         }
