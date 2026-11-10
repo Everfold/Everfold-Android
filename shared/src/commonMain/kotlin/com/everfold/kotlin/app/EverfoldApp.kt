@@ -224,7 +224,7 @@ fun EverfoldApp(
                 gesturesEnabled = !wide && drawerState.isOpen,
                 drawerContent = {
                     if (!wide) {
-                        ModalDrawerSheet(Modifier.widthIn(max = 360.dp).fillMaxHeight()) {
+                        ModalDrawerSheet(Modifier.widthIn(max = 360.dp).fillMaxHeight().focusable()) {
                             sessions(Modifier.weight(1f))
                             HorizontalDivider()
                             listOf(AppDestination.Connections, AppDestination.Settings).forEach { item ->

@@ -18,6 +18,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -26,6 +27,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -40,6 +42,7 @@ import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.isSecondaryPressed
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -56,6 +59,7 @@ import everfold.shared.generated.resources.archived_sessions
 import everfold.shared.generated.resources.archived_sessions_count
 import everfold.shared.generated.resources.cancel
 import everfold.shared.generated.resources.clear_search
+import everfold.shared.generated.resources.collapse_search
 import everfold.shared.generated.resources.delete_session
 import everfold.shared.generated.resources.delete_session_notice
 import everfold.shared.generated.resources.empty_archived_sessions
@@ -95,10 +99,22 @@ fun SessionsScreen(
     searchRequest: Int = 0,
 ) {
     val searchFocus = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
+    var searchExpanded by rememberSaveable { mutableStateOf(false) }
+    var handledSearchRequest by rememberSaveable { mutableIntStateOf(0) }
+    var requestSearchFocus by remember { mutableStateOf(false) }
     LaunchedEffect(searchRequest) {
-        if (searchRequest > 0) {
+        if (searchRequest > handledSearchRequest) {
+            handledSearchRequest = searchRequest
+            searchExpanded = true
+            requestSearchFocus = true
+        }
+    }
+    LaunchedEffect(searchExpanded, requestSearchFocus) {
+        if (searchExpanded && requestSearchFocus) {
             withFrameNanos { }
             searchFocus.requestFocus()
+            requestSearchFocus = false
         }
     }
     var renaming by remember { mutableStateOf<String?>(null) }
@@ -118,26 +134,42 @@ fun SessionsScreen(
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.SemiBold,
             )
+            val searchLabel = localizedString(if (searchExpanded) Res.string.collapse_search else Res.string.search_sessions)
+            AppTooltip(searchLabel) {
+                IconToggleButton(
+                    checked = searchExpanded,
+                    onCheckedChange = { expanded ->
+                        searchExpanded = expanded
+                        requestSearchFocus = expanded
+                        if (!expanded) {
+                            focusManager.clearFocus()
+                            onQueryChange("")
+                        }
+                    },
+                ) { AppIcon(AppSymbol.Search, description = searchLabel) }
+            }
             AppTooltip(localizedString(if (desktopUi) Res.string.new_session_shortcut else Res.string.new_session)) {
                 FilledTonalIconButton(onClick = onCreate) { AppIcon(AppSymbol.Plus, description = localizedString(Res.string.new_session)) }
             }
         }
-        OutlinedTextField(
-            value = query,
-            onValueChange = onQueryChange,
-            singleLine = true,
-            placeholder = { Text(localizedString(Res.string.search_sessions)) },
-            leadingIcon = { AppIcon(AppSymbol.Search) },
-            trailingIcon = {
-                if (query.isNotEmpty()) {
-                    TextButton(
-                        onClick = { onQueryChange("") },
-                    ) { Text(localizedString(Res.string.clear_search)) }
-                }
-            },
-            shape = RoundedCornerShape(16.dp),
-            modifier = Modifier.fillMaxWidth().focusRequester(searchFocus),
-        )
+        if (searchExpanded) {
+            OutlinedTextField(
+                value = query,
+                onValueChange = onQueryChange,
+                singleLine = true,
+                placeholder = { Text(localizedString(Res.string.search_sessions)) },
+                leadingIcon = { AppIcon(AppSymbol.Search) },
+                trailingIcon = {
+                    if (query.isNotEmpty()) {
+                        TextButton(
+                            onClick = { onQueryChange("") },
+                        ) { Text(localizedString(Res.string.clear_search)) }
+                    }
+                },
+                shape = RoundedCornerShape(16.dp),
+                modifier = Modifier.fillMaxWidth().focusRequester(searchFocus),
+            )
+        }
         Row(Modifier.fillMaxWidth().padding(top = 12.dp, bottom = 8.dp), verticalAlignment = Alignment.CenterVertically) {
             Text(
                 localizedString(if (showArchived) Res.string.archived_sessions_count else Res.string.recent_sessions, filtered.size),

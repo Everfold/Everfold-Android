@@ -4,6 +4,7 @@
     <!-- 会话列表 -->
     <string name="new_session">New session</string>
     <string name="search_sessions">Search</string>
+    <string name="collapse_search">Collapse search</string>
     <string name="replying">Running......</string>
     <string name="no_sessions">No sessions found. Try another search.</string>
 
