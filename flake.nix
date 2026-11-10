@@ -34,7 +34,6 @@
         {
           packages = [
             jdk
-            pkgs.android-cli
             androidSdk.androidsdk
           ];
 

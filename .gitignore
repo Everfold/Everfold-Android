@@ -287,10 +287,11 @@ fabric.properties
 # End of https://www.toptal.com/developers/gitignore/api/java,emacs,linux,direnv,kotlin,android,androidstudio,visualstudiocode
 
 .kotlin
-
-**/module.xcodeproj/*
-!**/module.xcodeproj/project.pbxproj
-!**/module.xcodeproj/xcshareddata/
-!**/module.xcodeproj/project.xcworkspace/
+!src/**/build/
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcodeproj/xcshareddata/
+!*.xcodeproj/project.xcworkspace/
+!*.xcworkspace/contents.xcworkspacedata
 **/xcshareddata/WorkspaceSettings.xcsettings
-xcuserdata
+node_modules/

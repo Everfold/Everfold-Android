@@ -19,27 +19,21 @@ direnv allow
 ### Project
 
 ```bash
-# Init
-./kotlin
-
 # Android
-./kotlin build -m androidApp
-./kotlin run -m androidApp
+./gradlew :androidApp:assembleDebug
+
+# Desktop Hot reload
+./gradlew :desktopApp:hotRun --auto
 
 # Desktop
-./kotlin build -m desktopApp
-./kotlin run -m desktopApp
+./gradlew :desktopApp:run
 
-# iOS
-./kotlin build -m iosApp
-./kotlin run -m iosApp
+# Android tests
+./gradlew :shared:testAndroidHostTest
 
-# Check
-./kotlin check
+# Desktop tests
+./gradlew :shared:jvmTest
 
-# Test
-./kotlin test
-
-# Update
-./kotlin update
+# iOS tests
+./gradlew :shared:iosSimulatorArm64Test
 ```
