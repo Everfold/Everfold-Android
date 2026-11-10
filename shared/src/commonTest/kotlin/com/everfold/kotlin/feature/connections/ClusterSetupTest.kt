@@ -1,4 +1,4 @@
-package com.everfold.kotlin.feature.onboarding
+package com.everfold.kotlin.feature.connections
 
 import kotlin.test.Test
 import kotlin.test.assertFalse

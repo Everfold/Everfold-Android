@@ -6,12 +6,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.everfold.kotlin.feature.connections.ClusterMethod
+import com.everfold.kotlin.feature.connections.ClusterSetup
 import com.everfold.kotlin.feature.connections.ConnectionMode
 import com.everfold.kotlin.feature.conversation.ChatMessage
 import com.everfold.kotlin.feature.conversation.ConversationUiState
 import com.everfold.kotlin.feature.conversation.MessageRole
-import com.everfold.kotlin.feature.onboarding.ClusterMethod
-import com.everfold.kotlin.feature.onboarding.ClusterSetup
 import com.everfold.kotlin.ui.localization.UiText
 import com.everfold.kotlin.ui.theme.ThemeColorMode
 import com.everfold.kotlin.ui.theme.ThemeColorSelection
@@ -31,19 +31,12 @@ import kotlinx.coroutines.launch
 class MockWorkspace : ViewModel() {
     var initialized by mutableStateOf(false)
         private set
-    var clusterSetup: ClusterSetup? = null
+    var clusterSetup by mutableStateOf(ClusterSetup())
         private set
 
     fun completeSetup(setup: ClusterSetup?) {
-        clusterSetup = setup
+        clusterSetup = setup ?: ClusterSetup()
         connectionMode = if (setup == null) ConnectionMode.Local else ConnectionMode.Remote
-        remoteAddress =
-            when {
-                setup == null -> ""
-                setup.method == ClusterMethod.Cloud -> "https://cloud.example.com"
-                setup.ip.isBlank() -> ""
-                else -> if (':' in setup.ip) "[${setup.ip.trim()}]:${setup.port}" else "${setup.ip.trim()}:${setup.port}"
-            }
         connectionPreview = setup != null
         initialized = true
     }
@@ -55,8 +48,6 @@ class MockWorkspace : ViewModel() {
     var themeColor by mutableStateOf(ThemeColorSelection())
         private set
     var connectionMode by mutableStateOf(ConnectionMode.Local)
-        private set
-    var remoteAddress by mutableStateOf("https://agent.example.com")
         private set
     var connectionPreview by mutableStateOf(false)
         private set
@@ -105,13 +96,13 @@ class MockWorkspace : ViewModel() {
         connectionPreview = false
     }
 
-    fun updateRemoteAddress(value: String) {
-        remoteAddress = value
+    fun updateClusterSetup(value: ClusterSetup) {
+        clusterSetup = value
         connectionPreview = false
     }
 
-    fun toggleConnectionPreview() {
-        connectionPreview = !connectionPreview
+    fun updateConnectionPreview(connected: Boolean) {
+        connectionPreview = connected && connectionMode == ConnectionMode.Remote
     }
 
     fun send(

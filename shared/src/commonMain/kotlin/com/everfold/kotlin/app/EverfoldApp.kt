@@ -128,11 +128,11 @@ fun EverfoldApp(
                             AppDestination.Connections -> {
                                 ConnectionsScreen(
                                     workspace.connectionMode,
-                                    workspace.remoteAddress,
+                                    workspace.clusterSetup,
                                     workspace.connectionPreview,
                                     workspace::changeConnectionMode,
-                                    workspace::updateRemoteAddress,
-                                    workspace::toggleConnectionPreview,
+                                    workspace::updateClusterSetup,
+                                    workspace::updateConnectionPreview,
                                 )
                             }
 

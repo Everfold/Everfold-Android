@@ -1,4 +1,4 @@
-package com.everfold.kotlin.feature.onboarding
+package com.everfold.kotlin.feature.connections
 
 enum class ClusterMethod { Lan, Central, Cloud }
 
