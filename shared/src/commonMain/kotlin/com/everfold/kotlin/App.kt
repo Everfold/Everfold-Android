@@ -19,7 +19,7 @@ fun App(modifier: Modifier = Modifier) {
     var language by rememberSaveable { mutableStateOf(AppLanguage.System) }
     val workspace = viewModel { MockWorkspace() }
     AppLanguageEnvironment(language) {
-        EverfoldTheme(mode = workspace.themeMode, seed = workspace.themeColor.seed) {
+        EverfoldTheme(mode = workspace.themeMode, color = workspace.themeColor) {
             EverfoldApp(workspace, language, { language = it }, modifier)
         }
     }

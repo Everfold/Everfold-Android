@@ -19,10 +19,11 @@
     <string name="preset_teal">Teal</string>
     <string name="custom">Custom</string>
     <string name="theme_color">Theme color</string>
-    <string name="theme_description">Generate light and dark palettes from your chosen color.</string>
+    <string name="theme_description">Use system colors or choose your own theme color.</string>
+    <string name="system_color_hint">Use system dynamic colors, with Forest as a fallback.</string>
     <string name="custom_color">Custom color</string>
     <string name="adjust">Edit</string>
-    <string name="reset_color">Reset to Forest</string>
+    <string name="reset_color">Reset to system colors</string>
     <string name="custom_color_title">Custom theme color</string>
     <string name="custom_color_hint">Enter a color code or adjust the sliders, then apply the preview.</string>
     <string name="hex_color">HEX color</string>

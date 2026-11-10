@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import everfold.shared.generated.resources.Res
 import everfold.shared.generated.resources.custom
+import everfold.shared.generated.resources.follow_system
 import everfold.shared.generated.resources.preset_amber
 import everfold.shared.generated.resources.preset_forest
 import everfold.shared.generated.resources.preset_iris
@@ -24,12 +25,27 @@ enum class ThemePreset(
     Teal(Res.string.preset_teal, Color(0xFF006A6A)),
 }
 
+enum class ThemeColorMode { System, Preset, Custom }
+
 data class ThemeColorSelection(
-    val preset: ThemePreset? = ThemePreset.Forest,
+    val mode: ThemeColorMode = ThemeColorMode.System,
+    val preset: ThemePreset = ThemePreset.Forest,
     val customSeed: Color = ThemePreset.Forest.seed,
 ) {
-    val seed: Color get() = preset?.seed ?: customSeed
-    val label: StringResource get() = preset?.label ?: Res.string.custom
+    val seed: Color
+        get() =
+            when (mode) {
+                ThemeColorMode.System -> ThemePreset.Forest.seed
+                ThemeColorMode.Preset -> preset.seed
+                ThemeColorMode.Custom -> customSeed
+            }
+    val label: StringResource
+        get() =
+            when (mode) {
+                ThemeColorMode.System -> Res.string.follow_system
+                ThemeColorMode.Preset -> preset.label
+                ThemeColorMode.Custom -> Res.string.custom
+            }
 }
 
 internal fun Color.toHexColor(): String = "#" + (toArgb() and 0xFFFFFF).toString(16).uppercase().padStart(6, '0')

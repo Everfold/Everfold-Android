@@ -151,6 +151,7 @@ fun EverfoldApp(
                                     themeMode = workspace.themeMode,
                                     themeColor = workspace.themeColor,
                                     onThemeChange = workspace::setTheme,
+                                    onSystemColorChange = workspace::useSystemThemeColor,
                                     onPresetChange = workspace::selectThemePreset,
                                     onCustomColorChange = workspace::applyCustomThemeColor,
                                 )

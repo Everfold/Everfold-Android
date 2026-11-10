@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -31,19 +32,23 @@ import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.everfold.kotlin.ui.localization.localizedString
+import com.everfold.kotlin.ui.theme.ThemeColorMode
 import com.everfold.kotlin.ui.theme.ThemeColorSelection
 import com.everfold.kotlin.ui.theme.ThemePreset
 import com.everfold.kotlin.ui.theme.toHexColor
 import everfold.shared.generated.resources.Res
 import everfold.shared.generated.resources.adjust
 import everfold.shared.generated.resources.custom_color
+import everfold.shared.generated.resources.follow_system
 import everfold.shared.generated.resources.reset_color
+import everfold.shared.generated.resources.system_color_hint
 import everfold.shared.generated.resources.theme_color
 import everfold.shared.generated.resources.theme_description
 
 @Composable
 internal fun ThemeColorSettings(
     selection: ThemeColorSelection,
+    onSystemColorChange: () -> Unit,
     onPresetChange: (ThemePreset) -> Unit,
     onCustomColorChange: (Color) -> Unit,
 ) {
@@ -60,10 +65,30 @@ internal fun ThemeColorSettings(
         )
         Surface(shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.surfaceContainerLow) {
             Column(Modifier.fillMaxWidth().selectableGroup().padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(16.dp))
+                        .selectable(selection.mode == ThemeColorMode.System, role = Role.RadioButton, onClick = onSystemColorChange)
+                        .padding(12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    RadioButton(selection.mode == ThemeColorMode.System, onClick = null)
+                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Text(localizedString(Res.string.follow_system), style = MaterialTheme.typography.titleSmall)
+                        Text(
+                            localizedString(Res.string.system_color_hint),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+                HorizontalDivider(Modifier.padding(vertical = 8.dp))
                 ThemePreset.entries.chunked(3).forEach { presets ->
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         presets.forEach { preset ->
-                            val selected = selection.preset == preset
+                            val selected = selection.mode == ThemeColorMode.Preset && selection.preset == preset
                             Column(
                                 Modifier
                                     .weight(1f)
@@ -85,12 +110,12 @@ internal fun ThemeColorSettings(
                     Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(16.dp))
-                        .selectable(selection.preset == null, role = Role.RadioButton, onClick = { showCustomDialog = true })
+                        .selectable(selection.mode == ThemeColorMode.Custom, role = Role.RadioButton, onClick = { showCustomDialog = true })
                         .padding(12.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
-                    ColorSwatch(selection.customSeed, selection.preset == null)
+                    ColorSwatch(selection.customSeed, selection.mode == ThemeColorMode.Custom)
                     Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         Text(localizedString(Res.string.custom_color), style = MaterialTheme.typography.titleSmall)
                         Text(
@@ -107,7 +132,7 @@ internal fun ThemeColorSettings(
                 }
             }
         }
-        TextButton(onClick = { onPresetChange(ThemePreset.Forest) }, enabled = selection.preset != ThemePreset.Forest) {
+        TextButton(onClick = onSystemColorChange, enabled = selection.mode != ThemeColorMode.System) {
             Text(localizedString(Res.string.reset_color))
         }
     }

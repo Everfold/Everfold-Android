@@ -41,6 +41,7 @@ fun SettingsScreen(
     themeMode: ThemeMode,
     themeColor: ThemeColorSelection,
     onThemeChange: (ThemeMode) -> Unit,
+    onSystemColorChange: () -> Unit,
     onPresetChange: (ThemePreset) -> Unit,
     onCustomColorChange: (Color) -> Unit,
     modifier: Modifier = Modifier,
@@ -65,7 +66,7 @@ fun SettingsScreen(
                 }
             }
         }
-        ThemeColorSettings(themeColor, onPresetChange, onCustomColorChange)
+        ThemeColorSettings(themeColor, onSystemColorChange, onPresetChange, onCustomColorChange)
         Text(localizedString(Res.string.about), style = MaterialTheme.typography.titleMedium)
         Surface(shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.surfaceContainerLow) {
             Column(Modifier.fillMaxWidth().padding(24.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {

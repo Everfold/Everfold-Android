@@ -11,6 +11,7 @@ import com.everfold.kotlin.feature.conversation.ChatMessage
 import com.everfold.kotlin.feature.conversation.ConversationUiState
 import com.everfold.kotlin.feature.conversation.MessageRole
 import com.everfold.kotlin.ui.localization.UiText
+import com.everfold.kotlin.ui.theme.ThemeColorMode
 import com.everfold.kotlin.ui.theme.ThemeColorSelection
 import com.everfold.kotlin.ui.theme.ThemeMode
 import com.everfold.kotlin.ui.theme.ThemePreset
@@ -66,12 +67,16 @@ class MockWorkspace : ViewModel() {
         themeMode = mode
     }
 
+    fun useSystemThemeColor() {
+        themeColor = themeColor.copy(mode = ThemeColorMode.System)
+    }
+
     fun selectThemePreset(preset: ThemePreset) {
-        themeColor = themeColor.copy(preset = preset)
+        themeColor = themeColor.copy(mode = ThemeColorMode.Preset, preset = preset)
     }
 
     fun applyCustomThemeColor(color: Color) {
-        themeColor = ThemeColorSelection(preset = null, customSeed = color)
+        themeColor = themeColor.copy(mode = ThemeColorMode.Custom, customSeed = color)
     }
 
     fun changeConnectionMode(mode: ConnectionMode) {
