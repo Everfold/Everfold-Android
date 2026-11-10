@@ -1,5 +1,6 @@
 package com.everfold.kotlin.feature.conversation
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -50,6 +51,7 @@ import everfold.shared.generated.resources.back_sessions
 import everfold.shared.generated.resources.conversation_notice
 import everfold.shared.generated.resources.conversation_space
 import everfold.shared.generated.resources.generating_reply
+import everfold.shared.generated.resources.logo
 import everfold.shared.generated.resources.message_placeholder
 import everfold.shared.generated.resources.preview_badge
 import everfold.shared.generated.resources.send_message
@@ -62,6 +64,7 @@ import everfold.shared.generated.resources.thinking
 import everfold.shared.generated.resources.welcome_subtitle
 import everfold.shared.generated.resources.welcome_title
 import everfold.shared.generated.resources.you
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun ConversationScreen(
@@ -237,7 +240,14 @@ private fun WelcomeContent(
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         item { Spacer(Modifier.height(24.dp)) }
-        item { AppIcon(AppSymbol.Spark, modifier = Modifier.size(40.dp)) }
+        item {
+            Image(
+                painter = painterResource(Res.drawable.logo),
+                contentDescription = null,
+                modifier = Modifier.size(40.dp),
+                alpha = 0.75f,
+            )
+        }
         item {
             Text(
                 localizedString(Res.string.welcome_title),

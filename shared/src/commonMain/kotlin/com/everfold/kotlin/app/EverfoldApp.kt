@@ -1,5 +1,6 @@
 package com.everfold.kotlin.app
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.MaterialTheme
@@ -26,7 +28,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.compose.NavigationBackHandler
@@ -41,7 +42,9 @@ import com.everfold.kotlin.ui.components.AppIcon
 import com.everfold.kotlin.ui.localization.AppLanguage
 import com.everfold.kotlin.ui.localization.localizedString
 import everfold.shared.generated.resources.Res
+import everfold.shared.generated.resources.logo
 import everfold.shared.generated.resources.sample_reply
+import org.jetbrains.compose.resources.painterResource
 
 /** UI composition root. Only this layer knows that the data source is a mock. */
 @Composable
@@ -76,12 +79,10 @@ fun EverfoldApp(
             Row(Modifier.fillMaxSize()) {
                 if (rail) {
                     NavigationRail(containerColor = MaterialTheme.colorScheme.surfaceContainerLow) {
-                        Text(
-                            "E",
-                            Modifier.padding(top = 20.dp, bottom = 32.dp),
-                            style = MaterialTheme.typography.headlineMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary,
+                        Image(
+                            painter = painterResource(Res.drawable.logo),
+                            contentDescription = "Everfold",
+                            modifier = Modifier.padding(top = 20.dp, bottom = 32.dp).size(40.dp),
                         )
                         AppDestination.entries.forEach { item ->
                             NavigationRailItem(

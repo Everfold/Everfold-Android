@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Converted from assets/branding/logo.svg. Normalized groups preserve SVG objectBoundingBox gradients. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="304.538393"
+    android:viewportHeight="304.538393">
+    <group android:translateX="0.0000000000" android:translateY="127.0383930000"
+        android:scaleX="304.5383928571" android:scaleY="177.5000000000">
+        <path android:pathData="M0.0173418200,0.5492957746 Q-0.0253457370,0.4985915493,0.0370437694,0.4253521127 L0.4540683646,0.0253521127 Q0.5066068963,-0.0253521127,0.5591454279,0.0253521127 L0.9728863649,0.4253521127 Q1.0287085548,0.4929577465,0.9696027067,0.5605633803 L0.5624290862,0.9718309859 Q0.5066068963,1.0281690141,0.4540683646,0.9718309859 Z">
+            <aapt:attr name="android:fillColor">
+                <gradient android:type="linear"
+                    android:startX="0" android:startY="0"
+                    android:endX="1" android:endY="1"
+                    android:startColor="#4166d8" android:endColor="#56fdfd" />
+            </aapt:attr>
+        </path>
+    </group>
+    <group android:translateX="0.0000000000" android:translateY="63.5191960000"
+        android:scaleX="304.5383928571" android:scaleY="177.5000000000">
+        <path android:pathData="M0.0173418200,0.5549295775 Q-0.0253457370,0.4929577465,0.0370437694,0.4253521127 L0.4540683646,0.0253521127 Q0.5066068963,-0.0253521127,0.5591454279,0.0253521127 L0.9728863649,0.4253521127 Q1.0287085548,0.4929577465,0.9696027067,0.5605633803 L0.5624290862,0.9718309859 Q0.5066068963,1.0281690141,0.4540683646,0.9718309859 Z">
+            <aapt:attr name="android:fillColor">
+                <gradient android:type="linear"
+                    android:startX="0" android:startY="0"
+                    android:endX="1" android:endY="1"
+                    android:startColor="#493ad2" android:endColor="#82b8ff" />
+            </aapt:attr>
+        </path>
+    </group>
+    <group android:translateX="0.0000000000" android:translateY="0.0000000000"
+        android:scaleX="303.8197115385" android:scaleY="170.2692307692">
+        <path android:pathData="M0.0173828419,0.5784955952 Q-0.0254056920,0.5138920262,0.0371313959,0.4434154055 L0.4551424570,0.0264287328 Q0.5078052679,-0.0264287328,0.5604680787,0.0264287328 L0.9751877141,0.4434154055 Q1.0212676736,0.4903998193,0.9817705655,0.5667494918 Q0.9620220114,0.6019878021,0.9126506262,0.5608764400 L0.7645364707,0.4375423537 Q0.7118736599,0.3964309916,0.6625022747,0.4434154055 L0.4683081597,0.6430991642 Q0.4090624975,0.7018296815,0.4090624975,0.8427829230 Q0.4090624975,0.9426248023,0.3596911124,0.9837361644 Q0.3234854299,1.0189744748,0.2806968961,0.9778631127 Z">
+            <aapt:attr name="android:fillColor">
+                <gradient android:type="linear"
+                    android:startX="0" android:startY="0"
+                    android:endX="1" android:endY="1"
+                    android:startColor="#9b3af6" android:endColor="#b5a6fc" />
+            </aapt:attr>
+        </path>
+    </group>
+</vector>
