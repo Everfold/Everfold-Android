@@ -44,10 +44,12 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.isAltPressed
@@ -143,7 +145,7 @@ internal fun OnboardingScreen(
     var step by remember { mutableStateOf(SetupStep.Welcome) }
     var furthestStep by remember { mutableIntStateOf(0) }
     val focusRequester = remember { FocusRequester() }
-    LaunchedEffect(Unit) { focusRequester.requestFocus() }
+    var hasFocus by remember { mutableStateOf(false) }
     var cluster by remember { mutableStateOf(false) }
     var form by remember { mutableStateOf(ClusterSetup()) }
     var test by remember { mutableStateOf(ConnectionTest.Idle) }
@@ -198,7 +200,8 @@ internal fun OnboardingScreen(
                 } else {
                     false
                 }
-            }.focusRequester(focusRequester)
+            }.onFocusChanged { hasFocus = it.hasFocus }
+            .focusRequester(focusRequester)
             .focusable(),
     ) {
         BoxWithConstraints(
@@ -206,6 +209,10 @@ internal fun OnboardingScreen(
             contentAlignment = Alignment.TopCenter,
         ) {
             val wide = maxWidth >= 1000.dp
+            LaunchedEffect(wide) {
+                withFrameNanos { }
+                if (!hasFocus) focusRequester.requestFocus()
+            }
             Row(Modifier.widthIn(max = 1440.dp).fillMaxSize()) {
                 if (wide) {
                     SetupSidebar(step, furthestStep, cluster, navigate)
