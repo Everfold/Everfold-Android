@@ -252,9 +252,8 @@ private fun WelcomeContent(
         modifier.fillMaxWidth(),
         contentPadding = PaddingValues(28.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
     ) {
-        item { Spacer(Modifier.height(24.dp)) }
         item {
             Image(
                 painter = painterResource(Res.drawable.logo),
