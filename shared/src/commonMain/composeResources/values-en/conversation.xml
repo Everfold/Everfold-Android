@@ -46,4 +46,9 @@
     <string name="agent_step_reply">Generate reply · sample step</string>
     <string name="agent_preview_note">These actions only demonstrate UI states.</string>
 
+    <string name="copy_message">Copy message</string>
+    <string name="copy_code">Copy code</string>
+    <string name="copied">Copied</string>
+    <string name="code_block">Code</string>
+
 </resources>

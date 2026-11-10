@@ -52,6 +52,7 @@ kotlin {
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
             implementation(libs.compose.material3)
+            implementation(libs.markdown.m3)
             implementation(libs.materialKolor)
             implementation(libs.compose.ui)
             implementation(libs.navigationevent.compose)
@@ -63,6 +64,7 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.kotlinx.coroutinesTest)
         }
         getByName("androidDeviceTest").dependencies {
             implementation(libs.androidx.testRunner)

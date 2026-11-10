@@ -68,7 +68,26 @@ class MockWorkspace : ViewModel() {
                 ),
             ) +
             conversations
+        conversations = conversations.sortedByDescending { it.isPinned }
         return id
+    }
+
+    fun renameConversation(
+        id: String,
+        title: String,
+    ) {
+        if (title.isBlank()) return
+        update(id) { it.copy(title = UiText.Literal(title.trim())) }
+    }
+
+    fun togglePinned(id: String) {
+        update(id) { it.copy(isPinned = !it.isPinned) }
+        conversations = conversations.sortedByDescending { it.isPinned }
+    }
+
+    fun deleteConversation(id: String) {
+        replies.remove(id)?.cancel()
+        conversations = conversations.filterNot { it.id == id }
     }
 
     fun updateDraft(
@@ -116,7 +135,14 @@ class MockWorkspace : ViewModel() {
         val messageId = "message-${++nextId}"
         update(id) {
             it.copy(
-                title = if (it.messages.isEmpty()) UiText.Literal(input.take(24)) else it.title,
+                title =
+                    if (it.messages.isEmpty() &&
+                        it.title == UiText.Resource(Res.string.new_conversation)
+                    ) {
+                        UiText.Literal(input.take(24))
+                    } else {
+                        it.title
+                    },
                 preview = UiText.Literal(input),
                 updatedLabel = UiText.Resource(Res.string.just_now),
                 draft = "",

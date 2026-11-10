@@ -54,6 +54,7 @@ import everfold.shared.generated.resources.Res
 import everfold.shared.generated.resources.back_sessions
 import everfold.shared.generated.resources.conversation_notice
 import everfold.shared.generated.resources.conversation_space
+import everfold.shared.generated.resources.copy_message
 import everfold.shared.generated.resources.generating_reply
 import everfold.shared.generated.resources.logo
 import everfold.shared.generated.resources.message_placeholder
@@ -194,13 +195,18 @@ internal fun MessageItem(
             color = if (user) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surface,
         ) {
             SelectionContainer {
-                Text(
-                    message.text.ifEmpty { localizedString(Res.string.thinking) },
-                    Modifier.padding(if (user) 16.dp else 0.dp),
-                    style = MaterialTheme.typography.bodyLarge,
-                )
+                if (user || message.text.isEmpty()) {
+                    Text(
+                        message.text.ifEmpty { localizedString(Res.string.thinking) },
+                        Modifier.padding(if (user) 16.dp else 0.dp),
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                } else {
+                    MessageMarkdown(message.text)
+                }
             }
         }
+        CopyTextButton(message.text, localizedString(Res.string.copy_message))
     }
 }
 

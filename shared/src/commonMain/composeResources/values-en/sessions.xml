@@ -19,4 +19,17 @@
     <string name="reply_complete">Example reply complete</string>
     <string name="reply_stopped">Generation stopped</string>
 
+    <!-- 会话操作 -->
+    <string name="rename_session">Rename</string>
+    <string name="delete_session">Delete conversation</string>
+    <string name="delete_session_notice">This removes the conversation from the current session.</string>
+    <string name="pin_session">Pin</string>
+    <string name="unpin_session">Unpin</string>
+    <string name="pinned_session">Pinned</string>
+    <string name="session_actions">Conversation actions</string>
+    <string name="session_name">Conversation name</string>
+    <string name="save_session">Save</string>
+    <string name="empty_sessions">No conversations yet. Start with a new idea.</string>
+    <string name="clear_search">Clear search</string>
+
 </resources>

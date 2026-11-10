@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -25,6 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigationevent.NavigationEventInfo
@@ -44,6 +46,7 @@ import com.everfold.kotlin.ui.localization.localizedString
 import everfold.shared.generated.resources.Res
 import everfold.shared.generated.resources.connected_preview
 import everfold.shared.generated.resources.connection_local
+import everfold.shared.generated.resources.new_session
 import everfold.shared.generated.resources.not_connected
 import everfold.shared.generated.resources.sample_reply
 
@@ -64,7 +67,7 @@ fun EverfoldApp(
         BoxWithConstraints(Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing).imePadding()) {
             val wide = maxWidth >= 900.dp
             val rail = maxWidth >= 600.dp
-            val selected = workspace.conversations.firstOrNull { it.id == selectedId } ?: workspace.conversations.first()
+            val selected = workspace.conversations.firstOrNull { it.id == selectedId } ?: workspace.conversations.firstOrNull()
             val showingConversation = destination == AppDestination.Sessions && (wide || conversationOpen)
             NavigationBackHandler(
                 state = rememberNavigationEventState(NavigationEventInfo.None),
@@ -103,11 +106,24 @@ fun EverfoldApp(
                                         ) {
                                             SessionsScreen(
                                                 sessions = workspace.conversations,
-                                                selectedId = if (wide) selected.id else null,
+                                                selectedId = if (wide) selected?.id else null,
                                                 onSelect = {
                                                     selectedId = it
                                                     conversationOpen = true
                                                 },
+                                                onRename = workspace::renameConversation,
+                                                onDelete = { id ->
+                                                    workspace.deleteConversation(id)
+                                                    if (selectedId == id) {
+                                                        selectedId =
+                                                            workspace.conversations
+                                                                .firstOrNull()
+                                                                ?.id
+                                                                .orEmpty()
+                                                        conversationOpen = false
+                                                    }
+                                                },
+                                                onTogglePin = workspace::togglePinned,
                                                 onCreate = {
                                                     selectedId = workspace.createConversation()
                                                     conversationOpen = true
@@ -116,7 +132,7 @@ fun EverfoldApp(
                                         }
                                     }
                                     if (wide) VerticalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
-                                    if (showingConversation) {
+                                    if (showingConversation && selected != null) {
                                         ConversationScreen(
                                             state = selected,
                                             showBack = !wide,
@@ -142,6 +158,16 @@ fun EverfoldApp(
                                             },
                                             modifier = Modifier.weight(1f),
                                         )
+                                    }
+                                    if (wide && selected == null) {
+                                        Box(Modifier.weight(1f).fillMaxHeight(), contentAlignment = Alignment.Center) {
+                                            Button(onClick = {
+                                                selectedId = workspace.createConversation()
+                                                conversationOpen = true
+                                            }) {
+                                                Text(localizedString(Res.string.new_session))
+                                            }
+                                        }
                                     }
                                 }
                             }

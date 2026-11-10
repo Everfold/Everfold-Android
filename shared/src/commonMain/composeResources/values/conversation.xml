@@ -46,4 +46,9 @@
     <string name="agent_step_reply">生成回复 · 示例步骤</string>
     <string name="agent_preview_note">以下操作仅演示界面状态。</string>
 
+    <string name="copy_message">复制消息</string>
+    <string name="copy_code">复制代码</string>
+    <string name="copied">已复制</string>
+    <string name="code_block">代码</string>
+
 </resources>

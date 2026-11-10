@@ -19,4 +19,17 @@
     <string name="reply_complete">示例回复已完成</string>
     <string name="reply_stopped">已停止生成</string>
 
+    <!-- 会话操作 -->
+    <string name="rename_session">重命名</string>
+    <string name="delete_session">删除会话</string>
+    <string name="delete_session_notice">删除后，本次运行中的会话内容将被移除。</string>
+    <string name="pin_session">置顶</string>
+    <string name="unpin_session">取消置顶</string>
+    <string name="pinned_session">已置顶</string>
+    <string name="session_actions">会话操作</string>
+    <string name="session_name">会话名称</string>
+    <string name="save_session">保存</string>
+    <string name="empty_sessions">还没有会话，开始一个新的想法吧。</string>
+    <string name="clear_search">清空搜索</string>
+
 </resources>
