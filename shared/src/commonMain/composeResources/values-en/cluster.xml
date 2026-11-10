@@ -4,8 +4,8 @@
     <!-- 连接方式与地址 -->
     <string name="cluster_lan">Local network</string>
     <string name="cluster_central">Central node</string>
-    <string name="cluster_cloud">Test cloud</string>
-    <string name="lan_hint">Leave both fields empty to discover local nodes, or specify an IP and port.</string>
+    <string name="cluster_cloud">XX Cloud</string>
+    <string name="lan_hint">Leave both fields empty to discover local nodes, or enter an IP and port manually.</string>
     <string name="ip_address">IP address</string>
     <string name="port">Port</string>
 
@@ -13,18 +13,19 @@
     <string name="auth_method">Authentication</string>
     <string name="auth_none">None</string>
     <string name="auth_password">Username and password</string>
-    <string name="auth_certificate">Server certificate</string>
+    <string name="auth_certificate">Server verification</string>
     <string name="auth_mtls">mTLS</string>
     <string name="account">Username</string>
     <string name="password">Password</string>
     <string name="ca_certificate">CA certificate</string>
-    <string name="client_public_key">Client public key</string>
+    <string name="client_public_key">Client certificate</string>
     <string name="client_private_key">Client private key</string>
 
     <!-- 文件导入 -->
     <string name="choose_file">Choose file</string>
-    <string name="scan_file">Scan code</string>
+    <string name="scan_file">Scan QR code</string>
     <string name="no_file">Not imported</string>
+
     <string name="import_preview">Simulated file import</string>
     <string name="scan_preview">Simulated scan import</string>
     <string name="import_hint">This preview uses a sample file. It does not access device files or the camera.</string>
@@ -32,7 +33,7 @@
 
     <!-- 连接测试与反馈 -->
     <string name="test_connection">Test connection</string>
-    <string name="testing_connection">Testing connection…</string>
+    <string name="testing_connection">Testing connection......</string>
     <string name="connection_success">Connected successfully</string>
     <string name="connection_failure">Simulated connection failed. Check your settings and retry.</string>
     <string name="simulate_failure">Simulate connection failure</string>
@@ -57,5 +58,7 @@
     <string name="failure_credentials_hint">Authentication failed. Check your username and password, then retry.</string>
     <string name="failure_certificate_hint">Certificate verification failed. Check that the required certificates and keys match, then import them again.</string>
     <string name="retry_connection">Retry connection</string>
+
+    <string name="server_certificate">Server certificate</string>
 
 </resources>

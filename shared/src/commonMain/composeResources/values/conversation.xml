@@ -4,19 +4,17 @@
     <!-- 标题与导航 -->
     <string name="start_chat">开始对话</string>
     <string name="back_sessions">返回会话列表</string>
-    <string name="conversation_space">Everfold · 对话空间</string>
 
     <!-- 消息输入与生成状态 -->
-    <string name="generating_reply">正在生成示例回复…</string>
-    <string name="stopped_hint">已停止生成，你可以继续发送消息。</string>
-    <string name="message_placeholder">写下你的问题或想法…</string>
-    <string name="stop_reply">停止回复</string>
-    <string name="send_message">发送消息</string>
+    <string name="stopped_hint">已停止工作，你可以发送消息或继续运行。</string>
+    <string name="message_placeholder">在思考什么问题呢......</string>
+    <string name="stop_reply">暂停</string>
+    <string name="send_message">发送</string>
     <string name="you">你</string>
-    <string name="thinking">正在思考…</string>
+    <string name="thinking">思考中......</string>
 
     <!-- 空会话引导 -->
-    <string name="welcome_title">从一个想法开始</string>
+    <string name="welcome_title">千里之行 始于足下</string>
     <string name="suggestion_ideas">帮我整理今天的想法</string>
     <string name="suggestion_week">一起制定这周的计划</string>
     <string name="suggestion_problem">把一个复杂问题拆成小步骤</string>
@@ -27,9 +25,9 @@
     <string name="jump_to_latest">回到最新消息</string>
 
     <!-- Agent 执行状态 -->
-    <string name="agent_idle">准备就绪</string>
+    <string name="agent_idle">就绪</string>
     <string name="agent_running">执行中</string>
-    <string name="agent_waiting">等待你的输入</string>
+    <string name="agent_waiting">等待回复</string>
     <string name="agent_completed">已完成</string>
     <string name="agent_stopped">已停止</string>
     <string name="agent_failed">执行失败</string>

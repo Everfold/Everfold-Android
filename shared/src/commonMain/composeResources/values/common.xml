@@ -16,13 +16,13 @@
     <string name="window_minimize">最小化</string>
     <string name="window_maximize">最大化</string>
     <string name="window_restore">还原</string>
-    <string name="window_close">关闭窗口</string>
+    <string name="window_close">关闭</string>
 
     <!-- 桌面操作 -->
-    <string name="resize_sessions">拖动调整会话列表宽度，也可聚焦后使用左右方向键</string>
-    <string name="new_session_shortcut">新建会话 · Ctrl / ⌘ + N</string>
-    <string name="show_sessions">展开会话列表 · Ctrl / ⌘ + B</string>
-    <string name="hide_sessions">折叠会话列表 · Ctrl / ⌘ + B</string>
-    <string name="send_shortcut">Ctrl / ⌘ + Enter 发送 · Enter 换行</string>
+    <string name="resize_sessions">拖动调整宽度</string>
+    <string name="new_session_shortcut">新建会话 · Ctrl + N</string>
+    <string name="show_sessions">展开会话列表 · Ctrl + B</string>
+    <string name="hide_sessions">折叠会话列表 · Ctrl + B</string>
+    <string name="send_shortcut">Ctrl + Enter 发送 · Enter 换行</string>
 
 </resources>

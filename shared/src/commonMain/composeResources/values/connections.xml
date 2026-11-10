@@ -3,17 +3,12 @@
 
     <!-- 连接页面与运行方式 -->
     <string name="connection_mode">运行方式</string>
-    <string name="connection_local">本地运行</string>
-    <string name="connection_remote">远程连接</string>
+    <string name="connection_local">本地</string>
+    <string name="connection_remote">集群</string>
 
     <!-- 服务器与状态 -->
     <string name="server_address">服务器地址</string>
-    <string name="address_preview_hint">仅用于界面预览，不会发送网络请求</string>
     <string name="connected_preview">已连接</string>
     <string name="not_connected">尚未连接</string>
-
-    <!-- 预览操作 -->
-    <string name="reset_connection">重置预览状态</string>
-    <string name="preview_connection">预览连接状态</string>
 
 </resources>

@@ -46,6 +46,7 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.everfold.kotlin.ui.components.AppIcon
@@ -260,6 +261,7 @@ private fun WelcomeContent(
             Text(
                 localizedString(Res.string.welcome_title),
                 style = MaterialTheme.typography.headlineMedium,
+                textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Medium,
             )
         }

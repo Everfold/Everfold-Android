@@ -84,6 +84,10 @@ class MockWorkspace : ViewModel() {
         conversations = conversations.sortedByDescending { it.isPinned }
     }
 
+    fun toggleArchived(id: String) {
+        update(id) { it.copy(isArchived = !it.isArchived) }
+    }
+
     fun deleteConversation(id: String) {
         replies.remove(id)?.cancel()
         conversations = conversations.filterNot { it.id == id }

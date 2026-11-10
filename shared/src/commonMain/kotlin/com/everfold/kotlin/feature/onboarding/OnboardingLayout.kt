@@ -30,12 +30,14 @@ import com.everfold.kotlin.ui.components.AppSymbol
 import com.everfold.kotlin.ui.localization.localizedString
 import everfold.shared.generated.resources.Res
 import everfold.shared.generated.resources.cluster_hint
-import everfold.shared.generated.resources.feature_agent
-import everfold.shared.generated.resources.feature_agent_detail
-import everfold.shared.generated.resources.feature_modes
-import everfold.shared.generated.resources.feature_modes_detail
-import everfold.shared.generated.resources.feature_sessions
-import everfold.shared.generated.resources.feature_sessions_detail
+import everfold.shared.generated.resources.feature_continuity
+import everfold.shared.generated.resources.feature_continuity_detail
+import everfold.shared.generated.resources.feature_customization
+import everfold.shared.generated.resources.feature_customization_detail
+import everfold.shared.generated.resources.feature_topology
+import everfold.shared.generated.resources.feature_topology_detail
+import everfold.shared.generated.resources.feature_workspace
+import everfold.shared.generated.resources.feature_workspace_detail
 import everfold.shared.generated.resources.mode_cluster
 import everfold.shared.generated.resources.mode_offline
 import everfold.shared.generated.resources.offline_hint
@@ -73,13 +75,14 @@ internal fun WelcomeFeatures(wide: Boolean) {
         )
         val features =
             listOf(
-                Triple(AppSymbol.Chat, Res.string.feature_sessions, Res.string.feature_sessions_detail),
-                Triple(AppSymbol.Spark, Res.string.feature_agent, Res.string.feature_agent_detail),
-                Triple(AppSymbol.Connection, Res.string.feature_modes, Res.string.feature_modes_detail),
+                Triple(AppSymbol.Connection, Res.string.feature_workspace, Res.string.feature_workspace_detail),
+                Triple(AppSymbol.Chat, Res.string.feature_topology, Res.string.feature_topology_detail),
+                Triple(AppSymbol.Spark, Res.string.feature_continuity, Res.string.feature_continuity_detail),
+                Triple(AppSymbol.Settings, Res.string.feature_customization, Res.string.feature_customization_detail),
             )
         FlowRow(
             Modifier.fillMaxWidth(),
-            maxItemsInEachRow = if (wide) 3 else 1,
+            maxItemsInEachRow = if (wide) 2 else 1,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {

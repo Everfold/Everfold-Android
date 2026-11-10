@@ -1,41 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- 欢迎页 -->
-    <string name="onboarding_welcome">Keep your ideas moving</string>
-    <string name="onboarding_intro">Welcome to Everfold. Think, organize and move tasks forward with your Agent.</string>
-
-    <!-- 功能介绍 -->
-    <string name="feature_sessions">Conversations with continuity</string>
-    <string name="feature_sessions_detail">Keep conversations organized around your goals and pick up where you left off.</string>
-    <string name="feature_agent">Progress you can follow</string>
-    <string name="feature_agent_detail">Follow Agent responses in your conversations and guide the next step.</string>
-    <string name="feature_modes">A choice of run modes</string>
-    <string name="feature_modes_detail">Work offline or connect to a cluster that suits your needs.</string>
-
-    <!-- 步骤标题与导航 -->
-    <string name="setup_preferences">Make it yours</string>
-    <string name="setup_mode">Choose a run mode</string>
-    <string name="setup_cluster">Connect to your cluster</string>
-    <string name="setup_nav_welcome">Discover Everfold</string>
-    <string name="setup_nav_preferences">Language &amp; appearance</string>
-
     <!-- 步骤进度；setup_step 的 %1$d 为当前步骤，%2$d 为总步骤数 -->
     <string name="setup_step">Setup · %1$d / %2$d</string>
+
+    <!-- 欢迎页 -->
+    <string name="onboarding_welcome">“Leave the next step to your agent.”</string>
+    <string name="onboarding_intro">Welcome to Everfold, an agent with endless possibilities.</string>
+
+    <!-- 功能介绍 -->
+
+    <string name="feature_workspace">A workspace that grows with you</string>
+    <string name="feature_workspace_detail">Connect your devices, tools and computing resources to bring more capabilities to your work.</string>
+
+    <string name="feature_topology">An AI team you organize</string>
+    <string name="feature_topology_detail">Choose how your agents divide tasks, collaborate and where they run, so AI works your way.</string>
+
+    <string name="feature_continuity">Pick up where each run left off</string>
+    <string name="feature_continuity_detail">Review execution, resume recoverable tasks and explore new directions with the results you already have.</string>
+
+    <string name="feature_customization">Build AI that fits you</string>
+    <string name="feature_customization_detail">Mix and match models, tools and runtime environments to create your own way of working.</string>
+
+    <!-- 步骤标题与导航 -->
+    <string name="setup_nav_welcome">Welcome</string>
+    <string name="setup_nav_preferences">Language &amp; appearance</string>
+    <string name="setup_preferences">Personalization</string>
+    <string name="setup_mode">Run mode</string>
+    <string name="setup_cluster">Connect to a cluster</string>
+
+    <!-- 使用模式 -->
+    <string name="mode_offline">Local</string>
+    <string name="offline_hint">Use only this device, without a cluster connection.</string>
+    <string name="mode_cluster">Cluster</string>
+    <string name="cluster_hint">Connect through your local network, a central node or a cloud provider.</string>
 
     <!-- 前进与返回 -->
     <string name="next_step">Continue</string>
     <string name="previous_step">Back</string>
     <string name="enter_home">Open workspace</string>
 
-    <!-- 使用模式 -->
-    <string name="mode_offline">Offline</string>
-    <string name="mode_cluster">Cluster</string>
-    <string name="offline_hint">Use an Agent on this device without a cluster connection.</string>
-    <string name="cluster_hint">Connect through your local network, a central node or the test cloud.</string>
-
     <!-- 按钮悬停提示 -->
     <string name="previous_step_shortcut">Back · Alt + ←</string>
-    <string name="continue_setup_shortcut">Continue · Ctrl / ⌘ + Enter</string>
+    <string name="continue_setup_shortcut">Continue · Ctrl + Enter</string>
 
 </resources>

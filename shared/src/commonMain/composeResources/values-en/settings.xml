@@ -2,14 +2,14 @@
 <resources>
 
     <!-- 主导航 -->
-    <string name="nav_sessions">Sessions</string>
+    <string name="nav_sessions">Workspace</string>
     <string name="nav_connections">Connections</string>
     <string name="nav_settings">Settings</string>
 
     <!-- 设置与关于 -->
     <string name="about">About</string>
-    <string name="preview_version">UI preview</string>
-    <string name="preview_notice">Conversations, replies and connections are examples. Changes reset when you close the app.</string>
+    <string name="preview_version">v0.0.114514</string>
+    <string name="preview_notice">What should we write here?</string>
 
     <!-- 语言选项（语言名称使用该语言自身的写法） -->
     <string name="language">Language</string>

@@ -3,32 +3,40 @@
 
     <!-- 会话列表 -->
     <string name="new_session">New session</string>
-    <string name="search_sessions">Search sessions</string>
-    <string name="replying">Replying…</string>
+    <string name="search_sessions">Search</string>
+    <string name="replying">Running......</string>
     <string name="no_sessions">No sessions found. Try another search.</string>
 
     <!-- 新会话 -->
-    <string name="new_conversation">New conversation</string>
-    <string name="new_conversation_hint">Start with a question or an idea</string>
+    <string name="new_conversation">Empty session</string>
+    <string name="new_conversation_hint">Awaiting input</string>
 
     <!-- 最近会话；recent_sessions 的 %1$d 为会话数量 -->
     <string name="recent_sessions">Recent sessions · %1$d</string>
 
     <!-- 回复状态 -->
-    <string name="reply_complete">Reply complete</string>
-    <string name="reply_stopped">Generation stopped</string>
+    <string name="reply_complete">Completed</string>
+    <string name="reply_stopped">Stopped</string>
 
     <!-- 会话操作 -->
     <string name="rename_session">Rename</string>
-    <string name="delete_session">Delete conversation</string>
-    <string name="delete_session_notice">This removes the conversation from the current session.</string>
     <string name="pin_session">Pin</string>
-    <string name="unpin_session">Unpin</string>
     <string name="pinned_session">Pinned</string>
+    <string name="unpin_session">Unpin</string>
+    <string name="archive_session">Archive</string>
+    <string name="delete_session">Delete</string>
+
+    <string name="delete_session_notice">This removes the conversation from the current session.</string>
     <string name="session_actions">Conversation actions</string>
     <string name="session_name">Conversation name</string>
     <string name="save_session">Save</string>
-    <string name="empty_sessions">No conversations yet. Start with a new idea.</string>
+    <string name="empty_sessions">No sessions yet. What would you like to do?</string>
     <string name="clear_search">Clear search</string>
+
+    <string name="restore_session">Restore</string>
+    <string name="archived_sessions">Archived</string>
+    <string name="empty_archived_sessions">No archived sessions.</string>
+
+    <string name="archived_sessions_count">Archived · %1$d</string>
 
 </resources>

@@ -61,6 +61,7 @@ import everfold.shared.generated.resources.remove_file
 import everfold.shared.generated.resources.replace_file
 import everfold.shared.generated.resources.scan_file
 import everfold.shared.generated.resources.scan_preview
+import everfold.shared.generated.resources.server_certificate
 import everfold.shared.generated.resources.show_password
 import everfold.shared.generated.resources.use_sample
 import org.jetbrains.compose.resources.StringResource
@@ -145,7 +146,7 @@ internal fun ClusterConnectionForm(
             })
         }
         if (form.method == ClusterMethod.Central && form.auth == ClusterAuth.Certificate) {
-            FileImportField(Res.string.auth_certificate, form.serverCertificate, "server.pem", {
+            FileImportField(Res.string.server_certificate, form.serverCertificate, "server.pem", {
                 onChange(form.copy(serverCertificate = it))
             }, showErrors)
         }
@@ -157,7 +158,7 @@ internal fun ClusterConnectionForm(
                 { onChange(form.copy(caCertificate = it)) },
                 showErrors,
             )
-            FileImportField(Res.string.client_public_key, form.clientPublicKey, "client-public.pem", {
+            FileImportField(Res.string.client_public_key, form.clientPublicKey, "client-cert.pem", {
                 onChange(form.copy(clientPublicKey = it))
             }, showErrors)
             FileImportField(Res.string.client_private_key, form.clientPrivateKey, "client-private.pem", {

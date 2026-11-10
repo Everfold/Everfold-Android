@@ -16,13 +16,13 @@
     <string name="window_minimize">Minimize</string>
     <string name="window_maximize">Maximize</string>
     <string name="window_restore">Restore</string>
-    <string name="window_close">Close window</string>
+    <string name="window_close">Close</string>
 
     <!-- 桌面操作 -->
-    <string name="resize_sessions">Resize conversation list by dragging or using the left and right arrow keys</string>
-    <string name="new_session_shortcut">New conversation · Ctrl / ⌘ + N</string>
-    <string name="show_sessions">Show conversations · Ctrl / ⌘ + B</string>
-    <string name="hide_sessions">Hide conversations · Ctrl / ⌘ + B</string>
-    <string name="send_shortcut">Ctrl / ⌘ + Enter to send · Enter for a new line</string>
+    <string name="resize_sessions">Drag to resize</string>
+    <string name="new_session_shortcut">New conversation · Ctrl + N</string>
+    <string name="show_sessions">Show conversations · Ctrl + B</string>
+    <string name="hide_sessions">Hide conversations · Ctrl + B</string>
+    <string name="send_shortcut">Ctrl + Enter to send · Enter for a new line</string>
 
 </resources>

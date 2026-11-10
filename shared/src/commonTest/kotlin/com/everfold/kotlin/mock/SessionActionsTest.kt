@@ -17,6 +17,44 @@ import kotlin.test.assertTrue
 @OptIn(ExperimentalCoroutinesApi::class)
 class SessionActionsTest {
     @Test
+    fun archivingAndRestoringPreserveContentDraftAndPin() {
+        val workspace = MockWorkspace()
+        workspace.updateDraft("reading", "Unsent draft")
+        workspace.togglePinned("reading")
+        val original = workspace.conversations.first { it.id == "reading" }
+        workspace.toggleArchived("reading")
+        assertEquals(original.copy(isArchived = true), workspace.conversations.first { it.id == "reading" })
+        workspace.toggleArchived("reading")
+        assertEquals(original, workspace.conversations.first { it.id == "reading" })
+        workspace.toggleArchived("reading")
+        workspace.deleteConversation("reading")
+        workspace.toggleArchived("reading")
+        assertFalse(workspace.conversations.any { it.id == "reading" })
+    }
+
+    @Test
+    fun archivingDoesNotInterruptStreamingOrLoseItsResult() =
+        runTest {
+            Dispatchers.setMain(StandardTestDispatcher(testScheduler))
+            try {
+                val workspace = MockWorkspace()
+                workspace.updateDraft("welcome", "hello")
+                workspace.send("welcome", "A reply that continues in the archive")
+                advanceTimeBy(400)
+                workspace.toggleArchived("welcome")
+                advanceUntilIdle()
+                val archived = workspace.conversations.first { it.id == "welcome" }
+                assertTrue(archived.isArchived)
+                assertFalse(archived.isResponding)
+                assertEquals("A reply that continues in the archive", archived.messages.last().text)
+                workspace.toggleArchived("welcome")
+                assertEquals(archived.copy(isArchived = false), workspace.conversations.first { it.id == "welcome" })
+            } finally {
+                Dispatchers.resetMain()
+            }
+        }
+
+    @Test
     fun pinningAndRenamingPreserveTheConversation() {
         val workspace = MockWorkspace()
         workspace.togglePinned("reading")

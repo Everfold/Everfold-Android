@@ -4,16 +4,11 @@
     <!-- 连接页面与运行方式 -->
     <string name="connection_mode">Run mode</string>
     <string name="connection_local">Local</string>
-    <string name="connection_remote">Remote</string>
+    <string name="connection_remote">Cluster</string>
 
     <!-- 服务器与状态 -->
     <string name="server_address">Server address</string>
-    <string name="address_preview_hint">Preview only. No network requests will be sent.</string>
     <string name="connected_preview">Connected</string>
     <string name="not_connected">Not connected</string>
-
-    <!-- 预览操作 -->
-    <string name="reset_connection">Reset preview</string>
-    <string name="preview_connection">Preview connection</string>
 
 </resources>

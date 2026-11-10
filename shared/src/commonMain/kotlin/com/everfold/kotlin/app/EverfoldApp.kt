@@ -80,6 +80,7 @@ fun EverfoldApp(
 ) {
     val reply = localizedString(Res.string.sample_reply)
     var destination by rememberSaveable { mutableStateOf(AppDestination.Sessions) }
+    var showArchived by rememberSaveable { mutableStateOf(false) }
     var selectedId by rememberSaveable { mutableStateOf("welcome") }
     var conversationOpen by rememberSaveable { mutableStateOf(false) }
 
@@ -96,6 +97,7 @@ fun EverfoldApp(
                         focusComposer = true
                         destination = AppDestination.Sessions
                         sessionQuery = ""
+                        showArchived = false
                         selectedId = workspace.createConversation()
                         conversationOpen =
                             true
@@ -138,7 +140,8 @@ fun EverfoldApp(
             val maxSessionWidth = (maxWidth.value - 520f).coerceIn(260f, 440f)
             val density = LocalDensity.current.density
             val resizeLabel = localizedString(Res.string.resize_sessions)
-            val selected = workspace.conversations.firstOrNull { it.id == selectedId } ?: workspace.conversations.firstOrNull()
+            val visibleSessions = workspace.conversations.filter { it.isArchived == showArchived }
+            val selected = visibleSessions.firstOrNull { it.id == selectedId } ?: visibleSessions.firstOrNull()
             val showingConversation = destination == AppDestination.Sessions && (wide || conversationOpen)
             NavigationBackHandler(
                 state = rememberNavigationEventState(NavigationEventInfo.None),
@@ -185,6 +188,28 @@ fun EverfoldApp(
                                         ) {
                                             SessionsScreen(
                                                 sessions = workspace.conversations,
+                                                showArchived = showArchived,
+                                                onShowArchivedChange = {
+                                                    showArchived = it
+                                                    selectedId =
+                                                        workspace.conversations
+                                                            .firstOrNull { session ->
+                                                                session.isArchived == it
+                                                            }?.id
+                                                            .orEmpty()
+                                                    conversationOpen = false
+                                                },
+                                                onToggleArchive = { id ->
+                                                    workspace.toggleArchived(id)
+                                                    if (selected?.id == id) {
+                                                        selectedId =
+                                                            workspace.conversations
+                                                                .firstOrNull { it.isArchived == showArchived }
+                                                                ?.id
+                                                                .orEmpty()
+                                                        conversationOpen = false
+                                                    }
+                                                },
                                                 searchRequest = searchRequest,
                                                 query = sessionQuery,
                                                 onQueryChange = { sessionQuery = it },
@@ -197,10 +222,10 @@ fun EverfoldApp(
                                                 onRename = workspace::renameConversation,
                                                 onDelete = { id ->
                                                     workspace.deleteConversation(id)
-                                                    if (selectedId == id) {
+                                                    if (selected?.id == id) {
                                                         selectedId =
                                                             workspace.conversations
-                                                                .firstOrNull()
+                                                                .firstOrNull { it.isArchived == showArchived }
                                                                 ?.id
                                                                 .orEmpty()
                                                         conversationOpen = false
@@ -210,6 +235,7 @@ fun EverfoldApp(
                                                 onCreate = {
                                                     focusComposer = true
                                                     sessionQuery = ""
+                                                    showArchived = false
                                                     selectedId = workspace.createConversation()
                                                     conversationOpen = true
                                                 },
@@ -296,6 +322,7 @@ fun EverfoldApp(
                                         Box(Modifier.weight(1f).fillMaxHeight(), contentAlignment = Alignment.Center) {
                                             Button(onClick = {
                                                 sessionQuery = ""
+                                                showArchived = false
                                                 selectedId = workspace.createConversation()
                                                 conversationOpen = true
                                             }) {

@@ -1,41 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- 欢迎页 -->
-    <string name="onboarding_welcome">让想法持续向前</string>
-    <string name="onboarding_intro">欢迎使用 Everfold。与你的 Agent 一起思考、整理和推进任务。</string>
-
-    <!-- 功能介绍 -->
-    <string name="feature_sessions">连续的会话</string>
-    <string name="feature_sessions_detail">围绕不同目标展开对话，随时接着上次的想法继续。</string>
-    <string name="feature_agent">看得见的进展</string>
-    <string name="feature_agent_detail">在会话中查看 Agent 的响应，随时参与下一步。</string>
-    <string name="feature_modes">灵活的运行方式</string>
-    <string name="feature_modes_detail">离线使用，或连接集群，在适合你的环境中工作。</string>
-
-    <!-- 步骤标题与导航 -->
-    <string name="setup_preferences">打造你的空间</string>
-    <string name="setup_mode">选择使用模式</string>
-    <string name="setup_cluster">连接你的集群</string>
-    <string name="setup_nav_welcome">了解 Everfold</string>
-    <string name="setup_nav_preferences">语言与外观</string>
-
     <!-- 步骤进度；setup_step 的 %1$d 为当前步骤，%2$d 为总步骤数 -->
     <string name="setup_step">初始化 · %1$d / %2$d</string>
+
+    <!-- 欢迎页 -->
+    <string name="onboarding_welcome">“下一步，交给智能体。”</string>
+    <string name="onboarding_intro">欢迎使用 Everfold，一款具有无限可能的智能体。</string>
+
+    <!-- 功能介绍 -->
+
+    <string name="feature_workspace">随你成长的工作空间</string>
+    <string name="feature_workspace_detail">连接你的设备、工具与计算资源，让更多力量参与工作。</string>
+
+    <string name="feature_topology">由你组织的 AI 团队</string>
+    <string name="feature_topology_detail">自由安排 Agent 的分工、协作与运行位置，让 AI 按你的方式配合。</string>
+
+    <string name="feature_continuity">让每一次运行接续下去</string>
+    <string name="feature_continuity_detail">核查执行过程，接续可恢复的任务，带着已有成果探索新的方向。</string>
+
+    <string name="feature_customization">构建适合你的 AI</string>
+    <string name="feature_customization_detail">从模型、工具到运行环境，自由选择与组合，打造自己的工作方式。</string>
+
+    <!-- 步骤标题与导航 -->
+    <string name="setup_nav_welcome">欢迎</string>
+    <string name="setup_nav_preferences">语言与外观</string>
+    <string name="setup_preferences">个性化设置</string>
+    <string name="setup_mode">使用模式</string>
+    <string name="setup_cluster">连接集群</string>
+
+    <!-- 使用模式 -->
+    <string name="mode_offline">本地</string>
+    <string name="offline_hint">仅在本机上使用，无需连接集群。</string>
+    <string name="mode_cluster">集群</string>
+    <string name="cluster_hint">连接局域网、中心节点或云服务商。</string>
 
     <!-- 前进与返回 -->
     <string name="next_step">下一步</string>
     <string name="previous_step">上一步</string>
     <string name="enter_home">进入主页</string>
 
-    <!-- 使用模式 -->
-    <string name="mode_offline">离线</string>
-    <string name="mode_cluster">集群</string>
-    <string name="offline_hint">使用本机 Agent，无需连接集群。</string>
-    <string name="cluster_hint">连接局域网、中心节点或测试云。</string>
-
     <!-- 按钮悬停提示 -->
     <string name="previous_step_shortcut">上一步 · Alt + ←</string>
-    <string name="continue_setup_shortcut">继续 · Ctrl / ⌘ + Enter</string>
+    <string name="continue_setup_shortcut">继续 · Ctrl + Enter</string>
 
 </resources>

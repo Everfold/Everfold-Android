@@ -73,11 +73,13 @@ internal fun AgentStatusBar(
                 ),
                 style = MaterialTheme.typography.bodySmall,
             )
+        }
+        if (state == AgentRunState.Waiting || state == AgentRunState.Failed || state == AgentRunState.Stopped) {
             TextButton(onClick = onRetry) {
                 Text(
                     localizedString(
                         if (state ==
-                            AgentRunState.Waiting
+                            AgentRunState.Waiting || state == AgentRunState.Stopped
                         ) {
                             Res.string.agent_continue
                         } else {

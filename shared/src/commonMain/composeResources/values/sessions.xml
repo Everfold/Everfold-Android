@@ -3,32 +3,40 @@
 
     <!-- 会话列表 -->
     <string name="new_session">新建会话</string>
-    <string name="search_sessions">搜索会话</string>
-    <string name="replying">正在回复…</string>
+    <string name="search_sessions">搜索</string>
+    <string name="replying">运行中......</string>
     <string name="no_sessions">没有找到会话，试试其他关键词。</string>
 
     <!-- 新会话 -->
-    <string name="new_conversation">新会话</string>
-    <string name="new_conversation_hint">从一个问题或想法开始</string>
+    <string name="new_conversation">空会话</string>
+    <string name="new_conversation_hint">等待输入</string>
 
     <!-- 最近会话；recent_sessions 的 %1$d 为会话数量 -->
     <string name="recent_sessions">最近的会话 · %1$d</string>
 
     <!-- 回复状态 -->
-    <string name="reply_complete">回复已完成</string>
-    <string name="reply_stopped">已停止生成</string>
+    <string name="reply_complete">已完成</string>
+    <string name="reply_stopped">已停止</string>
 
     <!-- 会话操作 -->
     <string name="rename_session">重命名</string>
-    <string name="delete_session">删除会话</string>
-    <string name="delete_session_notice">删除后，本次运行中的会话内容将被移除。</string>
     <string name="pin_session">置顶</string>
-    <string name="unpin_session">取消置顶</string>
     <string name="pinned_session">已置顶</string>
+    <string name="unpin_session">取消置顶</string>
+    <string name="archive_session">归档</string>
+    <string name="delete_session">删除</string>
+
+    <string name="delete_session_notice">删除后，本次运行中的会话内容将被移除。</string>
     <string name="session_actions">会话操作</string>
     <string name="session_name">会话名称</string>
     <string name="save_session">保存</string>
-    <string name="empty_sessions">还没有会话，开始一个新的想法吧。</string>
+    <string name="empty_sessions">还没有会话，要做点什么呢？</string>
     <string name="clear_search">清空搜索</string>
+
+    <string name="restore_session">恢复</string>
+    <string name="archived_sessions">已归档</string>
+    <string name="empty_archived_sessions">没有已归档的会话。</string>
+
+    <string name="archived_sessions_count">已归档 · %1$d</string>
 
 </resources>

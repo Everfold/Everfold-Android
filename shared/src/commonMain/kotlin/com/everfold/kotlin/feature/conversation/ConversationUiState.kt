@@ -18,6 +18,7 @@ data class ConversationUiState(
     val messages: List<ChatMessage> = emptyList(),
     val draft: String = "",
     val isPinned: Boolean = false,
+    val isArchived: Boolean = false,
     val runState: AgentRunState = AgentRunState.Idle,
 ) {
     val isResponding: Boolean get() = runState == AgentRunState.Running
