@@ -2,7 +2,11 @@ package com.everfold.kotlin.feature.conversation
 
 enum class MessageRole { User, Assistant }
 
-data class ChatMessage(val id: String, val role: MessageRole, val text: String)
+data class ChatMessage(
+    val id: String,
+    val role: MessageRole,
+    val text: String,
+)
 
 data class ConversationUiState(
     val id: String,

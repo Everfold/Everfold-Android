@@ -3,7 +3,10 @@ package com.everfold.kotlin.ui.theme
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 
-enum class ThemePreset(val label: String, val seed: Color) {
+enum class ThemePreset(
+    val label: String,
+    val seed: Color,
+) {
     Forest("松绿", Color(0xFF426653)),
     Ocean("海蓝", Color(0xFF386A9D)),
     Iris("鸢紫", Color(0xFF76558D)),

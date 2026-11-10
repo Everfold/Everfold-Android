@@ -2,14 +2,27 @@ package com.everfold.kotlin.feature.settings
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,8 +46,11 @@ internal fun ThemeColorSettings(
             Text("主题色", Modifier.weight(1f), style = MaterialTheme.typography.titleMedium)
             Text(selection.label, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
         }
-        Text("以所选颜色生成适合浅色与深色的整套配色。",
-            style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(
+            "以所选颜色生成适合浅色与深色的整套配色。",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
         Surface(shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.surfaceContainerLow) {
             Column(Modifier.fillMaxWidth().selectableGroup().padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 ThemePreset.entries.chunked(3).forEach { presets ->
@@ -42,7 +58,9 @@ internal fun ThemeColorSettings(
                         presets.forEach { preset ->
                             val selected = selection.preset == preset
                             Column(
-                                Modifier.weight(1f).clip(RoundedCornerShape(16.dp))
+                                Modifier
+                                    .weight(1f)
+                                    .clip(RoundedCornerShape(16.dp))
                                     .background(if (selected) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent)
                                     .selectable(selected, role = Role.RadioButton, onClick = { onPresetChange(preset) })
                                     .padding(vertical = 12.dp),
@@ -57,7 +75,9 @@ internal fun ThemeColorSettings(
                 }
                 HorizontalDivider(Modifier.padding(vertical = 8.dp))
                 Row(
-                    Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp))
+                    Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(16.dp))
                         .selectable(selection.preset == null, role = Role.RadioButton, onClick = { showCustomDialog = true })
                         .padding(12.dp),
                     verticalAlignment = Alignment.CenterVertically,
@@ -66,8 +86,11 @@ internal fun ThemeColorSettings(
                     ColorSwatch(selection.customSeed, selection.preset == null)
                     Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         Text("自定义颜色", style = MaterialTheme.typography.titleSmall)
-                        Text(selection.customSeed.toHexColor(), style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(
+                            selection.customSeed.toHexColor(),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
                     }
                     Text("调整", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
                 }
@@ -81,17 +104,25 @@ internal fun ThemeColorSettings(
         CustomColorDialog(
             initialColor = selection.customSeed,
             onDismiss = { showCustomDialog = false },
-            onApply = { onCustomColorChange(it); showCustomDialog = false },
+            onApply = {
+                onCustomColorChange(it)
+                showCustomDialog = false
+            },
         )
     }
 }
 
 @Composable
-private fun ColorSwatch(color: Color, selected: Boolean) {
+private fun ColorSwatch(
+    color: Color,
+    selected: Boolean,
+) {
     Box(
-        Modifier.size(48.dp)
+        Modifier
+            .size(48.dp)
             .border(2.dp, if (selected) MaterialTheme.colorScheme.primary else Color.Transparent, CircleShape)
-            .padding(4.dp).background(color, CircleShape),
+            .padding(4.dp)
+            .background(color, CircleShape),
         contentAlignment = Alignment.Center,
     ) {
         if (selected) Text("✓", color = if (color.luminance() > 0.5f) Color.Black else Color.White)

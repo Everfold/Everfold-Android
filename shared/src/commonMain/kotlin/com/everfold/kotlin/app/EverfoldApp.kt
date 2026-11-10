@@ -1,15 +1,36 @@
 package com.everfold.kotlin.app
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationRail
+import androidx.compose.material3.NavigationRailItem
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.navigationevent.NavigationEventInfo
 import androidx.navigationevent.compose.NavigationBackHandler
 import androidx.navigationevent.compose.rememberNavigationEventState
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import com.everfold.kotlin.app.navigation.AppDestination
 import com.everfold.kotlin.feature.connections.ConnectionsScreen
 import com.everfold.kotlin.feature.conversation.ConversationScreen
@@ -35,19 +56,29 @@ fun EverfoldApp(workspace: MockWorkspace) {
                 state = rememberNavigationEventState(NavigationEventInfo.None),
                 isBackEnabled = destination != AppDestination.Sessions || (!wide && conversationOpen),
                 onBackCompleted = {
-                    if (destination != AppDestination.Sessions) destination = AppDestination.Sessions
-                    else conversationOpen = false
+                    if (destination != AppDestination.Sessions) {
+                        destination = AppDestination.Sessions
+                    } else {
+                        conversationOpen = false
+                    }
                 },
             )
             Row(Modifier.fillMaxSize()) {
                 if (rail) {
                     NavigationRail(containerColor = MaterialTheme.colorScheme.surfaceContainerLow) {
-                        Text("E", Modifier.padding(top = 20.dp, bottom = 32.dp), style = MaterialTheme.typography.headlineMedium,
-                            fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+                        Text(
+                            "E",
+                            Modifier.padding(top = 20.dp, bottom = 32.dp),
+                            style = MaterialTheme.typography.headlineMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
                         AppDestination.entries.forEach { item ->
                             NavigationRailItem(
-                                selected = destination == item, onClick = { destination = item },
-                                icon = { AppIcon(item.icon) }, label = { Text(item.label) },
+                                selected = destination == item,
+                                onClick = { destination = item },
+                                icon = { AppIcon(item.icon) },
+                                label = { Text(item.label) },
                                 modifier = Modifier.padding(bottom = 12.dp),
                             )
                         }
@@ -56,49 +87,72 @@ fun EverfoldApp(workspace: MockWorkspace) {
                 Column(Modifier.weight(1f)) {
                     Box(Modifier.weight(1f)) {
                         when (destination) {
-                            AppDestination.Sessions -> Row(Modifier.fillMaxSize()) {
-                                if (wide || !conversationOpen) {
-                                    Surface(
-                                        modifier = if (wide) Modifier.width(300.dp).fillMaxHeight() else Modifier.fillMaxSize(),
-                                        color = MaterialTheme.colorScheme.surfaceContainerLow,
-                                    ) {
-                                        SessionsScreen(
-                                            sessions = workspace.conversations,
-                                            selectedId = if (wide) selected.id else null,
-                                            onSelect = { selectedId = it; conversationOpen = true },
-                                            onCreate = { selectedId = workspace.createConversation(); conversationOpen = true },
+                            AppDestination.Sessions -> {
+                                Row(Modifier.fillMaxSize()) {
+                                    if (wide || !conversationOpen) {
+                                        Surface(
+                                            modifier = if (wide) Modifier.width(300.dp).fillMaxHeight() else Modifier.fillMaxSize(),
+                                            color = MaterialTheme.colorScheme.surfaceContainerLow,
+                                        ) {
+                                            SessionsScreen(
+                                                sessions = workspace.conversations,
+                                                selectedId = if (wide) selected.id else null,
+                                                onSelect = {
+                                                    selectedId = it
+                                                    conversationOpen = true
+                                                },
+                                                onCreate = {
+                                                    selectedId = workspace.createConversation()
+                                                    conversationOpen = true
+                                                },
+                                            )
+                                        }
+                                    }
+                                    if (wide) VerticalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+                                    if (showingConversation) {
+                                        ConversationScreen(
+                                            state = selected,
+                                            showBack = !wide,
+                                            onBack = { conversationOpen = false },
+                                            onDraftChange = { workspace.updateDraft(selected.id, it) },
+                                            onSend = { workspace.send(selected.id) },
+                                            onStop = { workspace.stop(selected.id) },
+                                            modifier = Modifier.weight(1f),
                                         )
                                     }
                                 }
-                                if (wide) VerticalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
-                                if (showingConversation) {
-                                    ConversationScreen(
-                                        state = selected, showBack = !wide, onBack = { conversationOpen = false },
-                                        onDraftChange = { workspace.updateDraft(selected.id, it) },
-                                        onSend = { workspace.send(selected.id) }, onStop = { workspace.stop(selected.id) },
-                                        modifier = Modifier.weight(1f),
-                                    )
-                                }
                             }
-                            AppDestination.Connections -> ConnectionsScreen(
-                                workspace.connectionMode, workspace.remoteAddress, workspace.connectionPreview,
-                                workspace::changeConnectionMode, workspace::updateRemoteAddress, workspace::toggleConnectionPreview,
-                            )
-                            AppDestination.Settings -> SettingsScreen(
-                                themeMode = workspace.themeMode,
-                                themeColor = workspace.themeColor,
-                                onThemeChange = workspace::setTheme,
-                                onPresetChange = workspace::selectThemePreset,
-                                onCustomColorChange = workspace::applyCustomThemeColor,
-                            )
+
+                            AppDestination.Connections -> {
+                                ConnectionsScreen(
+                                    workspace.connectionMode,
+                                    workspace.remoteAddress,
+                                    workspace.connectionPreview,
+                                    workspace::changeConnectionMode,
+                                    workspace::updateRemoteAddress,
+                                    workspace::toggleConnectionPreview,
+                                )
+                            }
+
+                            AppDestination.Settings -> {
+                                SettingsScreen(
+                                    themeMode = workspace.themeMode,
+                                    themeColor = workspace.themeColor,
+                                    onThemeChange = workspace::setTheme,
+                                    onPresetChange = workspace::selectThemePreset,
+                                    onCustomColorChange = workspace::applyCustomThemeColor,
+                                )
+                            }
                         }
                     }
                     if (!rail && !showingConversation) {
                         NavigationBar {
                             AppDestination.entries.forEach { item ->
                                 NavigationBarItem(
-                                    selected = destination == item, onClick = { destination = item },
-                                    icon = { AppIcon(item.icon) }, label = { Text(item.label) },
+                                    selected = destination == item,
+                                    onClick = { destination = item },
+                                    icon = { AppIcon(item.icon) },
+                                    label = { Text(item.label) },
                                 )
                             }
                         }

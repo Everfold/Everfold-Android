@@ -28,6 +28,15 @@ direnv allow
 # Desktop
 ./gradlew :desktopApp:run
 
+# Check formatting
+./gradlew spotlessCheck
+
+# Formatting
+./gradlew spotlessApply
+
+# Verification
+./gradlew :check
+
 # Android tests
 ./gradlew :shared:testAndroidHostTest
 
