@@ -1,5 +1,14 @@
 package com.everfold.kotlin.feature.onboarding
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -32,7 +41,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -173,6 +181,12 @@ internal fun OnboardingScreen(
             Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing).imePadding(),
         ) {
             val wide = maxWidth >= 1000.dp
+            val slideDistance = with(LocalDensity.current) { 32.dp.roundToPx() }
+            val progress by animateFloatAsState(
+                targetValue = (step.ordinal + 1) / (if (cluster) 4f else 3f),
+                animationSpec = tween(240),
+                label = "setupProgress",
+            )
             val contentWidth = maxWidth - (if (wide) 280.dp + 64.dp else 48.dp) - 12.dp
             val preferenceColumns =
                 when {
@@ -193,21 +207,32 @@ internal fun OnboardingScreen(
                     Text(localizedString(Res.string.setup_step, step.ordinal + 1, if (cluster) 4 else 3), Modifier.padding(vertical = 8.dp))
                     if (!wide) {
                         LinearProgressIndicator(
-                            progress = { (step.ordinal + 1) / (if (cluster) 4f else 3f) },
+                            progress = { progress },
                             modifier = Modifier.fillMaxWidth(),
                         )
                     }
-                    key(step) {
-                        OnboardingScrollArea(Modifier.weight(1f, fill = !wide)) {
+                    AnimatedContent(
+                        targetState = step,
+                        modifier = Modifier.weight(1f, fill = !wide).fillMaxWidth(),
+                        transitionSpec = {
+                            val direction = if (targetState.ordinal > initialState.ordinal) 1 else -1
+                            (slideInHorizontally(tween(240)) { direction * slideDistance } + fadeIn(tween(160, delayMillis = 40)))
+                                .togetherWith(slideOutHorizontally(tween(200)) { -direction * slideDistance } + fadeOut(tween(100)))
+                                .using(SizeTransform { _, _ -> tween(240) })
+                        },
+                        contentAlignment = Alignment.TopStart,
+                        label = "setupStep",
+                    ) { displayedStep ->
+                        OnboardingScrollArea {
                             val title =
-                                when (step) {
+                                when (displayedStep) {
                                     SetupStep.Welcome -> Res.string.onboarding_welcome
                                     SetupStep.Preferences -> Res.string.setup_preferences
                                     SetupStep.Mode -> Res.string.setup_mode
                                     SetupStep.Cluster -> Res.string.setup_cluster
                                 }
                             Text(localizedString(title), style = MaterialTheme.typography.headlineMedium)
-                            when (step) {
+                            when (displayedStep) {
                                 SetupStep.Welcome -> {
                                     WelcomeFeatures(contentWidth >= 840.dp)
                                 }
