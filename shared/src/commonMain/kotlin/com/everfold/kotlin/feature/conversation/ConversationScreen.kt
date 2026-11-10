@@ -31,6 +31,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameNanos
@@ -40,15 +41,22 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.isAltPressed
 import androidx.compose.ui.input.key.isCtrlPressed
 import androidx.compose.ui.input.key.isMetaPressed
+import androidx.compose.ui.input.key.isShiftPressed
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.key.type
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.everfold.kotlin.feature.settings.ConversationTextScale
+import com.everfold.kotlin.feature.settings.ConversationTextSize
+import com.everfold.kotlin.feature.settings.SendShortcut
 import com.everfold.kotlin.ui.components.AppIcon
 import com.everfold.kotlin.ui.components.AppSymbol
 import com.everfold.kotlin.ui.components.AppTooltip
@@ -64,6 +72,7 @@ import everfold.shared.generated.resources.new_session
 import everfold.shared.generated.resources.open_workspace
 import everfold.shared.generated.resources.send_message
 import everfold.shared.generated.resources.send_shortcut
+import everfold.shared.generated.resources.send_shortcut_enter
 import everfold.shared.generated.resources.show_sessions
 import everfold.shared.generated.resources.stop_reply
 import everfold.shared.generated.resources.suggestion_ideas
@@ -91,7 +100,14 @@ fun ConversationScreen(
     modifier: Modifier = Modifier,
     showPreviewMenu: Boolean = true,
     inputFocusRequest: Int = 0,
+    textSize: ConversationTextSize = ConversationTextSize.System,
+    shortcut: SendShortcut = SendShortcut.ModifiedEnter,
+    collapsePrompts: Boolean = true,
 ) {
+    var inputValue by remember(state.id) { mutableStateOf(TextFieldValue(state.draft, TextRange(state.draft.length))) }
+    LaunchedEffect(state.draft) {
+        if (inputValue.text != state.draft) inputValue = TextFieldValue(state.draft, TextRange(state.draft.length))
+    }
     val inputFocus = remember { FocusRequester() }
     LaunchedEffect(state.id, autoFocusInput, inputFocusRequest) {
         if (desktopUi && autoFocusInput) {
@@ -151,6 +167,8 @@ fun ConversationScreen(
                 ConversationMessages(
                     state,
                     scrollRequest,
+                    textSize = textSize,
+                    collapsePrompts = collapsePrompts,
                     onJumpToLatest = { if (desktopUi) inputFocus.requestFocus() },
                     modifier = Modifier.weight(1f),
                 )
@@ -161,32 +179,48 @@ fun ConversationScreen(
             Column(Modifier.widthIn(max = 840.dp).fillMaxWidth().padding(horizontal = 20.dp, vertical = 12.dp)) {
                 Surface(shape = RoundedCornerShape(24.dp), color = MaterialTheme.colorScheme.surfaceContainerLow) {
                     Row(Modifier.fillMaxWidth().padding(8.dp), verticalAlignment = Alignment.Bottom) {
-                        TextField(
-                            value = state.draft,
-                            onValueChange = onDraftChange,
-                            modifier =
-                                Modifier.weight(1f).focusRequester(inputFocus).onPreviewKeyEvent {
-                                    if (it.type == KeyEventType.KeyDown && it.key == Key.Enter && (it.isCtrlPressed || it.isMetaPressed)) {
-                                        if (!state.isResponding && state.draft.isNotBlank()) send()
-                                        true
-                                    } else {
-                                        false
-                                    }
+                        ConversationTextScale(textSize) {
+                            TextField(
+                                value = inputValue,
+                                onValueChange = {
+                                    inputValue = it
+                                    onDraftChange(it.text)
                                 },
-                            placeholder = { Text(localizedString(Res.string.message_placeholder)) },
-                            maxLines = 5,
-                            colors =
-                                TextFieldDefaults.colors(
-                                    focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-                                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-                                    focusedIndicatorColor = androidx.compose.ui.graphics.Color.Transparent,
-                                    unfocusedIndicatorColor = androidx.compose.ui.graphics.Color.Transparent,
-                                ),
-                        )
+                                modifier =
+                                    Modifier.weight(1f).focusRequester(inputFocus).onPreviewKeyEvent {
+                                        if (it.type == KeyEventType.KeyDown && it.key == Key.Enter &&
+                                            shortcut.matches(
+                                                ctrl = it.isCtrlPressed,
+                                                meta = it.isMetaPressed,
+                                                shift = it.isShiftPressed,
+                                                alt = it.isAltPressed,
+                                                desktop = desktopUi,
+                                                composing =
+                                                    inputValue.composition != null,
+                                            )
+                                        ) {
+                                            if (!state.isResponding && state.draft.isNotBlank()) send()
+                                            true
+                                        } else {
+                                            false
+                                        }
+                                    },
+                                placeholder = { Text(localizedString(Res.string.message_placeholder)) },
+                                maxLines = 5,
+                                colors =
+                                    TextFieldDefaults.colors(
+                                        focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+                                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+                                        focusedIndicatorColor = androidx.compose.ui.graphics.Color.Transparent,
+                                        unfocusedIndicatorColor = androidx.compose.ui.graphics.Color.Transparent,
+                                    ),
+                            )
+                        }
                         AppTooltip(
                             localizedString(
                                 when {
                                     state.isResponding -> Res.string.stop_reply
+                                    desktopUi && shortcut == SendShortcut.Enter -> Res.string.send_shortcut_enter
                                     desktopUi -> Res.string.send_shortcut
                                     else -> Res.string.send_message
                                 },
@@ -218,6 +252,8 @@ internal fun MessageItem(
     message: ChatMessage,
     modifier: Modifier = Modifier,
     onPromptHeightChange: (Int) -> Unit = {},
+    textSize: ConversationTextSize = ConversationTextSize.System,
+    collapsePrompts: Boolean = true,
 ) {
     val user = message.role == MessageRole.User
     Column(modifier, horizontalAlignment = if (user) Alignment.End else Alignment.Start) {
@@ -230,22 +266,24 @@ internal fun MessageItem(
             )
         }
         Spacer(Modifier.height(10.dp))
-        if (user) {
-            Surface(
-                shape = RoundedCornerShape(20.dp),
-                color = MaterialTheme.colorScheme.secondaryContainer,
-            ) {
-                UserPrompt(message, onPromptHeightChange)
-            }
-        } else {
-            SelectionContainer {
-                if (message.text.isEmpty()) {
-                    Text(
-                        localizedString(Res.string.thinking),
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
-                } else {
-                    MessageMarkdown(message.text)
+        ConversationTextScale(textSize) {
+            if (user) {
+                Surface(
+                    shape = RoundedCornerShape(20.dp),
+                    color = MaterialTheme.colorScheme.secondaryContainer,
+                ) {
+                    UserPrompt(message, onPromptHeightChange, collapsePrompts)
+                }
+            } else {
+                SelectionContainer {
+                    if (message.text.isEmpty()) {
+                        Text(
+                            localizedString(Res.string.thinking),
+                            style = MaterialTheme.typography.bodyLarge,
+                        )
+                    } else {
+                        MessageMarkdown(message.text)
+                    }
                 }
             }
         }

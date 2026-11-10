@@ -27,6 +27,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.everfold.kotlin.feature.settings.ConversationTextSize
 import com.everfold.kotlin.ui.localization.localizedString
 import everfold.shared.generated.resources.Res
 import everfold.shared.generated.resources.jump_to_latest
@@ -39,6 +40,8 @@ internal fun ConversationMessages(
     scrollRequest: Int,
     onJumpToLatest: () -> Unit,
     modifier: Modifier = Modifier,
+    textSize: ConversationTextSize = ConversationTextSize.System,
+    collapsePrompts: Boolean = true,
 ) {
     val list = rememberLazyListState()
     val scope = rememberCoroutineScope()
@@ -76,6 +79,8 @@ internal fun ConversationMessages(
                     MessageItem(
                         message,
                         Modifier.widthIn(max = 760.dp).fillMaxWidth(),
+                        textSize = textSize,
+                        collapsePrompts = collapsePrompts,
                         onPromptHeightChange = { heightChange ->
                             followLatest = false
                             val info = list.layoutInfo

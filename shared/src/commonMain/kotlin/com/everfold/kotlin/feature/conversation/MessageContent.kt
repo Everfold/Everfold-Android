@@ -47,14 +47,15 @@ import kotlinx.coroutines.delay
 internal fun UserPrompt(
     message: ChatMessage,
     onHeightChange: (Int) -> Unit,
+    collapsePrompts: Boolean = true,
 ) {
-    var expanded by rememberSaveable(message.id) { mutableStateOf(false) }
+    var expanded by rememberSaveable(message.id, collapsePrompts) { mutableStateOf(false) }
     var layout by remember(message.id) { mutableStateOf<TextLayoutResult?>(null) }
     val measurer = rememberTextMeasurer()
     val style = MaterialTheme.typography.bodyLarge
     BoxWithConstraints(Modifier.padding(16.dp)) {
         val measured = measurer.measure(message.text, style = style, maxLines = 9, constraints = constraints)
-        val collapsible = measured.lineCount > 8
+        val collapsible = collapsePrompts && measured.lineCount > 8
         Column(horizontalAlignment = Alignment.End) {
             SelectionContainer {
                 Text(

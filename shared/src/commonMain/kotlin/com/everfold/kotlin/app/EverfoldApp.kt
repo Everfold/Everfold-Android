@@ -63,6 +63,8 @@ import com.everfold.kotlin.feature.connections.ConnectionsScreen
 import com.everfold.kotlin.feature.conversation.AgentRunState
 import com.everfold.kotlin.feature.conversation.ConversationScreen
 import com.everfold.kotlin.feature.sessions.SessionsScreen
+import com.everfold.kotlin.feature.settings.ConversationTextSize
+import com.everfold.kotlin.feature.settings.SendShortcut
 import com.everfold.kotlin.feature.settings.SettingsScreen
 import com.everfold.kotlin.mock.MockWorkspace
 import com.everfold.kotlin.ui.components.AppIcon
@@ -86,6 +88,9 @@ fun EverfoldApp(
     onLanguageChange: (AppLanguage) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    var textSize by rememberSaveable { mutableStateOf(ConversationTextSize.System) }
+    var shortcut by rememberSaveable { mutableStateOf(SendShortcut.ModifiedEnter) }
+    var collapsePrompts by rememberSaveable { mutableStateOf(true) }
     val reply = localizedString(Res.string.sample_reply)
     var destination by rememberSaveable { mutableStateOf(AppDestination.Sessions) }
     var showArchived by rememberSaveable { mutableStateOf(false) }
@@ -313,6 +318,9 @@ fun EverfoldApp(
                                         conversationStates.SaveableStateProvider(selected?.id ?: workspace.newConversation.id) {
                                             ConversationScreen(
                                                 state = selected ?: workspace.newConversation,
+                                                textSize = textSize,
+                                                shortcut = shortcut,
+                                                collapsePrompts = collapsePrompts,
                                                 showPreviewMenu = selected != null,
                                                 inputFocusRequest = composerFocusRequest,
                                                 compactNavigation = !wide,
@@ -381,6 +389,12 @@ fun EverfoldApp(
 
                                 AppDestination.Settings -> {
                                     SettingsScreen(
+                                        textSize = textSize,
+                                        onTextSizeChange = { textSize = it },
+                                        shortcut = shortcut,
+                                        onShortcutChange = { shortcut = it },
+                                        collapsePrompts = collapsePrompts,
+                                        onCollapsePromptsChange = { collapsePrompts = it },
                                         language = language,
                                         onLanguageChange = onLanguageChange,
                                         themeMode = workspace.themeMode,

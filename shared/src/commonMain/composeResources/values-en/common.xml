@@ -23,6 +23,6 @@
     <string name="new_session_shortcut">New conversation · Ctrl + N</string>
     <string name="show_sessions">Show conversations · Ctrl + B</string>
     <string name="hide_sessions">Hide conversations · Ctrl + B</string>
-    <string name="send_shortcut">Ctrl + Enter to send · Enter for a new line</string>
+    <string name="send_shortcut">Ctrl/Cmd + Enter to send · Enter for a new line</string>
 
 </resources>

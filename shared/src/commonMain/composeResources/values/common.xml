@@ -23,6 +23,6 @@
     <string name="new_session_shortcut">新建会话 · Ctrl + N</string>
     <string name="show_sessions">展开会话列表 · Ctrl + B</string>
     <string name="hide_sessions">折叠会话列表 · Ctrl + B</string>
-    <string name="send_shortcut">Ctrl + Enter 发送 · Enter 换行</string>
+    <string name="send_shortcut">Ctrl/Cmd + Enter 发送 · Enter 换行</string>
 
 </resources>
