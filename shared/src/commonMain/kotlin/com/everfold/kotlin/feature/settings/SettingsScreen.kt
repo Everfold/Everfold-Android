@@ -48,24 +48,7 @@ fun SettingsScreen(
 ) {
     SettingsLayout(localizedString(Res.string.nav_settings), localizedString(Res.string.settings_subtitle), modifier) {
         LanguageSettings(language, onLanguageChange)
-        Text(localizedString(Res.string.appearance), style = MaterialTheme.typography.titleMedium)
-        Surface(shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.surfaceContainerLow) {
-            Column(Modifier.fillMaxWidth().selectableGroup().padding(vertical = 8.dp)) {
-                ThemeMode.entries.forEach { mode ->
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .selectable(themeMode == mode, role = Role.RadioButton, onClick = { onThemeChange(mode) })
-                            .padding(horizontal = 20.dp, vertical = 12.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    ) {
-                        RadioButton(themeMode == mode, onClick = null)
-                        Text(localizedString(mode.label))
-                    }
-                }
-            }
-        }
+        AppearanceSettings(themeMode, onThemeChange)
         ThemeColorSettings(themeColor, onSystemColorChange, onPresetChange, onCustomColorChange)
         Text(localizedString(Res.string.about), style = MaterialTheme.typography.titleMedium)
         Surface(shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.surfaceContainerLow) {

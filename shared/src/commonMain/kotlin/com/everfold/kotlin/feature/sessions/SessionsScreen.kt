@@ -23,14 +23,18 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.isSecondaryPressed
 import androidx.compose.ui.input.pointer.onPointerEvent
@@ -40,6 +44,8 @@ import androidx.compose.ui.unit.dp
 import com.everfold.kotlin.feature.conversation.ConversationUiState
 import com.everfold.kotlin.ui.components.AppIcon
 import com.everfold.kotlin.ui.components.AppSymbol
+import com.everfold.kotlin.ui.components.AppTooltip
+import com.everfold.kotlin.ui.components.desktopUi
 import com.everfold.kotlin.ui.localization.localizedString
 import com.everfold.kotlin.ui.localization.resolve
 import everfold.shared.generated.resources.Res
@@ -50,6 +56,7 @@ import everfold.shared.generated.resources.delete_session_notice
 import everfold.shared.generated.resources.empty_sessions
 import everfold.shared.generated.resources.nav_sessions
 import everfold.shared.generated.resources.new_session
+import everfold.shared.generated.resources.new_session_shortcut
 import everfold.shared.generated.resources.no_sessions
 import everfold.shared.generated.resources.pin_session
 import everfold.shared.generated.resources.pinned_session
@@ -74,7 +81,15 @@ fun SessionsScreen(
     onDelete: (String) -> Unit,
     onTogglePin: (String) -> Unit,
     modifier: Modifier = Modifier,
+    searchRequest: Int = 0,
 ) {
+    val searchFocus = remember { FocusRequester() }
+    LaunchedEffect(searchRequest) {
+        if (searchRequest > 0) {
+            withFrameNanos { }
+            searchFocus.requestFocus()
+        }
+    }
     var renaming by remember { mutableStateOf<String?>(null) }
     var deleting by remember { mutableStateOf<String?>(null) }
     var name by rememberSaveable { mutableStateOf("") }
@@ -96,7 +111,9 @@ fun SessionsScreen(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-            FilledTonalIconButton(onClick = onCreate) { AppIcon(AppSymbol.Plus, description = localizedString(Res.string.new_session)) }
+            AppTooltip(localizedString(if (desktopUi) Res.string.new_session_shortcut else Res.string.new_session)) {
+                FilledTonalIconButton(onClick = onCreate) { AppIcon(AppSymbol.Plus, description = localizedString(Res.string.new_session)) }
+            }
         }
         OutlinedTextField(
             value = query,
@@ -112,7 +129,7 @@ fun SessionsScreen(
                 }
             },
             shape = RoundedCornerShape(16.dp),
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().focusRequester(searchFocus),
         )
         Text(
             localizedString(Res.string.recent_sessions, filtered.size),

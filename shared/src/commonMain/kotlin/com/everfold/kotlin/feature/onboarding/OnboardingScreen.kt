@@ -72,6 +72,7 @@ import androidx.navigationevent.compose.NavigationBackHandler
 import androidx.navigationevent.compose.rememberNavigationEventState
 import com.everfold.kotlin.feature.connections.ClusterConnectionForm
 import com.everfold.kotlin.feature.connections.ClusterSetup
+import com.everfold.kotlin.feature.settings.AppearanceSettings
 import com.everfold.kotlin.feature.settings.LanguageSettings
 import com.everfold.kotlin.feature.settings.ThemeColorSettings
 import com.everfold.kotlin.mock.MockWorkspace
@@ -439,12 +440,5 @@ private fun OnboardingPreferences(
 
 @Composable
 private fun OnboardingAppearance(workspace: MockWorkspace) {
-    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        Text(localizedString(Res.string.appearance), style = MaterialTheme.typography.titleMedium)
-        Column(Modifier.selectableGroup(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            ThemeMode.entries.forEach { mode ->
-                SetupChoice(mode.label, workspace.themeMode == mode, { workspace.setTheme(mode) })
-            }
-        }
-    }
+    AppearanceSettings(workspace.themeMode, workspace::setTheme)
 }

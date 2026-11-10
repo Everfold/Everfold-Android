@@ -34,8 +34,11 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.isCtrlPressed
@@ -48,6 +51,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.everfold.kotlin.ui.components.AppIcon
 import com.everfold.kotlin.ui.components.AppSymbol
+import com.everfold.kotlin.ui.components.AppTooltip
+import com.everfold.kotlin.ui.components.desktopUi
 import com.everfold.kotlin.ui.localization.localizedString
 import com.everfold.kotlin.ui.localization.resolve
 import everfold.shared.generated.resources.Res
@@ -56,10 +61,13 @@ import everfold.shared.generated.resources.conversation_notice
 import everfold.shared.generated.resources.conversation_space
 import everfold.shared.generated.resources.copy_message
 import everfold.shared.generated.resources.generating_reply
+import everfold.shared.generated.resources.hide_sessions
 import everfold.shared.generated.resources.logo
 import everfold.shared.generated.resources.message_placeholder
 import everfold.shared.generated.resources.preview_badge
 import everfold.shared.generated.resources.send_message
+import everfold.shared.generated.resources.send_shortcut
+import everfold.shared.generated.resources.show_sessions
 import everfold.shared.generated.resources.stop_reply
 import everfold.shared.generated.resources.stopped_hint
 import everfold.shared.generated.resources.suggestion_ideas
@@ -82,8 +90,19 @@ fun ConversationScreen(
     connectionLabel: String,
     onRetry: () -> Unit,
     onPreviewState: (AgentRunState) -> Unit,
+    autoFocusInput: Boolean,
+    showSessionToggle: Boolean,
+    sessionsVisible: Boolean,
+    onToggleSessions: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val inputFocus = remember { FocusRequester() }
+    LaunchedEffect(state.id, autoFocusInput) {
+        if (desktopUi && autoFocusInput) {
+            withFrameNanos { }
+            inputFocus.requestFocus()
+        }
+    }
     var scrollRequest by remember(state.id) { mutableIntStateOf(0) }
     val send = {
         scrollRequest++
@@ -91,6 +110,12 @@ fun ConversationScreen(
     }
     Column(modifier.fillMaxSize()) {
         Row(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 16.dp), verticalAlignment = Alignment.CenterVertically) {
+            if (showSessionToggle) {
+                val label = localizedString(if (sessionsVisible) Res.string.hide_sessions else Res.string.show_sessions)
+                AppTooltip(label) {
+                    IconButton(onClick = onToggleSessions) { AppIcon(AppSymbol.Sidebar, description = label) }
+                }
+            }
             if (showBack) IconButton(onClick = onBack) { AppIcon(AppSymbol.Back, description = localizedString(Res.string.back_sessions)) }
             Column(Modifier.weight(1f).padding(horizontal = 12.dp)) {
                 Text(state.title.resolve(), style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
@@ -109,9 +134,12 @@ fun ConversationScreen(
             }
         }
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
-        AgentStatusBar(state.runState, onRetry, onPreviewState)
+        key(state.id) { AgentStatusBar(state.runState, onRetry, onPreviewState) }
         if (state.messages.isEmpty()) {
-            WelcomeContent(onDraftChange, Modifier.weight(1f))
+            WelcomeContent({
+                onDraftChange(it)
+                inputFocus.requestFocus()
+            }, Modifier.weight(1f))
         } else {
             key(state.id) {
                 ConversationMessages(state, scrollRequest, Modifier.weight(1f))
@@ -126,7 +154,7 @@ fun ConversationScreen(
                             value = state.draft,
                             onValueChange = onDraftChange,
                             modifier =
-                                Modifier.weight(1f).onPreviewKeyEvent {
+                                Modifier.weight(1f).focusRequester(inputFocus).onPreviewKeyEvent {
                                     if (it.type == KeyEventType.KeyDown && it.key == Key.Enter && (it.isCtrlPressed || it.isMetaPressed)) {
                                         if (!state.isResponding && state.draft.isNotBlank()) send()
                                         true
@@ -164,7 +192,7 @@ fun ConversationScreen(
                     }
                 }
                 Text(
-                    localizedString(Res.string.conversation_notice),
+                    localizedString(if (desktopUi) Res.string.send_shortcut else Res.string.conversation_notice),
                     Modifier.align(Alignment.CenterHorizontally).padding(top = 8.dp),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,

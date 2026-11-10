@@ -1,0 +1,11 @@
+package com.everfold.kotlin.ui.components
+
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
+import java.awt.Cursor
+
+internal actual val desktopUi: Boolean = true
+
+internal actual fun Modifier.horizontalResizePointer(): Modifier =
+    pointerHoverIcon(PointerIcon(Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR)))
