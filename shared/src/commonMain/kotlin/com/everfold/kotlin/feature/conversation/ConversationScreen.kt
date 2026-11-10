@@ -230,22 +230,22 @@ internal fun MessageItem(
             )
         }
         Spacer(Modifier.height(10.dp))
-        Surface(
-            shape = RoundedCornerShape(20.dp),
-            color = if (user) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surface,
-        ) {
-            if (user) {
+        if (user) {
+            Surface(
+                shape = RoundedCornerShape(20.dp),
+                color = MaterialTheme.colorScheme.secondaryContainer,
+            ) {
                 UserPrompt(message, onPromptHeightChange)
-            } else {
-                SelectionContainer {
-                    if (message.text.isEmpty()) {
-                        Text(
-                            message.text.ifEmpty { localizedString(Res.string.thinking) },
-                            style = MaterialTheme.typography.bodyLarge,
-                        )
-                    } else {
-                        MessageMarkdown(message.text)
-                    }
+            }
+        } else {
+            SelectionContainer {
+                if (message.text.isEmpty()) {
+                    Text(
+                        localizedString(Res.string.thinking),
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                } else {
+                    MessageMarkdown(message.text)
                 }
             }
         }
