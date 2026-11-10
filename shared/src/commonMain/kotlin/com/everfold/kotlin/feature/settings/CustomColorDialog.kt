@@ -85,7 +85,7 @@ internal fun CustomColorDialog(
                     },
                     modifier = Modifier.fillMaxWidth(),
                     label = { Text(localizedString(Res.string.hex_color)) },
-                    placeholder = { Text("#426653") },
+                    placeholder = { Text("#673AB7") },
                     singleLine = true,
                     isError = parsed == null,
                     keyboardOptions =

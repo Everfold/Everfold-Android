@@ -5,11 +5,11 @@ import androidx.compose.ui.graphics.toArgb
 import everfold.shared.generated.resources.Res
 import everfold.shared.generated.resources.custom
 import everfold.shared.generated.resources.follow_system
-import everfold.shared.generated.resources.preset_amber
-import everfold.shared.generated.resources.preset_forest
-import everfold.shared.generated.resources.preset_iris
-import everfold.shared.generated.resources.preset_ocean
-import everfold.shared.generated.resources.preset_rose
+import everfold.shared.generated.resources.preset_blue
+import everfold.shared.generated.resources.preset_green
+import everfold.shared.generated.resources.preset_orange
+import everfold.shared.generated.resources.preset_pink
+import everfold.shared.generated.resources.preset_purple
 import everfold.shared.generated.resources.preset_teal
 import org.jetbrains.compose.resources.StringResource
 
@@ -17,25 +17,25 @@ enum class ThemePreset(
     val label: StringResource,
     val seed: Color,
 ) {
-    Forest(Res.string.preset_forest, Color(0xFF426653)),
-    Ocean(Res.string.preset_ocean, Color(0xFF386A9D)),
-    Iris(Res.string.preset_iris, Color(0xFF76558D)),
-    Rose(Res.string.preset_rose, Color(0xFF9C4F69)),
-    Amber(Res.string.preset_amber, Color(0xFF866016)),
-    Teal(Res.string.preset_teal, Color(0xFF006A6A)),
+    Purple(Res.string.preset_purple, Color(0xFF673AB7)),
+    Blue(Res.string.preset_blue, Color(0xFF2196F3)),
+    Teal(Res.string.preset_teal, Color(0xFF009688)),
+    Green(Res.string.preset_green, Color(0xFF4CAF50)),
+    Orange(Res.string.preset_orange, Color(0xFFFF9800)),
+    Pink(Res.string.preset_pink, Color(0xFFE91E63)),
 }
 
 enum class ThemeColorMode { System, Preset, Custom }
 
 data class ThemeColorSelection(
     val mode: ThemeColorMode = ThemeColorMode.System,
-    val preset: ThemePreset = ThemePreset.Forest,
-    val customSeed: Color = ThemePreset.Forest.seed,
+    val preset: ThemePreset = ThemePreset.Purple,
+    val customSeed: Color = ThemePreset.Purple.seed,
 ) {
     val seed: Color
         get() =
             when (mode) {
-                ThemeColorMode.System -> ThemePreset.Forest.seed
+                ThemeColorMode.System -> ThemePreset.Purple.seed
                 ThemeColorMode.Preset -> preset.seed
                 ThemeColorMode.Custom -> customSeed
             }
