@@ -1,5 +1,6 @@
 package com.everfold.kotlin.ui.components
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,18 +29,21 @@ fun SettingsLayout(
     title: String,
     modifier: Modifier = Modifier,
     onBack: (() -> Unit)? = null,
+    scrollState: ScrollState = rememberScrollState(),
+    navigation: @Composable () -> Unit = {},
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Box(modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
         Column(
             Modifier
                 .widthIn(max = 760.dp)
-                .fillMaxWidth()
-                .verticalScroll(rememberScrollState())
-                .padding(24.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp),
+                .fillMaxSize(),
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(
+                Modifier.fillMaxWidth().padding(start = 24.dp, end = 24.dp, top = 24.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
                 if (onBack != null) {
                     IconButton(onClick = onBack) {
                         AppIcon(AppSymbol.Back, description = localizedString(Res.string.back_to_conversation))
@@ -52,7 +56,16 @@ fun SettingsLayout(
                     fontWeight = FontWeight.Medium,
                 )
             }
-            content()
+            navigation()
+            Column(
+                Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .verticalScroll(scrollState)
+                    .padding(24.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp),
+                content = content,
+            )
         }
     }
 }
