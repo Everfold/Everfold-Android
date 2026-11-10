@@ -29,7 +29,11 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.key.Key
@@ -76,6 +80,11 @@ fun ConversationScreen(
     onStop: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    var scrollRequest by remember(state.id) { mutableIntStateOf(0) }
+    val send = {
+        scrollRequest++
+        onSend()
+    }
     Column(modifier.fillMaxSize()) {
         Row(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 16.dp), verticalAlignment = Alignment.CenterVertically) {
             if (showBack) IconButton(onClick = onBack) { AppIcon(AppSymbol.Back, description = localizedString(Res.string.back_sessions)) }
@@ -106,35 +115,10 @@ fun ConversationScreen(
             WelcomeContent(onDraftChange, Modifier.weight(1f))
         } else {
             key(state.id) {
-                val listState = rememberLazyListState()
-                // Reversed layout anchors the latest message at the bottom without scrolling on every token.
-                LaunchedEffect(state.messages.size, state.responseStopped) {
-                    listState.scrollToItem(0)
-                }
-                LazyColumn(
-                    state = listState,
-                    reverseLayout = true,
-                    modifier = Modifier.weight(1f).fillMaxWidth(),
-                    contentPadding = PaddingValues(horizontal = 24.dp, vertical = 24.dp),
-                    verticalArrangement = Arrangement.spacedBy(24.dp),
-                ) {
-                    if (state.responseStopped) {
-                        item {
-                            Text(
-                                localizedString(Res.string.stopped_hint),
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                style = MaterialTheme.typography.bodySmall,
-                            )
-                        }
-                    }
-                    items(state.messages.asReversed(), key = { it.id }) { message ->
-                        Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.TopCenter) {
-                            MessageItem(message, Modifier.widthIn(max = 760.dp).fillMaxWidth())
-                        }
-                    }
-                }
+                ConversationMessages(state, scrollRequest, Modifier.weight(1f))
             }
         }
+
         Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
             Column(Modifier.widthIn(max = 840.dp).fillMaxWidth().padding(horizontal = 20.dp, vertical = 12.dp)) {
                 Surface(shape = RoundedCornerShape(24.dp), color = MaterialTheme.colorScheme.surfaceContainerLow) {
@@ -145,7 +129,7 @@ fun ConversationScreen(
                             modifier =
                                 Modifier.weight(1f).onPreviewKeyEvent {
                                     if (it.type == KeyEventType.KeyDown && it.key == Key.Enter && (it.isCtrlPressed || it.isMetaPressed)) {
-                                        if (!state.isResponding && state.draft.isNotBlank()) onSend()
+                                        if (!state.isResponding && state.draft.isNotBlank()) send()
                                         true
                                     } else {
                                         false
@@ -162,7 +146,7 @@ fun ConversationScreen(
                                 ),
                         )
                         FilledIconButton(
-                            onClick = if (state.isResponding) onStop else onSend,
+                            onClick = if (state.isResponding) onStop else send,
                             enabled = state.isResponding || state.draft.isNotBlank(),
                             modifier = Modifier.padding(bottom = 4.dp),
                         ) {
@@ -192,7 +176,7 @@ fun ConversationScreen(
 }
 
 @Composable
-private fun MessageItem(
+internal fun MessageItem(
     message: ChatMessage,
     modifier: Modifier = Modifier,
 ) {

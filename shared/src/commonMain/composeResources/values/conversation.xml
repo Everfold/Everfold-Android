@@ -27,4 +27,6 @@
     <!-- 示例回复；保留字面量 \n\n 作为段落分隔 -->
     <string name="sample_reply">收到，我们可以一起把这个想法继续展开。\n\n先明确你最希望得到的结果，再把它拆成两三个小步骤。你也可以补充背景、约束或已有的材料。\n\n这是一段用于预览对话体验的示例回复，尚未调用 Agent。</string>
 
+    <string name="jump_to_latest">回到最新消息</string>
+
 </resources>

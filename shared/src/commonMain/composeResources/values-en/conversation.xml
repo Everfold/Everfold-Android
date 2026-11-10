@@ -27,4 +27,6 @@
     <!-- 示例回复；保留字面量 \n\n 作为段落分隔 -->
     <string name="sample_reply">Let us explore this idea together.\n\nFirst, decide what outcome you want, then break it into two or three small steps. You can also add context, constraints, or existing materials.\n\nThis is an example reply for the UI preview. No Agent has been called.</string>
 
+    <string name="jump_to_latest">Jump to latest</string>
+
 </resources>
