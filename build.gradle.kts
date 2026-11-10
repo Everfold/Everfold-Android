@@ -16,6 +16,13 @@ spotless {
         target("*/src/**/*.kt")
         targetExclude("**/build/**")
         ktlint(libs.versions.ktlint.get())
+            .customRuleSets(
+                listOf(
+                    libs.composeRules.ktlint
+                        .get()
+                        .toString(),
+                ),
+            )
         trimTrailingWhitespace()
         endWithNewline()
     }
@@ -23,6 +30,24 @@ spotless {
         target("*.gradle.kts", "*/build.gradle.kts", "gradle/**/*.gradle.kts")
         targetExclude("**/build/**")
         ktlint(libs.versions.ktlint.get())
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+    format("config") {
+        target(
+            ".editorconfig",
+            ".gitignore",
+            "*.properties",
+            "*.toml",
+            "*.yml",
+            "*.yaml",
+            "gradle/**/*.properties",
+            "gradle/**/*.toml",
+            ".github/**/*.yml",
+            ".github/**/*.yaml",
+            "*/gradle.properties",
+        )
+        targetExclude("local.properties", "**/build/**")
         trimTrailingWhitespace()
         endWithNewline()
     }

@@ -44,7 +44,7 @@ fun SessionsScreen(
                 Text("会话", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.SemiBold)
                 Text("让每个想法都有下文", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
-            FilledTonalIconButton(onClick = onCreate) { AppIcon(AppSymbol.Plus, "新建会话") }
+            FilledTonalIconButton(onClick = onCreate) { AppIcon(AppSymbol.Plus, description = "新建会话") }
         }
         OutlinedTextField(
             value = query,

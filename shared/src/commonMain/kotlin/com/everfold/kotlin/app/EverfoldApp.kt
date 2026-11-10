@@ -41,12 +41,15 @@ import com.everfold.kotlin.ui.components.AppIcon
 
 /** UI composition root. Only this layer knows that the data source is a mock. */
 @Composable
-fun EverfoldApp(workspace: MockWorkspace) {
+fun EverfoldApp(
+    workspace: MockWorkspace,
+    modifier: Modifier = Modifier,
+) {
     var destination by rememberSaveable { mutableStateOf(AppDestination.Sessions) }
     var selectedId by rememberSaveable { mutableStateOf("welcome") }
     var conversationOpen by rememberSaveable { mutableStateOf(false) }
 
-    Surface(Modifier.fillMaxSize()) {
+    Surface(modifier.fillMaxSize()) {
         BoxWithConstraints(Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing).imePadding()) {
             val wide = maxWidth >= 900.dp
             val rail = maxWidth >= 600.dp

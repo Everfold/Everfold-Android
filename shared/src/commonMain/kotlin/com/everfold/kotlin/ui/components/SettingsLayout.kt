@@ -22,9 +22,10 @@ import androidx.compose.ui.unit.dp
 fun SettingsLayout(
     title: String,
     subtitle: String,
+    modifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
+    Box(modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
         Column(
             Modifier
                 .widthIn(max = 760.dp)

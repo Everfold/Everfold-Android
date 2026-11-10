@@ -46,8 +46,8 @@ private val vectors =
 @Composable
 fun AppIcon(
     symbol: AppSymbol,
-    description: String? = null,
     modifier: Modifier = Modifier,
+    description: String? = null,
 ) {
     Icon(vectors.getValue(symbol), contentDescription = description, modifier = modifier)
 }

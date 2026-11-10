@@ -56,7 +56,7 @@ fun ConversationScreen(
 ) {
     Column(modifier.fillMaxSize()) {
         Row(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 16.dp), verticalAlignment = Alignment.CenterVertically) {
-            if (showBack) IconButton(onClick = onBack) { AppIcon(AppSymbol.Back, "返回会话列表") }
+            if (showBack) IconButton(onClick = onBack) { AppIcon(AppSymbol.Back, description = "返回会话列表") }
             Column(Modifier.weight(1f).padding(horizontal = 12.dp)) {
                 Text(state.title, style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Text(
@@ -136,7 +136,7 @@ fun ConversationScreen(
                         ) {
                             AppIcon(
                                 if (state.isResponding) AppSymbol.Stop else AppSymbol.Send,
-                                if (state.isResponding) "停止回复" else "发送消息",
+                                description = if (state.isResponding) "停止回复" else "发送消息",
                             )
                         }
                     }

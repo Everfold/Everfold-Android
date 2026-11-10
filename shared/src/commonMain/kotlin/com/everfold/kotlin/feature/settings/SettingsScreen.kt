@@ -31,8 +31,9 @@ fun SettingsScreen(
     onThemeChange: (ThemeMode) -> Unit,
     onPresetChange: (ThemePreset) -> Unit,
     onCustomColorChange: (Color) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    SettingsLayout("设置", "让这个空间更适合你。") {
+    SettingsLayout("设置", "让这个空间更适合你。", modifier) {
         Text("外观", style = MaterialTheme.typography.titleMedium)
         Surface(shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.surfaceContainerLow) {
             Column(Modifier.fillMaxWidth().selectableGroup().padding(vertical = 8.dp)) {

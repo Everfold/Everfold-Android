@@ -29,8 +29,9 @@ fun ConnectionsScreen(
     onModeChange: (String) -> Unit,
     onAddressChange: (String) -> Unit,
     onTogglePreview: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    SettingsLayout("连接", "选择你的 Agent 在哪里运行。") {
+    SettingsLayout("连接", "选择你的 Agent 在哪里运行。", modifier) {
         Text("运行方式", style = MaterialTheme.typography.titleMedium)
         Column(Modifier.selectableGroup(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             listOf("本地运行" to "在当前设备上使用 Agent", "远程连接" to "连接另一台设备或服务器上的 Agent").forEach { (name, detail) ->
