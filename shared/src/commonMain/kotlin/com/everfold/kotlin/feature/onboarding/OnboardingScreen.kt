@@ -1,15 +1,20 @@
 package com.everfold.kotlin.feature.onboarding
 
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
@@ -19,9 +24,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
@@ -33,11 +40,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.isAltPressed
+import androidx.compose.ui.input.key.isCtrlPressed
+import androidx.compose.ui.input.key.isMetaPressed
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onPreviewKeyEvent
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -97,7 +115,11 @@ import everfold.shared.generated.resources.scan_file
 import everfold.shared.generated.resources.scan_preview
 import everfold.shared.generated.resources.setup_cluster
 import everfold.shared.generated.resources.setup_mode
+import everfold.shared.generated.resources.setup_nav_preferences
+import everfold.shared.generated.resources.setup_nav_welcome
 import everfold.shared.generated.resources.setup_preferences
+import everfold.shared.generated.resources.setup_shortcuts
+import everfold.shared.generated.resources.setup_sidebar_hint
 import everfold.shared.generated.resources.setup_step
 import everfold.shared.generated.resources.simulate_failure
 import everfold.shared.generated.resources.test_connection
@@ -119,6 +141,9 @@ internal fun OnboardingScreen(
     modifier: Modifier = Modifier,
 ) {
     var step by remember { mutableStateOf(SetupStep.Welcome) }
+    var furthestStep by remember { mutableIntStateOf(0) }
+    val focusRequester = remember { FocusRequester() }
+    LaunchedEffect(Unit) { focusRequester.requestFocus() }
     var cluster by remember { mutableStateOf(false) }
     var form by remember { mutableStateOf(ClusterSetup()) }
     var test by remember { mutableStateOf(ConnectionTest.Idle) }
@@ -130,132 +155,171 @@ internal fun OnboardingScreen(
             test = if (failTest) ConnectionTest.Failure else ConnectionTest.Success
         }
     }
-    val back = {
-        if (step == SetupStep.Cluster) test = ConnectionTest.Idle
-        step = SetupStep.entries[(step.ordinal - 1).coerceAtLeast(0)]
+    val navigate: (SetupStep) -> Unit = {
+        if (test == ConnectionTest.Testing) test = ConnectionTest.Idle
+        step = it
+        furthestStep = maxOf(furthestStep, it.ordinal)
+    }
+    val back = { navigate(SetupStep.entries[(step.ordinal - 1).coerceAtLeast(0)]) }
+    val finish = step == SetupStep.Cluster || (step == SetupStep.Mode && !cluster)
+    val advance = {
+        when {
+            step == SetupStep.Cluster && test != ConnectionTest.Success -> {
+                showError = !form.isValid
+                if (form.isValid && test != ConnectionTest.Testing) test = ConnectionTest.Testing
+            }
+
+            finish -> {
+                onComplete(if (cluster) form else null)
+            }
+
+            else -> {
+                navigate(SetupStep.entries[step.ordinal + 1])
+            }
+        }
     }
     NavigationBackHandler(
         state = rememberNavigationEventState(NavigationEventInfo.None),
         isBackEnabled = step != SetupStep.Welcome,
         onBackCompleted = back,
     )
-    Surface(modifier.fillMaxSize()) {
-        Box(Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing).imePadding(), contentAlignment = Alignment.TopCenter) {
-            Column(Modifier.widthIn(max = 760.dp).fillMaxSize().padding(horizontal = 24.dp, vertical = 16.dp)) {
-                Text("Everfold", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary)
-                Text(localizedString(Res.string.setup_step, step.ordinal + 1, if (cluster) 4 else 3), Modifier.padding(vertical = 8.dp))
-                LinearProgressIndicator(progress = { (step.ordinal + 1) / (if (cluster) 4f else 3f) }, modifier = Modifier.fillMaxWidth())
-                key(step) {
-                    Column(
-                        Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(vertical = 24.dp),
-                        verticalArrangement = Arrangement.spacedBy(20.dp),
-                    ) {
-                        val title =
+    Surface(
+        modifier
+            .fillMaxSize()
+            .onPreviewKeyEvent {
+                if (it.type != KeyEventType.KeyDown) {
+                    false
+                } else if ((it.isCtrlPressed || it.isMetaPressed) && it.key == Key.Enter) {
+                    if (test != ConnectionTest.Testing) advance()
+                    true
+                } else if (it.isAltPressed && it.key == Key.DirectionLeft && step != SetupStep.Welcome) {
+                    back()
+                    true
+                } else {
+                    false
+                }
+            }.focusRequester(focusRequester)
+            .focusable(),
+    ) {
+        BoxWithConstraints(
+            Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing).imePadding(),
+            contentAlignment = Alignment.TopCenter,
+        ) {
+            val wide = maxWidth >= 1000.dp
+            Row(Modifier.widthIn(max = 1440.dp).fillMaxSize()) {
+                if (wide) {
+                    SetupSidebar(step, furthestStep, cluster, navigate)
+                }
+                Column(Modifier.weight(1f).fillMaxHeight().padding(horizontal = if (wide) 32.dp else 24.dp, vertical = 20.dp)) {
+                    if (!wide) Text("Everfold", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary)
+                    Text(localizedString(Res.string.setup_step, step.ordinal + 1, if (cluster) 4 else 3), Modifier.padding(vertical = 8.dp))
+                    if (!wide) {
+                        LinearProgressIndicator(
+                            progress = { (step.ordinal + 1) / (if (cluster) 4f else 3f) },
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    }
+                    key(step) {
+                        Column(
+                            Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(vertical = 24.dp),
+                            verticalArrangement = Arrangement.spacedBy(20.dp),
+                        ) {
+                            val title =
+                                when (step) {
+                                    SetupStep.Welcome -> Res.string.onboarding_welcome
+                                    SetupStep.Preferences -> Res.string.setup_preferences
+                                    SetupStep.Mode -> Res.string.setup_mode
+                                    SetupStep.Cluster -> Res.string.setup_cluster
+                                }
+                            Text(localizedString(title), style = MaterialTheme.typography.headlineMedium)
                             when (step) {
-                                SetupStep.Welcome -> Res.string.onboarding_welcome
-                                SetupStep.Preferences -> Res.string.setup_preferences
-                                SetupStep.Mode -> Res.string.setup_mode
-                                SetupStep.Cluster -> Res.string.setup_cluster
-                            }
-                        Text(localizedString(title), style = MaterialTheme.typography.headlineMedium)
-                        when (step) {
-                            SetupStep.Welcome -> {
-                                WelcomeFeatures()
-                            }
-
-                            SetupStep.Preferences -> {
-                                LanguageSettings(language, onLanguageChange)
-                                Text(localizedString(Res.string.appearance), style = MaterialTheme.typography.titleMedium)
-                                Column(Modifier.selectableGroup()) {
-                                    ThemeMode.entries.forEach { mode ->
-                                        SetupChoice(mode.label, workspace.themeMode == mode, { workspace.setTheme(mode) })
-                                    }
+                                SetupStep.Welcome -> {
+                                    WelcomeFeatures()
                                 }
-                                ThemeColorSettings(
-                                    workspace.themeColor,
-                                    workspace::useSystemThemeColor,
-                                    workspace::selectThemePreset,
-                                    workspace::applyCustomThemeColor,
-                                )
-                            }
 
-                            SetupStep.Mode -> {
-                                Column(Modifier.selectableGroup(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                                    SetupChoice(Res.string.mode_offline, !cluster, { cluster = false }, Res.string.offline_hint)
-                                    SetupChoice(Res.string.mode_cluster, cluster, { cluster = true }, Res.string.cluster_hint)
+                                SetupStep.Preferences -> {
+                                    OnboardingPreferences(workspace, language, onLanguageChange, wide)
                                 }
-                            }
 
-                            SetupStep.Cluster -> {
-                                ClusterConnectionForm(form, onChange = {
-                                    form = it
-                                    test = ConnectionTest.Idle
-                                    showError = false
-                                })
-                                Text(localizedString(Res.string.connection_preview_notice), style = MaterialTheme.typography.bodySmall)
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Text(localizedString(Res.string.simulate_failure), Modifier.weight(1f))
-                                    Switch(failTest, onCheckedChange = {
-                                        failTest = it
-                                        test = ConnectionTest.Idle
+                                SetupStep.Mode -> {
+                                    SetupColumns(wide, first = {
+                                        SetupChoice(Res.string.mode_offline, !cluster, { cluster = false }, Res.string.offline_hint)
+                                    }, second = {
+                                        SetupChoice(Res.string.mode_cluster, cluster, { cluster = true }, Res.string.cluster_hint)
                                     })
                                 }
-                                if (showError) Text(localizedString(Res.string.invalid_connection), color = MaterialTheme.colorScheme.error)
-                                when (test) {
-                                    ConnectionTest.Testing -> {
-                                        LinearProgressIndicator(Modifier.fillMaxWidth())
-                                    }
 
-                                    ConnectionTest.Success -> {
-                                        Text(
-                                            localizedString(Res.string.connection_success),
-                                            color = MaterialTheme.colorScheme.primary,
-                                        )
+                                SetupStep.Cluster -> {
+                                    ClusterConnectionForm(form, wide = wide, onChange = {
+                                        form = it
+                                        test = ConnectionTest.Idle
+                                        showError = false
+                                    })
+                                    Text(localizedString(Res.string.connection_preview_notice), style = MaterialTheme.typography.bodySmall)
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Text(localizedString(Res.string.simulate_failure), Modifier.weight(1f))
+                                        Switch(failTest, onCheckedChange = {
+                                            failTest = it
+                                            test = ConnectionTest.Idle
+                                        })
                                     }
-
-                                    ConnectionTest.Failure -> {
+                                    if (showError) {
                                         Text(
-                                            localizedString(Res.string.connection_failure),
+                                            localizedString(Res.string.invalid_connection),
                                             color = MaterialTheme.colorScheme.error,
                                         )
                                     }
+                                    when (test) {
+                                        ConnectionTest.Testing -> {
+                                            LinearProgressIndicator(Modifier.fillMaxWidth())
+                                        }
 
-                                    ConnectionTest.Idle -> {
-                                        Unit
+                                        ConnectionTest.Success -> {
+                                            Text(
+                                                localizedString(Res.string.connection_success),
+                                                color = MaterialTheme.colorScheme.primary,
+                                            )
+                                        }
+
+                                        ConnectionTest.Failure -> {
+                                            Text(
+                                                localizedString(Res.string.connection_failure),
+                                                color = MaterialTheme.colorScheme.error,
+                                            )
+                                        }
+
+                                        ConnectionTest.Idle -> {
+                                            Unit
+                                        }
                                     }
-                                }
-                                OutlinedButton(onClick = {
-                                    showError = !form.isValid
-                                    if (form.isValid) test = ConnectionTest.Testing
-                                }, enabled = test != ConnectionTest.Testing) {
-                                    Text(
-                                        localizedString(
-                                            if (test ==
-                                                ConnectionTest.Testing
-                                            ) {
-                                                Res.string.testing_connection
-                                            } else {
-                                                Res.string.test_connection
-                                            },
-                                        ),
-                                    )
                                 }
                             }
                         }
                     }
-                }
-                HorizontalDivider()
-                Row(
-                    Modifier.fillMaxWidth().padding(top = 12.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    TextButton(onClick = back, enabled = step != SetupStep.Welcome) { Text(localizedString(Res.string.previous_step)) }
-                    val finish = step == SetupStep.Cluster || (step == SetupStep.Mode && !cluster)
-                    Button(onClick = {
-                        if (finish) onComplete(if (cluster) form else null) else step = SetupStep.entries[step.ordinal + 1]
-                    }, enabled = step != SetupStep.Cluster || test == ConnectionTest.Success) {
-                        Text(localizedString(if (finish) Res.string.enter_home else Res.string.next_step))
+                    HorizontalDivider()
+                    Row(
+                        Modifier.fillMaxWidth().padding(top = 12.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        TextButton(onClick = back, enabled = step != SetupStep.Welcome) { Text(localizedString(Res.string.previous_step)) }
+                        if (wide) {
+                            Text(
+                                localizedString(Res.string.setup_shortcuts),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                        val actionLabel =
+                            when {
+                                step == SetupStep.Cluster && test == ConnectionTest.Testing -> Res.string.testing_connection
+                                step == SetupStep.Cluster && test != ConnectionTest.Success -> Res.string.test_connection
+                                finish -> Res.string.enter_home
+                                else -> Res.string.next_step
+                            }
+                        Button(onClick = advance, enabled = test != ConnectionTest.Testing) {
+                            Text(localizedString(actionLabel))
+                        }
                     }
                 }
             }
@@ -310,10 +374,11 @@ private fun SetupChoice(
 @Composable
 private fun ClusterConnectionForm(
     form: ClusterSetup,
+    wide: Boolean,
     onChange: (ClusterSetup) -> Unit,
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Column(Modifier.selectableGroup(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        FlowRow(Modifier.selectableGroup(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             ClusterMethod.entries.forEach { method ->
                 val label =
                     when (method) {
@@ -321,17 +386,24 @@ private fun ClusterConnectionForm(
                         ClusterMethod.Central -> Res.string.cluster_central
                         ClusterMethod.Cloud -> Res.string.cluster_cloud
                     }
-                SetupChoice(label, method == form.method, { onChange(form.copy(method = method)) })
+                FilterChip(
+                    selected = method == form.method,
+                    onClick = { onChange(form.copy(method = method)) },
+                    label = { Text(localizedString(label)) },
+                )
             }
         }
         if (form.method != ClusterMethod.Cloud) {
             if (form.method == ClusterMethod.Lan) Text(localizedString(Res.string.lan_hint), style = MaterialTheme.typography.bodySmall)
-            SetupField(Res.string.ip_address, form.ip, { onChange(form.copy(ip = it)) })
-            SetupField(Res.string.port, form.port, { onChange(form.copy(port = it)) })
+            SetupColumns(
+                wide,
+                first = { SetupField(Res.string.ip_address, form.ip, { onChange(form.copy(ip = it)) }) },
+                second = { SetupField(Res.string.port, form.port, { onChange(form.copy(port = it)) }) },
+            )
         }
         if (form.method == ClusterMethod.Central) {
             Text(localizedString(Res.string.auth_method), style = MaterialTheme.typography.titleMedium)
-            Column(Modifier.selectableGroup(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            FlowRow(Modifier.selectableGroup(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 ClusterAuth.entries.forEach { auth ->
                     val label =
                         when (auth) {
@@ -340,13 +412,20 @@ private fun ClusterConnectionForm(
                             ClusterAuth.Certificate -> Res.string.auth_certificate
                             ClusterAuth.Mtls -> Res.string.auth_mtls
                         }
-                    SetupChoice(label, form.auth == auth, { onChange(form.copy(auth = auth)) })
+                    FilterChip(
+                        selected = form.auth == auth,
+                        onClick = { onChange(form.copy(auth = auth)) },
+                        label = { Text(localizedString(label)) },
+                    )
                 }
             }
         }
         if (form.method == ClusterMethod.Cloud || (form.method == ClusterMethod.Central && form.auth == ClusterAuth.Password)) {
-            SetupField(Res.string.account, form.account, { onChange(form.copy(account = it)) })
-            SetupField(Res.string.password, form.password, { onChange(form.copy(password = it)) }, secret = true)
+            SetupColumns(
+                wide,
+                first = { SetupField(Res.string.account, form.account, { onChange(form.copy(account = it)) }) },
+                second = { SetupField(Res.string.password, form.password, { onChange(form.copy(password = it)) }, secret = true) },
+            )
         }
         if (form.method == ClusterMethod.Central) {
             when (form.auth) {
@@ -432,4 +511,106 @@ private fun FileImportField(
             dismissButton = { TextButton(onClick = { importing = false }) { Text(localizedString(Res.string.cancel)) } },
         )
     }
+}
+
+@Composable
+private fun SetupColumns(
+    wide: Boolean,
+    first: @Composable () -> Unit,
+    second: @Composable () -> Unit,
+) {
+    FlowRow(
+        Modifier.fillMaxWidth(),
+        maxItemsInEachRow = if (wide) 2 else 1,
+        horizontalArrangement = Arrangement.spacedBy(24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(16.dp)) { first() }
+        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(16.dp)) { second() }
+    }
+}
+
+@Composable
+private fun SetupSidebar(
+    step: SetupStep,
+    furthestStep: Int,
+    cluster: Boolean,
+    onNavigate: (SetupStep) -> Unit,
+) {
+    Surface(Modifier.width(248.dp).fillMaxHeight(), color = MaterialTheme.colorScheme.surfaceContainerLow) {
+        Column(Modifier.padding(24.dp).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Text("Everfold", style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.primary)
+            Text(localizedString(Res.string.setup_sidebar_hint), style = MaterialTheme.typography.bodyMedium)
+            SetupStep.entries.take(if (cluster) 4 else 3).forEach { destination ->
+                val label =
+                    when (destination) {
+                        SetupStep.Welcome -> Res.string.setup_nav_welcome
+                        SetupStep.Preferences -> Res.string.setup_nav_preferences
+                        SetupStep.Mode -> Res.string.setup_mode
+                        SetupStep.Cluster -> Res.string.setup_cluster
+                    }
+                Surface(
+                    shape = RoundedCornerShape(16.dp),
+                    color =
+                        if (destination ==
+                            step
+                        ) {
+                            MaterialTheme.colorScheme.secondaryContainer
+                        } else {
+                            MaterialTheme.colorScheme.surfaceContainerLow
+                        },
+                ) {
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .selectable(destination == step, enabled = destination.ordinal <= furthestStep, role = Role.Tab, onClick = {
+                                onNavigate(destination)
+                            })
+                            .padding(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        val color =
+                            if (destination.ordinal <=
+                                furthestStep
+                            ) {
+                                MaterialTheme.colorScheme.onSurface
+                            } else {
+                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                            }
+                        Text((destination.ordinal + 1).toString(), color = color)
+                        Text(localizedString(label), color = color)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun OnboardingPreferences(
+    workspace: MockWorkspace,
+    language: AppLanguage,
+    onLanguageChange: (AppLanguage) -> Unit,
+    wide: Boolean,
+) {
+    SetupColumns(
+        wide,
+        first = {
+            LanguageSettings(language, onLanguageChange)
+            Text(localizedString(Res.string.appearance), style = MaterialTheme.typography.titleMedium)
+            Column(Modifier.selectableGroup(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                ThemeMode.entries.forEach { mode ->
+                    SetupChoice(mode.label, workspace.themeMode == mode, { workspace.setTheme(mode) })
+                }
+            }
+        },
+        second = {
+            ThemeColorSettings(
+                workspace.themeColor,
+                workspace::useSystemThemeColor,
+                workspace::selectThemePreset,
+                workspace::applyCustomThemeColor,
+            )
+        },
+    )
 }

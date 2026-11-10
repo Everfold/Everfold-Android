@@ -133,4 +133,8 @@
     <string name="connection_preview_notice">Connections are simulated in this preview. No network requests are made.</string>
     <string name="simulate_failure">Simulate connection failure</string>
     <string name="invalid_connection">Enter a valid IP, a port from 1 to 65535, and the required authentication details.</string>
+    <string name="setup_shortcuts">Ctrl / ⌘ + Enter to continue · Alt + ← to go back</string>
+    <string name="setup_sidebar_hint">Set up your Agent workspace in a few steps. Revisit any step you have already opened.</string>
+    <string name="setup_nav_welcome">Discover Everfold</string>
+    <string name="setup_nav_preferences">Language &amp; appearance</string>
 </resources>

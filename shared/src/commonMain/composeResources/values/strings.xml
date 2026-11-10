@@ -133,4 +133,8 @@
     <string name="connection_preview_notice">当前使用模拟连接，不会访问网络。</string>
     <string name="simulate_failure">模拟连接失败</string>
     <string name="invalid_connection">请填写有效的 IP、1–65535 的端口，以及所选验证方式需要的信息。</string>
+    <string name="setup_shortcuts">Ctrl / ⌘ + Enter 继续 · Alt + ← 返回</string>
+    <string name="setup_sidebar_hint">几步设置，开始你的 Agent 工作空间。可随时返回已访问的步骤。</string>
+    <string name="setup_nav_welcome">了解 Everfold</string>
+    <string name="setup_nav_preferences">语言与外观</string>
 </resources>
