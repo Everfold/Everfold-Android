@@ -45,6 +45,9 @@ direnv allow
 
 # iOS tests
 ./gradlew :shared:iosSimulatorArm64Test
+
+# Check dependency and plugin updates
+./gradlew dependencyUpdates
 ```
 
 #### Android Emulator

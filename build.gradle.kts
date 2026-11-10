@@ -1,3 +1,5 @@
+import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
+
 plugins {
     base
     alias(libs.plugins.spotless)
@@ -9,6 +11,14 @@ plugins {
     alias(libs.plugins.composeCompiler) apply false
     alias(libs.plugins.kotlinJvm) apply false
     alias(libs.plugins.kotlinMultiplatform) apply false
+}
+
+tasks.named<DependencyUpdatesTask>("dependencyUpdates") {
+    checkConstraints = true
+    rejectPreReleases = true
+    outputFormatter = "plain,json"
+    // Hot Reload's custom usage attributes cannot be serialized during update checks.
+    filterConfigurations = Spec<Configuration> { !it.name.startsWith("composeHotReload") }
 }
 
 spotless {
