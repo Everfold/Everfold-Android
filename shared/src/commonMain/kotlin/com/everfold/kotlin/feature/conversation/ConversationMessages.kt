@@ -21,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -41,7 +42,7 @@ internal fun ConversationMessages(
 ) {
     val list = rememberLazyListState()
     val scope = rememberCoroutineScope()
-    var followLatest by remember { mutableStateOf(true) }
+    var followLatest by rememberSaveable { mutableStateOf(true) }
     val atLatest by remember { derivedStateOf { list.firstVisibleItemIndex == 0 && list.firstVisibleItemScrollOffset == 0 } }
     // Only user scrolling changes follow mode. Layout changes while streaming must not opt the reader back in.
     LaunchedEffect(list) {

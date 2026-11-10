@@ -3,7 +3,8 @@
 
     <!-- 标题与导航 -->
     <string name="start_chat">开始对话</string>
-    <string name="back_sessions">返回会话列表</string>
+    <string name="back_to_conversation">返回会话</string>
+    <string name="open_workspace">打开工作台</string>
 
     <!-- 消息输入与生成状态 -->
     <string name="stopped_hint">已停止工作，你可以发送消息或继续运行。</string>

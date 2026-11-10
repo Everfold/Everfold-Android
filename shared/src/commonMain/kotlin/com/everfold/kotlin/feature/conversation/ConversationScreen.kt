@@ -56,11 +56,12 @@ import com.everfold.kotlin.ui.components.desktopUi
 import com.everfold.kotlin.ui.localization.localizedString
 import com.everfold.kotlin.ui.localization.resolve
 import everfold.shared.generated.resources.Res
-import everfold.shared.generated.resources.back_sessions
 import everfold.shared.generated.resources.copy_message
 import everfold.shared.generated.resources.hide_sessions
 import everfold.shared.generated.resources.logo
 import everfold.shared.generated.resources.message_placeholder
+import everfold.shared.generated.resources.new_session
+import everfold.shared.generated.resources.open_workspace
 import everfold.shared.generated.resources.send_message
 import everfold.shared.generated.resources.send_shortcut
 import everfold.shared.generated.resources.show_sessions
@@ -76,8 +77,8 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun ConversationScreen(
     state: ConversationUiState,
-    showBack: Boolean,
-    onBack: () -> Unit,
+    compactNavigation: Boolean,
+    onNewConversation: () -> Unit,
     onDraftChange: (String) -> Unit,
     onSend: () -> Unit,
     onStop: () -> Unit,
@@ -85,7 +86,6 @@ fun ConversationScreen(
     onRetry: () -> Unit,
     onPreviewState: (AgentRunState) -> Unit,
     autoFocusInput: Boolean,
-    showSessionToggle: Boolean,
     sessionsVisible: Boolean,
     onToggleSessions: () -> Unit,
     modifier: Modifier = Modifier,
@@ -106,13 +106,23 @@ fun ConversationScreen(
     }
     Column(modifier.fillMaxSize()) {
         Row(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 16.dp), verticalAlignment = Alignment.CenterVertically) {
-            if (showSessionToggle) {
-                val label = localizedString(if (sessionsVisible) Res.string.hide_sessions else Res.string.show_sessions)
+            run {
+                val label =
+                    localizedString(
+                        if (compactNavigation) {
+                            Res.string.open_workspace
+                        } else if (sessionsVisible) {
+                            Res.string.hide_sessions
+                        } else {
+                            Res.string.show_sessions
+                        },
+                    )
                 AppTooltip(label) {
-                    IconButton(onClick = onToggleSessions) { AppIcon(AppSymbol.Sidebar, description = label) }
+                    IconButton(
+                        onClick = onToggleSessions,
+                    ) { AppIcon(if (compactNavigation) AppSymbol.Menu else AppSymbol.Sidebar, description = label) }
                 }
             }
-            if (showBack) IconButton(onClick = onBack) { AppIcon(AppSymbol.Back, description = localizedString(Res.string.back_sessions)) }
             Column(Modifier.weight(1f).padding(horizontal = 12.dp)) {
                 Text(state.title.resolve(), style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Text(
@@ -120,6 +130,12 @@ fun ConversationScreen(
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
+            }
+            if (compactNavigation) {
+                val label = localizedString(Res.string.new_session)
+                AppTooltip(label) {
+                    IconButton(onClick = onNewConversation) { AppIcon(AppSymbol.Plus, description = label) }
+                }
             }
             if (showPreviewMenu) key(state.id) { AgentPreviewMenu(onPreviewState) }
         }

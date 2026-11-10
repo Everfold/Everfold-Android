@@ -38,8 +38,9 @@ fun SettingsScreen(
     onPresetChange: (ThemePreset) -> Unit,
     onCustomColorChange: (Color) -> Unit,
     modifier: Modifier = Modifier,
+    onBack: (() -> Unit)? = null,
 ) {
-    SettingsLayout(localizedString(Res.string.nav_settings), modifier) {
+    SettingsLayout(localizedString(Res.string.nav_settings), modifier, onBack) {
         BoxWithConstraints(Modifier.fillMaxWidth()) {
             AppearanceSettings(themeMode, onThemeChange, horizontal = maxWidth >= (380 * LocalDensity.current.fontScale).dp)
         }

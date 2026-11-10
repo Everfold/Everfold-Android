@@ -47,6 +47,7 @@ fun ConnectionsScreen(
     onSetupChange: (ClusterSetup) -> Unit,
     onConnectionChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
+    onBack: (() -> Unit)? = null,
 ) {
     var testing by remember(mode, setup) { mutableStateOf(false) }
     var failed by remember(mode, setup) { mutableStateOf(false) }
@@ -61,7 +62,7 @@ fun ConnectionsScreen(
             updateConnection(previewResult == ConnectionPreviewResult.Success)
         }
     }
-    SettingsLayout(localizedString(Res.string.nav_connections), modifier) {
+    SettingsLayout(localizedString(Res.string.nav_connections), modifier, onBack) {
         Text(localizedString(Res.string.connection_mode), style = MaterialTheme.typography.titleMedium)
         Column(Modifier.selectableGroup(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             ConnectionMode.entries.forEach { item ->
