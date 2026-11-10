@@ -31,11 +31,11 @@ import everfold.shared.generated.resources.official_website
 import everfold.shared.generated.resources.open_in_browser
 import everfold.shared.generated.resources.open_source_license
 import everfold.shared.generated.resources.preview_notice
-import everfold.shared.generated.resources.preview_version
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
 internal fun AboutSettingsPage() {
+    val version = appVersion()
     Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(24.dp)) {
         Column(
             Modifier.fillMaxWidth().padding(vertical = 12.dp),
@@ -48,7 +48,7 @@ internal fun AboutSettingsPage() {
                 modifier = Modifier.size(75.dp),
             )
             Text("Everfold", style = MaterialTheme.typography.headlineSmall)
-            Text(localizedString(Res.string.preview_version), style = MaterialTheme.typography.labelLarge)
+            if (version != null) Text("v$version", style = MaterialTheme.typography.labelLarge)
             Text(
                 localizedString(Res.string.preview_notice),
                 style = MaterialTheme.typography.bodyMedium,

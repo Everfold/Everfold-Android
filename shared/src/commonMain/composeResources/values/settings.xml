@@ -9,7 +9,6 @@
     <!-- 设置与关于 -->
     <string name="display_settings">显示</string>
     <string name="about">关于</string>
-    <string name="preview_version">v0.0.114514</string>
     <string name="preview_notice">写点什么呢？</string>
 
     <string name="official_website">官方网站</string>

@@ -26,3 +26,13 @@ compose.desktop {
         }
     }
 }
+
+val generateAppVersion =
+    tasks.register<WriteProperties>("generateAppVersion") {
+        destinationFile.set(layout.buildDirectory.file("generated/appVersion/everfold-app.properties"))
+        property("version", requireNotNull(compose.desktop.application.nativeDistributions.packageVersion))
+    }
+
+tasks.processResources {
+    from(generateAppVersion)
+}
