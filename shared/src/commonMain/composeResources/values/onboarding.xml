@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 欢迎页 -->
+    <string name="onboarding_welcome">让想法持续向前</string>
+    <string name="onboarding_intro">欢迎使用 Everfold。与你的 Agent 一起思考、整理和推进任务。</string>
+
+    <!-- 功能介绍 -->
+    <string name="feature_sessions">连续的会话</string>
+    <string name="feature_sessions_detail">围绕不同目标展开对话，随时接着上次的想法继续。</string>
+    <string name="feature_agent">看得见的进展</string>
+    <string name="feature_agent_detail">在会话中查看 Agent 的响应，随时参与下一步。</string>
+    <string name="feature_modes">灵活的运行方式</string>
+    <string name="feature_modes_detail">离线使用，或连接集群，在适合你的环境中工作。</string>
+
+    <!-- 步骤标题与导航 -->
+    <string name="setup_preferences">打造你的空间</string>
+    <string name="setup_mode">选择使用模式</string>
+    <string name="setup_cluster">连接你的集群</string>
+    <string name="setup_nav_welcome">了解 Everfold</string>
+    <string name="setup_nav_preferences">语言与外观</string>
+    <string name="setup_sidebar_hint">几步设置，开始你的 Agent 工作空间。可随时返回已访问的步骤。</string>
+    <string name="setup_shortcuts">Ctrl / ⌘ + Enter 继续 · Alt + ← 返回</string>
+
+    <!-- 步骤进度；setup_step 的 %1$d 为当前步骤，%2$d 为总步骤数 -->
+    <string name="setup_step">初始化 · %1$d / %2$d</string>
+
+    <!-- 前进与返回 -->
+    <string name="next_step">下一步</string>
+    <string name="previous_step">上一步</string>
+    <string name="enter_home">进入主页</string>
+
+    <!-- 使用模式 -->
+    <string name="mode_offline">离线</string>
+    <string name="mode_cluster">集群</string>
+    <string name="offline_hint">使用本机 Agent，无需连接集群。</string>
+    <string name="cluster_hint">连接局域网、中心节点或测试云。</string>
+
+</resources>

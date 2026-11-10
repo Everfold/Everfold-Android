@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 会话列表 -->
+    <string name="sessions_subtitle">让每个想法都有下文</string>
+    <string name="new_session">新建会话</string>
+    <string name="search_sessions">搜索会话</string>
+    <string name="replying">正在回复…</string>
+    <string name="no_sessions">没有找到会话，试试其他关键词。</string>
+
+    <!-- 新会话 -->
+    <string name="new_conversation">新会话</string>
+    <string name="new_conversation_hint">从一个问题或想法开始</string>
+
+    <!-- 最近会话；recent_sessions 的 %1$d 为会话数量 -->
+    <string name="recent_sessions">最近的会话 · %1$d</string>
+
+    <!-- 回复状态 -->
+    <string name="reply_complete">示例回复已完成</string>
+    <string name="reply_stopped">已停止生成</string>
+
+</resources>

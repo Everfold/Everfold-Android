@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 明暗模式 -->
+    <string name="appearance">Appearance</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+
+    <!-- 预设颜色 -->
+    <string name="preset_purple">Purple</string>
+    <string name="preset_blue">Blue</string>
+    <string name="preset_teal">Teal</string>
+    <string name="preset_green">Green</string>
+    <string name="preset_orange">Orange</string>
+    <string name="preset_pink">Pink</string>
+
+    <!-- 主题色设置 -->
+    <string name="theme_color">Theme color</string>
+    <string name="theme_description">Use system colors or choose your own theme color.</string>
+    <string name="system_color_hint">Use system dynamic colors, with Purple as a fallback.</string>
+    <string name="custom_color">Custom color</string>
+    <string name="reset_color">Reset to system colors</string>
+
+    <!-- 自定义颜色对话框 -->
+    <string name="custom_color_title">Custom theme color</string>
+    <string name="custom_color_hint">Enter a color code or adjust the sliders, then apply the preview.</string>
+    <string name="hex_color">HEX color</string>
+    <string name="hex_error">Enter 6 hex digits, for example #673AB7</string>
+    <string name="hex_help">Use RRGGBB or #RRGGBB</string>
+    <string name="red_channel">Red R</string>
+    <string name="green_channel">Green G</string>
+    <string name="blue_channel">Blue B</string>
+    <string name="apply_color">Apply color</string>
+
+    <!-- 配色预览 -->
+    <string name="dark_preview">Dark preview</string>
+    <string name="light_preview">Light preview</string>
+
+</resources>

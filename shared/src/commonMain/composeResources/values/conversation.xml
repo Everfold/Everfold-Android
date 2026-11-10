@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 标题与导航 -->
+    <string name="start_chat">开始对话</string>
+    <string name="back_sessions">返回会话列表</string>
+    <string name="conversation_space">Everfold · 对话空间</string>
+    <string name="preview_badge">预览</string>
+
+    <!-- 消息输入与生成状态 -->
+    <string name="generating_reply">正在生成示例回复…</string>
+    <string name="stopped_hint">已停止生成，你可以继续发送消息。</string>
+    <string name="message_placeholder">写下你的问题或想法…</string>
+    <string name="stop_reply">停止回复</string>
+    <string name="send_message">发送消息</string>
+    <string name="conversation_notice">示例对话 · 内容仅保留在本次运行中</string>
+    <string name="you">你</string>
+    <string name="thinking">正在思考…</string>
+
+    <!-- 空会话引导 -->
+    <string name="welcome_title">从一个想法开始</string>
+    <string name="welcome_subtitle">一起思考、整理，再向前一步。</string>
+    <string name="suggestion_ideas">帮我整理今天的想法</string>
+    <string name="suggestion_week">一起制定这周的计划</string>
+    <string name="suggestion_problem">把一个复杂问题拆成小步骤</string>
+
+    <!-- 示例回复；保留字面量 \n\n 作为段落分隔 -->
+    <string name="sample_reply">收到，我们可以一起把这个想法继续展开。\n\n先明确你最希望得到的结果，再把它拆成两三个小步骤。你也可以补充背景、约束或已有的材料。\n\n这是一段用于预览对话体验的示例回复，尚未调用 Agent。</string>
+
+</resources>

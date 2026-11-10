@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 会话列表 -->
+    <string name="sessions_subtitle">Give every idea a place to grow</string>
+    <string name="new_session">New session</string>
+    <string name="search_sessions">Search sessions</string>
+    <string name="replying">Replying…</string>
+    <string name="no_sessions">No sessions found. Try another search.</string>
+
+    <!-- 新会话 -->
+    <string name="new_conversation">New conversation</string>
+    <string name="new_conversation_hint">Start with a question or an idea</string>
+
+    <!-- 最近会话；recent_sessions 的 %1$d 为会话数量 -->
+    <string name="recent_sessions">Recent sessions · %1$d</string>
+
+    <!-- 回复状态 -->
+    <string name="reply_complete">Example reply complete</string>
+    <string name="reply_stopped">Generation stopped</string>
+
+</resources>

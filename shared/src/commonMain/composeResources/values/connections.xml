@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 连接页面与运行方式 -->
+    <string name="connections_subtitle">选择你的 Agent 在哪里运行。</string>
+    <string name="connection_mode">运行方式</string>
+    <string name="connection_local">本地运行</string>
+    <string name="connection_remote">远程连接</string>
+    <string name="local_description">在当前设备上使用 Agent</string>
+    <string name="remote_description">连接另一台设备或服务器上的 Agent</string>
+
+    <!-- 服务器与状态 -->
+    <string name="server_address">服务器地址</string>
+    <string name="address_preview_hint">仅用于界面预览，不会发送网络请求</string>
+    <string name="connected_preview">已连接 · 示例状态</string>
+    <string name="not_connected">尚未连接</string>
+
+    <!-- 预览操作 -->
+    <string name="connection_notice">当前为界面预览。本地运行和远程连接将在 Agent 库接入后开放。</string>
+    <string name="reset_connection">重置预览状态</string>
+    <string name="preview_connection">预览连接状态</string>
+
+</resources>

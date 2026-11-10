@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 连接方式与地址 -->
+    <string name="cluster_lan">Local network</string>
+    <string name="cluster_central">Central node</string>
+    <string name="cluster_cloud">Test cloud</string>
+    <string name="lan_hint">Leave both fields empty to discover local nodes, or specify an IP and port.</string>
+    <string name="ip_address">IP address</string>
+    <string name="port">Port</string>
+
+    <!-- 验证方式与凭据 -->
+    <string name="auth_method">Authentication</string>
+    <string name="auth_none">None</string>
+    <string name="auth_password">Username and password</string>
+    <string name="auth_certificate">Server certificate</string>
+    <string name="auth_mtls">mTLS</string>
+    <string name="account">Username</string>
+    <string name="password">Password</string>
+    <string name="ca_certificate">CA certificate</string>
+    <string name="client_public_key">Client public key</string>
+    <string name="client_private_key">Client private key</string>
+
+    <!-- 文件导入 -->
+    <string name="choose_file">Choose file</string>
+    <string name="scan_file">Scan code</string>
+    <string name="no_file">Not imported</string>
+    <string name="import_preview">Simulated file import</string>
+    <string name="scan_preview">Simulated scan import</string>
+    <string name="import_hint">This preview uses a sample file. It does not access device files or the camera.</string>
+    <string name="use_sample">Use sample file</string>
+
+    <!-- 连接测试与反馈 -->
+    <string name="test_connection">Test connection</string>
+    <string name="testing_connection">Testing connection…</string>
+    <string name="connection_success">Simulated connection succeeded. You can open the workspace.</string>
+    <string name="connection_failure">Simulated connection failed. Check your settings and retry.</string>
+    <string name="connection_preview_notice">Connections are simulated in this preview. No network requests are made.</string>
+    <string name="simulate_failure">Simulate connection failure</string>
+    <string name="invalid_connection">Enter a valid IP, a port from 1 to 65535, and the required authentication details.</string>
+
+</resources>

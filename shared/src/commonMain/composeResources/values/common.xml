@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 通用操作与选项 -->
+    <string name="follow_system">跟随系统</string>
+    <string name="custom">自定义</string>
+    <string name="adjust">调整</string>
+    <string name="cancel">取消</string>
+
+    <!-- 相对时间 -->
+    <string name="just_now">刚刚</string>
+    <string name="today">今天</string>
+    <string name="yesterday">昨天</string>
+
+</resources>
