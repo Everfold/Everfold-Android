@@ -18,7 +18,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,7 +39,6 @@ import everfold.shared.generated.resources.Res
 import everfold.shared.generated.resources.adjust
 import everfold.shared.generated.resources.custom_color
 import everfold.shared.generated.resources.follow_system
-import everfold.shared.generated.resources.reset_color
 import everfold.shared.generated.resources.system_color_hint
 import everfold.shared.generated.resources.theme_color
 import everfold.shared.generated.resources.theme_description
@@ -54,10 +52,7 @@ internal fun ThemeColorSettings(
 ) {
     var showCustomDialog by rememberSaveable { mutableStateOf(false) }
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Text(localizedString(Res.string.theme_color), Modifier.weight(1f), style = MaterialTheme.typography.titleMedium)
-            Text(localizedString(selection.label), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
-        }
+        Text(localizedString(Res.string.theme_color), style = MaterialTheme.typography.titleMedium)
         Text(
             localizedString(Res.string.theme_description),
             style = MaterialTheme.typography.bodyMedium,
@@ -131,9 +126,6 @@ internal fun ThemeColorSettings(
                     )
                 }
             }
-        }
-        TextButton(onClick = onSystemColorChange, enabled = selection.mode != ThemeColorMode.System) {
-            Text(localizedString(Res.string.reset_color))
         }
     }
     if (showCustomDialog) {

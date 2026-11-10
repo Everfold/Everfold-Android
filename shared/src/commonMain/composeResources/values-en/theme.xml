@@ -19,7 +19,6 @@
     <string name="theme_description">Use system colors or choose your own theme color.</string>
     <string name="system_color_hint">Use system dynamic colors, with Purple as a fallback.</string>
     <string name="custom_color">Custom color</string>
-    <string name="reset_color">Reset to system colors</string>
 
     <!-- 自定义颜色对话框 -->
     <string name="custom_color_title">Custom theme color</string>

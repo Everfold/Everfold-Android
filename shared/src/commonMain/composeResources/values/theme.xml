@@ -19,7 +19,6 @@
     <string name="theme_description">跟随系统配色，或选择喜欢的主题色。</string>
     <string name="system_color_hint">使用系统动态配色，不可用时使用紫色。</string>
     <string name="custom_color">自定义颜色</string>
-    <string name="reset_color">恢复默认 · 跟随系统</string>
 
     <!-- 自定义颜色对话框 -->
     <string name="custom_color_title">自定义主题色</string>
