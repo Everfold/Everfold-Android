@@ -20,7 +20,6 @@
 
     <!-- 自定义颜色对话框 -->
     <string name="custom_color_title">Custom theme color</string>
-    <string name="custom_color_hint">Enter a color code or adjust the sliders, then apply the preview.</string>
     <string name="hex_color">HEX color</string>
     <string name="hex_error">Enter 6 hex digits, for example #673AB7</string>
     <string name="hex_help">Use RRGGBB or #RRGGBB</string>

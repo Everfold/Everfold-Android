@@ -19,8 +19,6 @@
     <string name="setup_cluster">Connect to your cluster</string>
     <string name="setup_nav_welcome">Discover Everfold</string>
     <string name="setup_nav_preferences">Language &amp; appearance</string>
-    <string name="setup_sidebar_hint">Set up your Agent workspace in a few steps. Revisit any step you have already opened.</string>
-    <string name="setup_shortcuts">Ctrl / ⌘ + Enter to continue · Alt + ← to go back</string>
 
     <!-- 步骤进度；setup_step 的 %1$d 为当前步骤，%2$d 为总步骤数 -->
     <string name="setup_step">Setup · %1$d / %2$d</string>
@@ -35,5 +33,9 @@
     <string name="mode_cluster">Cluster</string>
     <string name="offline_hint">Use an Agent on this device without a cluster connection.</string>
     <string name="cluster_hint">Connect through your local network, a central node or the test cloud.</string>
+
+    <!-- 按钮悬停提示 -->
+    <string name="previous_step_shortcut">Back · Alt + ←</string>
+    <string name="continue_setup_shortcut">Continue · Ctrl / ⌘ + Enter</string>
 
 </resources>

@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun SettingsLayout(
     title: String,
-    subtitle: String,
     modifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit,
 ) {
@@ -34,10 +33,7 @@ fun SettingsLayout(
                 .padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp),
         ) {
-            Column(Modifier.padding(vertical = 12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text(title, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Medium)
-                Text(subtitle, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            }
+            Text(title, Modifier.padding(vertical = 12.dp), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Medium)
             content()
         }
     }

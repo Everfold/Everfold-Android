@@ -7,9 +7,7 @@
     <string name="nav_settings">Settings</string>
 
     <!-- 设置与关于 -->
-    <string name="settings_subtitle">Make this space your own.</string>
     <string name="about">About</string>
-    <string name="app_tagline">Your Agent conversation space</string>
     <string name="preview_version">UI preview</string>
     <string name="preview_notice">Conversations, replies and connections are examples. Changes reset when you close the app.</string>
 

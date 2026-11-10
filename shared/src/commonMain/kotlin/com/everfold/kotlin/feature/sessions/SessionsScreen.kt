@@ -68,7 +68,6 @@ import everfold.shared.generated.resources.save_session
 import everfold.shared.generated.resources.search_sessions
 import everfold.shared.generated.resources.session_actions
 import everfold.shared.generated.resources.session_name
-import everfold.shared.generated.resources.sessions_subtitle
 import everfold.shared.generated.resources.unpin_session
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
@@ -101,18 +100,12 @@ fun SessionsScreen(
     val filtered = sessions.filterIndexed { index, _ -> titles[index].contains(query, ignoreCase = true) }
     Column(modifier.padding(horizontal = 16.dp)) {
         Row(Modifier.fillMaxWidth().padding(top = 24.dp, bottom = 20.dp), verticalAlignment = Alignment.CenterVertically) {
-            Column(Modifier.weight(1f)) {
-                Text(
-                    localizedString(Res.string.nav_sessions),
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.SemiBold,
-                )
-                Text(
-                    localizedString(Res.string.sessions_subtitle),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
+            Text(
+                localizedString(Res.string.nav_sessions),
+                Modifier.weight(1f),
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.SemiBold,
+            )
             AppTooltip(localizedString(if (desktopUi) Res.string.new_session_shortcut else Res.string.new_session)) {
                 FilledTonalIconButton(onClick = onCreate) { AppIcon(AppSymbol.Plus, description = localizedString(Res.string.new_session)) }
             }

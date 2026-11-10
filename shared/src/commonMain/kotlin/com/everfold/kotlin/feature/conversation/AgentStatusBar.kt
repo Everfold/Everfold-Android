@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.everfold.kotlin.ui.components.AppIcon
 import com.everfold.kotlin.ui.components.AppSymbol
+import com.everfold.kotlin.ui.components.AppTooltip
 import com.everfold.kotlin.ui.localization.localizedString
 import everfold.shared.generated.resources.Res
 import everfold.shared.generated.resources.agent_completed
@@ -30,7 +31,6 @@ import everfold.shared.generated.resources.agent_continue
 import everfold.shared.generated.resources.agent_failed
 import everfold.shared.generated.resources.agent_failed_hint
 import everfold.shared.generated.resources.agent_idle
-import everfold.shared.generated.resources.agent_preview_note
 import everfold.shared.generated.resources.agent_retry
 import everfold.shared.generated.resources.agent_running
 import everfold.shared.generated.resources.agent_step_prepare
@@ -45,10 +45,10 @@ import everfold.shared.generated.resources.preview_agent_states
 internal fun AgentStatusBar(
     state: AgentRunState,
     onRetry: () -> Unit,
-    onPreviewState: (AgentRunState) -> Unit,
 ) {
+    if (state == AgentRunState.Idle) return
+
     var expanded by rememberSaveable { mutableStateOf(false) }
-    var menu by rememberSaveable { mutableStateOf(false) }
     Column(Modifier.fillMaxWidth().padding(horizontal = 24.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
@@ -57,27 +57,7 @@ internal fun AgentStatusBar(
                 style = MaterialTheme.typography.labelLarge,
                 color = if (state == AgentRunState.Failed) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            if (state != AgentRunState.Idle) {
-                TextButton(onClick = { expanded = !expanded }) { Text(localizedString(Res.string.execution_details)) }
-            }
-            Box {
-                IconButton(
-                    onClick = { menu = true },
-                ) { AppIcon(AppSymbol.More, description = localizedString(Res.string.preview_agent_states)) }
-                DropdownMenu(menu, onDismissRequest = { menu = false }) {
-                    Text(
-                        localizedString(Res.string.agent_preview_note),
-                        Modifier.padding(16.dp),
-                        style = MaterialTheme.typography.bodySmall,
-                    )
-                    AgentRunState.entries.forEach { item ->
-                        DropdownMenuItem(text = { Text(localizedString(item.label)) }, onClick = {
-                            menu = false
-                            onPreviewState(item)
-                        })
-                    }
-                }
-            }
+            TextButton(onClick = { expanded = !expanded }) { Text(localizedString(Res.string.execution_details)) }
         }
         if (state == AgentRunState.Running) LinearProgressIndicator(Modifier.fillMaxWidth())
         if (state == AgentRunState.Waiting || state == AgentRunState.Failed) {
@@ -107,13 +87,32 @@ internal fun AgentStatusBar(
                 )
             }
         }
-        if (expanded && state != AgentRunState.Idle) {
+        if (expanded) {
             Text("1. " + localizedString(Res.string.agent_step_prepare), style = MaterialTheme.typography.bodySmall)
             Text(
                 "2. " + localizedString(Res.string.agent_step_reply) + " · " + localizedString(state.label),
                 Modifier.padding(bottom = 12.dp),
                 style = MaterialTheme.typography.bodySmall,
             )
+        }
+    }
+}
+
+@Composable
+internal fun AgentPreviewMenu(onSelect: (AgentRunState) -> Unit) {
+    var expanded by rememberSaveable { mutableStateOf(false) }
+    val label = localizedString(Res.string.preview_agent_states)
+    Box {
+        AppTooltip(label) {
+            IconButton(onClick = { expanded = true }) { AppIcon(AppSymbol.More, description = label) }
+        }
+        DropdownMenu(expanded, onDismissRequest = { expanded = false }) {
+            AgentRunState.entries.forEach { state ->
+                DropdownMenuItem(text = { Text(localizedString(state.label)) }, onClick = {
+                    expanded = false
+                    onSelect(state)
+                })
+            }
         }
     }
 }

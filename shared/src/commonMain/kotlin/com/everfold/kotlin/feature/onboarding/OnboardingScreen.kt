@@ -71,23 +71,24 @@ import com.everfold.kotlin.feature.settings.AppearanceSettings
 import com.everfold.kotlin.feature.settings.LanguageSettings
 import com.everfold.kotlin.feature.settings.ThemeColorSettings
 import com.everfold.kotlin.mock.MockWorkspace
+import com.everfold.kotlin.ui.components.AppTooltip
+import com.everfold.kotlin.ui.components.desktopUi
 import com.everfold.kotlin.ui.localization.AppLanguage
 import com.everfold.kotlin.ui.localization.localizedString
 import everfold.shared.generated.resources.Res
-import everfold.shared.generated.resources.connection_preview_notice
 import everfold.shared.generated.resources.connection_success
+import everfold.shared.generated.resources.continue_setup_shortcut
 import everfold.shared.generated.resources.enter_home
 import everfold.shared.generated.resources.next_step
 import everfold.shared.generated.resources.onboarding_welcome
 import everfold.shared.generated.resources.previous_step
+import everfold.shared.generated.resources.previous_step_shortcut
 import everfold.shared.generated.resources.retry_connection
 import everfold.shared.generated.resources.setup_cluster
 import everfold.shared.generated.resources.setup_mode
 import everfold.shared.generated.resources.setup_nav_preferences
 import everfold.shared.generated.resources.setup_nav_welcome
 import everfold.shared.generated.resources.setup_preferences
-import everfold.shared.generated.resources.setup_shortcuts
-import everfold.shared.generated.resources.setup_sidebar_hint
 import everfold.shared.generated.resources.setup_step
 import everfold.shared.generated.resources.test_connection
 import everfold.shared.generated.resources.testing_connection
@@ -233,7 +234,6 @@ internal fun OnboardingScreen(
                                         form = it
                                         test = ConnectionTest.Idle
                                     })
-                                    Text(localizedString(Res.string.connection_preview_notice), style = MaterialTheme.typography.bodySmall)
                                     ConnectionPreviewOptions(previewResult, onSelect = {
                                         previewResult = it
                                         test = ConnectionTest.Idle
@@ -271,7 +271,12 @@ internal fun OnboardingScreen(
                         horizontalArrangement = if (wide) Arrangement.spacedBy(12.dp, Alignment.End) else Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        TextButton(onClick = back, enabled = step != SetupStep.Welcome) { Text(localizedString(Res.string.previous_step)) }
+                        AppTooltip(localizedString(if (desktopUi) Res.string.previous_step_shortcut else Res.string.previous_step)) {
+                            TextButton(
+                                onClick = back,
+                                enabled = step != SetupStep.Welcome,
+                            ) { Text(localizedString(Res.string.previous_step)) }
+                        }
                         val actionLabel =
                             when {
                                 step == SetupStep.Cluster && test == ConnectionTest.Testing -> Res.string.testing_connection
@@ -280,8 +285,10 @@ internal fun OnboardingScreen(
                                 finish -> Res.string.enter_home
                                 else -> Res.string.next_step
                             }
-                        Button(onClick = advance, enabled = test != ConnectionTest.Testing) {
-                            Text(localizedString(actionLabel))
+                        AppTooltip(localizedString(if (desktopUi) Res.string.continue_setup_shortcut else actionLabel)) {
+                            Button(onClick = advance, enabled = test != ConnectionTest.Testing) {
+                                Text(localizedString(actionLabel))
+                            }
                         }
                     }
                 }
@@ -330,7 +337,6 @@ private fun SetupSidebar(
     ) {
         Column(Modifier.padding(16.dp).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Text("Everfold", style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.primary)
-            Text(localizedString(Res.string.setup_sidebar_hint), style = MaterialTheme.typography.bodyMedium)
             SetupStep.entries.take(if (cluster) 4 else 3).forEach { destination ->
                 val label =
                     when (destination) {
@@ -351,12 +357,6 @@ private fun SetupSidebar(
                     icon = { Text((destination.ordinal + 1).toString()) },
                 )
             }
-            HorizontalDivider(Modifier.padding(vertical = 12.dp))
-            Text(
-                localizedString(Res.string.setup_shortcuts),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
         }
     }
 }

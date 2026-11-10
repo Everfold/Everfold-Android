@@ -56,12 +56,10 @@ import com.everfold.kotlin.ui.localization.localizedString
 import com.everfold.kotlin.ui.localization.resolve
 import everfold.shared.generated.resources.Res
 import everfold.shared.generated.resources.back_sessions
-import everfold.shared.generated.resources.conversation_notice
 import everfold.shared.generated.resources.copy_message
 import everfold.shared.generated.resources.hide_sessions
 import everfold.shared.generated.resources.logo
 import everfold.shared.generated.resources.message_placeholder
-import everfold.shared.generated.resources.preview_badge
 import everfold.shared.generated.resources.send_message
 import everfold.shared.generated.resources.send_shortcut
 import everfold.shared.generated.resources.show_sessions
@@ -70,7 +68,6 @@ import everfold.shared.generated.resources.suggestion_ideas
 import everfold.shared.generated.resources.suggestion_problem
 import everfold.shared.generated.resources.suggestion_week
 import everfold.shared.generated.resources.thinking
-import everfold.shared.generated.resources.welcome_subtitle
 import everfold.shared.generated.resources.welcome_title
 import everfold.shared.generated.resources.you
 import org.jetbrains.compose.resources.painterResource
@@ -121,16 +118,10 @@ fun ConversationScreen(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-            Surface(color = MaterialTheme.colorScheme.surfaceContainerHigh, shape = RoundedCornerShape(8.dp)) {
-                Text(
-                    localizedString(Res.string.preview_badge),
-                    Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
-                    style = MaterialTheme.typography.labelSmall,
-                )
-            }
+            key(state.id) { AgentPreviewMenu(onPreviewState) }
         }
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
-        key(state.id) { AgentStatusBar(state.runState, onRetry, onPreviewState) }
+        key(state.id) { AgentStatusBar(state.runState, onRetry) }
         if (state.messages.isEmpty()) {
             WelcomeContent({
                 onDraftChange(it)
@@ -173,31 +164,31 @@ fun ConversationScreen(
                                     unfocusedIndicatorColor = androidx.compose.ui.graphics.Color.Transparent,
                                 ),
                         )
-                        FilledIconButton(
-                            onClick = if (state.isResponding) onStop else send,
-                            enabled = state.isResponding || state.draft.isNotBlank(),
-                            modifier = Modifier.padding(bottom = 4.dp),
+                        AppTooltip(
+                            localizedString(
+                                when {
+                                    state.isResponding -> Res.string.stop_reply
+                                    desktopUi -> Res.string.send_shortcut
+                                    else -> Res.string.send_message
+                                },
+                            ),
                         ) {
-                            AppIcon(
-                                if (state.isResponding) AppSymbol.Stop else AppSymbol.Send,
-                                description =
-                                    if (state.isResponding) {
+                            FilledIconButton(
+                                onClick = if (state.isResponding) onStop else send,
+                                enabled = state.isResponding || state.draft.isNotBlank(),
+                                modifier = Modifier.padding(bottom = 4.dp),
+                            ) {
+                                AppIcon(
+                                    if (state.isResponding) AppSymbol.Stop else AppSymbol.Send,
+                                    description =
                                         localizedString(
-                                            Res.string.stop_reply,
-                                        )
-                                    } else {
-                                        localizedString(Res.string.send_message)
-                                    },
-                            )
+                                            if (state.isResponding) Res.string.stop_reply else Res.string.send_message,
+                                        ),
+                                )
+                            }
                         }
                     }
                 }
-                Text(
-                    localizedString(if (desktopUi) Res.string.send_shortcut else Res.string.conversation_notice),
-                    Modifier.align(Alignment.CenterHorizontally).padding(top = 8.dp),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
             }
         }
     }
@@ -272,7 +263,6 @@ private fun WelcomeContent(
                 fontWeight = FontWeight.Medium,
             )
         }
-        item { Text(localizedString(Res.string.welcome_subtitle), color = MaterialTheme.colorScheme.onSurfaceVariant) }
         items(suggestions) { suggestion ->
             OutlinedButton(onClick = { onSuggestion(suggestion) }, modifier = Modifier.widthIn(max = 420.dp).fillMaxWidth()) {
                 Text(suggestion)

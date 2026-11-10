@@ -23,11 +23,9 @@ import com.everfold.kotlin.ui.theme.ThemeMode
 import com.everfold.kotlin.ui.theme.ThemePreset
 import everfold.shared.generated.resources.Res
 import everfold.shared.generated.resources.about
-import everfold.shared.generated.resources.app_tagline
 import everfold.shared.generated.resources.nav_settings
 import everfold.shared.generated.resources.preview_notice
 import everfold.shared.generated.resources.preview_version
-import everfold.shared.generated.resources.settings_subtitle
 
 @Composable
 fun SettingsScreen(
@@ -41,7 +39,7 @@ fun SettingsScreen(
     onCustomColorChange: (Color) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    SettingsLayout(localizedString(Res.string.nav_settings), localizedString(Res.string.settings_subtitle), modifier) {
+    SettingsLayout(localizedString(Res.string.nav_settings), modifier) {
         BoxWithConstraints(Modifier.fillMaxWidth()) {
             AppearanceSettings(themeMode, onThemeChange, horizontal = maxWidth >= (380 * LocalDensity.current.fontScale).dp)
         }
@@ -51,7 +49,6 @@ fun SettingsScreen(
         Surface(shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.surfaceContainerLow) {
             Column(Modifier.fillMaxWidth().padding(24.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text("Everfold", style = MaterialTheme.typography.titleLarge)
-                Text(localizedString(Res.string.app_tagline), color = MaterialTheme.colorScheme.onSurfaceVariant)
                 HorizontalDivider()
                 Text(localizedString(Res.string.preview_version), style = MaterialTheme.typography.labelLarge)
                 Text(

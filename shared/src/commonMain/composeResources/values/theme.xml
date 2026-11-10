@@ -20,7 +20,6 @@
 
     <!-- 自定义颜色对话框 -->
     <string name="custom_color_title">自定义主题色</string>
-    <string name="custom_color_hint">输入颜色代码或拖动滑块，预览后再应用。</string>
     <string name="hex_color">HEX 颜色</string>
     <string name="hex_error">请输入 6 位十六进制颜色，如 #673AB7</string>
     <string name="hex_help">支持 RRGGBB 或 #RRGGBB</string>

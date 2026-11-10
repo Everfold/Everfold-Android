@@ -33,9 +33,8 @@
     <!-- 连接测试与反馈 -->
     <string name="test_connection">测试连接</string>
     <string name="testing_connection">正在测试连接…</string>
-    <string name="connection_success">模拟连接成功，可以进入主页。</string>
+    <string name="connection_success">连接成功</string>
     <string name="connection_failure">模拟连接失败，请检查设置后重试。</string>
-    <string name="connection_preview_notice">当前使用模拟连接，不会访问网络。</string>
     <string name="simulate_failure">模拟连接失败</string>
     <string name="invalid_connection">请填写有效的 IP、1–65535 的端口，以及所选验证方式需要的信息。</string>
 

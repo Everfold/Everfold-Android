@@ -7,9 +7,7 @@
     <string name="nav_settings">设置</string>
 
     <!-- 设置与关于 -->
-    <string name="settings_subtitle">让这个空间更适合你。</string>
     <string name="about">关于</string>
-    <string name="app_tagline">你的 Agent 对话空间</string>
     <string name="preview_version">UI 预览版</string>
     <string name="preview_notice">会话、回复和连接状态均为示例数据。关闭应用后，本次修改会重置。</string>
 

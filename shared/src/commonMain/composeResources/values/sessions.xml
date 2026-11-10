@@ -2,7 +2,6 @@
 <resources>
 
     <!-- 会话列表 -->
-    <string name="sessions_subtitle">让每个想法都有下文</string>
     <string name="new_session">新建会话</string>
     <string name="search_sessions">搜索会话</string>
     <string name="replying">正在回复…</string>
@@ -16,7 +15,7 @@
     <string name="recent_sessions">最近的会话 · %1$d</string>
 
     <!-- 回复状态 -->
-    <string name="reply_complete">示例回复已完成</string>
+    <string name="reply_complete">回复已完成</string>
     <string name="reply_stopped">已停止生成</string>
 
     <!-- 会话操作 -->

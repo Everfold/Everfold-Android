@@ -5,7 +5,6 @@
     <string name="start_chat">Start chat</string>
     <string name="back_sessions">Back to sessions</string>
     <string name="conversation_space">Everfold · Conversations</string>
-    <string name="preview_badge">Preview</string>
 
     <!-- 消息输入与生成状态 -->
     <string name="generating_reply">Generating an example reply…</string>
@@ -13,13 +12,11 @@
     <string name="message_placeholder">Write a question or an idea…</string>
     <string name="stop_reply">Stop reply</string>
     <string name="send_message">Send message</string>
-    <string name="conversation_notice">Demo conversation · Kept only for this run</string>
     <string name="you">You</string>
     <string name="thinking">Thinking…</string>
 
     <!-- 空会话引导 -->
     <string name="welcome_title">Start with an idea</string>
-    <string name="welcome_subtitle">Think it through, organize it, and take the next step.</string>
     <string name="suggestion_ideas">Help me organize my thoughts today</string>
     <string name="suggestion_week">Help me plan this week</string>
     <string name="suggestion_problem">Break a complex problem into small steps</string>
@@ -41,10 +38,9 @@
     <string name="agent_continue">Continue</string>
     <string name="agent_retry">Retry</string>
     <string name="agent_waiting_hint">Add your requirements or confirm to continue.</string>
-    <string name="agent_failed_hint">The sample task failed. You can retry; the connection status is unchanged.</string>
-    <string name="agent_step_prepare">Prepare input · sample step</string>
-    <string name="agent_step_reply">Generate reply · sample step</string>
-    <string name="agent_preview_note">These actions only demonstrate UI states.</string>
+    <string name="agent_failed_hint">The task failed. Please retry.</string>
+    <string name="agent_step_prepare">Prepare input</string>
+    <string name="agent_step_reply">Generate reply</string>
 
     <string name="copy_message">Copy message</string>
     <string name="copy_code">Copy code</string>

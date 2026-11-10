@@ -19,8 +19,6 @@
     <string name="setup_cluster">连接你的集群</string>
     <string name="setup_nav_welcome">了解 Everfold</string>
     <string name="setup_nav_preferences">语言与外观</string>
-    <string name="setup_sidebar_hint">几步设置，开始你的 Agent 工作空间。可随时返回已访问的步骤。</string>
-    <string name="setup_shortcuts">Ctrl / ⌘ + Enter 继续 · Alt + ← 返回</string>
 
     <!-- 步骤进度；setup_step 的 %1$d 为当前步骤，%2$d 为总步骤数 -->
     <string name="setup_step">初始化 · %1$d / %2$d</string>
@@ -35,5 +33,9 @@
     <string name="mode_cluster">集群</string>
     <string name="offline_hint">使用本机 Agent，无需连接集群。</string>
     <string name="cluster_hint">连接局域网、中心节点或测试云。</string>
+
+    <!-- 按钮悬停提示 -->
+    <string name="previous_step_shortcut">上一步 · Alt + ←</string>
+    <string name="continue_setup_shortcut">继续 · Ctrl / ⌘ + Enter</string>
 
 </resources>

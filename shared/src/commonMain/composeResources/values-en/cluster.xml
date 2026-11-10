@@ -33,9 +33,8 @@
     <!-- 连接测试与反馈 -->
     <string name="test_connection">Test connection</string>
     <string name="testing_connection">Testing connection…</string>
-    <string name="connection_success">Simulated connection succeeded. You can open the workspace.</string>
+    <string name="connection_success">Connected successfully</string>
     <string name="connection_failure">Simulated connection failed. Check your settings and retry.</string>
-    <string name="connection_preview_notice">Connections are simulated in this preview. No network requests are made.</string>
     <string name="simulate_failure">Simulate connection failure</string>
     <string name="invalid_connection">Enter a valid IP, a port from 1 to 65535, and the required authentication details.</string>
 

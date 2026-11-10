@@ -40,7 +40,6 @@ import everfold.shared.generated.resources.Res
 import everfold.shared.generated.resources.apply_color
 import everfold.shared.generated.resources.blue_channel
 import everfold.shared.generated.resources.cancel
-import everfold.shared.generated.resources.custom_color_hint
 import everfold.shared.generated.resources.custom_color_title
 import everfold.shared.generated.resources.dark_preview
 import everfold.shared.generated.resources.green_channel
@@ -72,7 +71,6 @@ internal fun CustomColorDialog(
                 Modifier.fillMaxWidth().heightIn(max = 480.dp).verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                Text(localizedString(Res.string.custom_color_hint))
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     PalettePreview(preview, dark = false, Modifier.weight(1f))
                     PalettePreview(preview, dark = true, Modifier.weight(1f))

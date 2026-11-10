@@ -31,9 +31,6 @@ import com.everfold.kotlin.ui.localization.localizedString
 import everfold.shared.generated.resources.Res
 import everfold.shared.generated.resources.connected_preview
 import everfold.shared.generated.resources.connection_mode
-import everfold.shared.generated.resources.connection_notice
-import everfold.shared.generated.resources.connection_preview_notice
-import everfold.shared.generated.resources.connections_subtitle
 import everfold.shared.generated.resources.nav_connections
 import everfold.shared.generated.resources.not_connected
 import everfold.shared.generated.resources.retry_connection
@@ -64,7 +61,7 @@ fun ConnectionsScreen(
             updateConnection(previewResult == ConnectionPreviewResult.Success)
         }
     }
-    SettingsLayout(localizedString(Res.string.nav_connections), localizedString(Res.string.connections_subtitle), modifier) {
+    SettingsLayout(localizedString(Res.string.nav_connections), modifier) {
         Text(localizedString(Res.string.connection_mode), style = MaterialTheme.typography.titleMedium)
         Column(Modifier.selectableGroup(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             ConnectionMode.entries.forEach { item ->
@@ -91,10 +88,7 @@ fun ConnectionsScreen(
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
                         RadioButton(selected = mode == item, onClick = null)
-                        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                            Text(localizedString(item.label), style = MaterialTheme.typography.titleMedium)
-                            Text(localizedString(item.description), style = MaterialTheme.typography.bodyMedium)
-                        }
+                        Text(localizedString(item.label), style = MaterialTheme.typography.titleMedium)
                     }
                 }
             }
@@ -103,7 +97,6 @@ fun ConnectionsScreen(
             BoxWithConstraints(Modifier.fillMaxWidth()) {
                 ClusterConnectionForm(setup, wide = maxWidth >= 600.dp, onChange = onSetupChange, showErrors = showError)
             }
-            Text(localizedString(Res.string.connection_preview_notice), style = MaterialTheme.typography.bodySmall)
             ConnectionPreviewOptions(previewResult, onSelect = {
                 previewResult = it
                 testing = false
@@ -143,8 +136,6 @@ fun ConnectionsScreen(
                     ),
                 )
             }
-        } else {
-            Text(localizedString(Res.string.connection_notice), color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }
