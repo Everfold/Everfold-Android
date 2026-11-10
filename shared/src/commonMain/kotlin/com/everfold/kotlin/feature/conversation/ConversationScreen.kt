@@ -138,7 +138,12 @@ fun ConversationScreen(
             }, Modifier.weight(1f))
         } else {
             key(state.id) {
-                ConversationMessages(state, scrollRequest, Modifier.weight(1f))
+                ConversationMessages(
+                    state,
+                    scrollRequest,
+                    onJumpToLatest = { if (desktopUi) inputFocus.requestFocus() },
+                    modifier = Modifier.weight(1f),
+                )
             }
         }
 

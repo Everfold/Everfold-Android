@@ -36,6 +36,7 @@ import kotlinx.coroutines.launch
 internal fun ConversationMessages(
     state: ConversationUiState,
     scrollRequest: Int,
+    onJumpToLatest: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val list = rememberLazyListState()
@@ -82,6 +83,7 @@ internal fun ConversationMessages(
                     scope.launch {
                         list.scrollToItem(0)
                         followLatest = true
+                        onJumpToLatest()
                     }
                 },
                 modifier = Modifier.align(Alignment.BottomCenter).padding(12.dp),

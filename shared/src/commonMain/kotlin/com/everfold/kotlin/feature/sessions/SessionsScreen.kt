@@ -81,6 +81,8 @@ fun SessionsScreen(
     onRename: (String, String) -> Unit,
     onDelete: (String) -> Unit,
     onTogglePin: (String) -> Unit,
+    query: String,
+    onQueryChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     searchRequest: Int = 0,
 ) {
@@ -95,7 +97,6 @@ fun SessionsScreen(
     var deleting by remember { mutableStateOf<String?>(null) }
     var name by rememberSaveable { mutableStateOf("") }
     var menuId by remember { mutableStateOf<String?>(null) }
-    var query by rememberSaveable { mutableStateOf("") }
     val titles = sessions.map { it.title.resolve() }
     val filtered = sessions.filterIndexed { index, _ -> titles[index].contains(query, ignoreCase = true) }
     Column(modifier.padding(horizontal = 16.dp)) {
@@ -118,14 +119,14 @@ fun SessionsScreen(
         }
         OutlinedTextField(
             value = query,
-            onValueChange = { query = it },
+            onValueChange = onQueryChange,
             singleLine = true,
             placeholder = { Text(localizedString(Res.string.search_sessions)) },
             leadingIcon = { AppIcon(AppSymbol.Search) },
             trailingIcon = {
                 if (query.isNotEmpty()) {
                     TextButton(
-                        onClick = { query = "" },
+                        onClick = { onQueryChange("") },
                     ) { Text(localizedString(Res.string.clear_search)) }
                 }
             },
@@ -240,7 +241,7 @@ fun SessionsScreen(
                         Modifier.padding(vertical = 24.dp),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
-                    TextButton(onClick = { if (query.isBlank()) onCreate() else query = "" }) {
+                    TextButton(onClick = { if (query.isBlank()) onCreate() else onQueryChange("") }) {
                         Text(localizedString(if (query.isBlank()) Res.string.new_session else Res.string.clear_search))
                     }
                 }

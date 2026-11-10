@@ -86,6 +86,7 @@ fun EverfoldApp(
     var focusComposer by rememberSaveable { mutableStateOf(true) }
     var sessionsVisible by rememberSaveable { mutableStateOf(true) }
     var sessionWidth by rememberSaveable { mutableFloatStateOf(300f) }
+    var sessionQuery by rememberSaveable { mutableStateOf("") }
     var searchRequest by rememberSaveable { mutableIntStateOf(0) }
     Surface(
         modifier.fillMaxSize().onPreviewKeyEvent {
@@ -94,6 +95,7 @@ fun EverfoldApp(
                     Key.N -> {
                         focusComposer = true
                         destination = AppDestination.Sessions
+                        sessionQuery = ""
                         selectedId = workspace.createConversation()
                         conversationOpen =
                             true
@@ -124,7 +126,13 @@ fun EverfoldApp(
             }
         },
     ) {
-        BoxWithConstraints(Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing).imePadding()) {
+        BoxWithConstraints(
+            Modifier
+                .fillMaxSize()
+                .focusable()
+                .windowInsetsPadding(WindowInsets.safeDrawing)
+                .imePadding(),
+        ) {
             val wide = maxWidth >= 900.dp
             val rail = maxWidth >= 600.dp
             val maxSessionWidth = (maxWidth.value - 520f).coerceIn(260f, 440f)
@@ -178,6 +186,8 @@ fun EverfoldApp(
                                             SessionsScreen(
                                                 sessions = workspace.conversations,
                                                 searchRequest = searchRequest,
+                                                query = sessionQuery,
+                                                onQueryChange = { sessionQuery = it },
                                                 selectedId = if (wide) selected?.id else null,
                                                 onSelect = {
                                                     focusComposer = true
@@ -199,6 +209,7 @@ fun EverfoldApp(
                                                 onTogglePin = workspace::togglePinned,
                                                 onCreate = {
                                                     focusComposer = true
+                                                    sessionQuery = ""
                                                     selectedId = workspace.createConversation()
                                                     conversationOpen = true
                                                 },
@@ -284,6 +295,7 @@ fun EverfoldApp(
                                     if (wide && selected == null) {
                                         Box(Modifier.weight(1f).fillMaxHeight(), contentAlignment = Alignment.Center) {
                                             Button(onClick = {
+                                                sessionQuery = ""
                                                 selectedId = workspace.createConversation()
                                                 conversationOpen = true
                                             }) {
