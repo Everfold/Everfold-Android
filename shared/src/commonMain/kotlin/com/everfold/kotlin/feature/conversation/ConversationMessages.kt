@@ -2,11 +2,11 @@ package com.everfold.kotlin.feature.conversation
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
@@ -61,7 +61,8 @@ internal fun ConversationMessages(
     LaunchedEffect(state.messages.lastOrNull(), state.responseStopped) {
         if (followLatest && !list.isScrollInProgress) list.scrollToItem(0)
     }
-    Box(modifier.fillMaxWidth()) {
+    BoxWithConstraints(modifier.fillMaxWidth()) {
+        val messageWidthFraction = if (maxWidth >= 600.dp) 0.85f else 1f
         LazyColumn(
             state = list,
             reverseLayout = true,
@@ -75,10 +76,13 @@ internal fun ConversationMessages(
                 }
             }
             items(state.messages.asReversed(), key = { it.id }) { message ->
-                Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.TopCenter) {
+                Box(
+                    Modifier.fillMaxWidth(),
+                    contentAlignment = if (message.role == MessageRole.User) Alignment.TopEnd else Alignment.TopStart,
+                ) {
                     MessageItem(
                         message,
-                        Modifier.widthIn(max = 760.dp).fillMaxWidth(),
+                        Modifier.fillMaxWidth(messageWidthFraction),
                         textSize = textSize,
                         collapsePrompts = collapsePrompts,
                         onPromptHeightChange = { heightChange ->
