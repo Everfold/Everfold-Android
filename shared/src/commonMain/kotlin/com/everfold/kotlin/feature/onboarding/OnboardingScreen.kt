@@ -376,23 +376,28 @@ private fun OnboardingPreferences(
         verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(24.dp)) {
-            LanguageSettings(language, onLanguageChange)
-            if (columns == 2) OnboardingAppearance(workspace, appearanceHorizontal)
+            OnboardingAppearance(workspace, appearanceHorizontal)
+            if (columns == 2) OnboardingThemeColors(workspace)
         }
         if (columns != 2) {
             Column(Modifier.weight(1f)) {
-                OnboardingAppearance(workspace, appearanceHorizontal)
+                OnboardingThemeColors(workspace)
             }
         }
         Column(Modifier.weight(1f)) {
-            ThemeColorSettings(
-                workspace.themeColor,
-                workspace::useSystemThemeColor,
-                workspace::selectThemePreset,
-                workspace::applyCustomThemeColor,
-            )
+            LanguageSettings(language, onLanguageChange)
         }
     }
+}
+
+@Composable
+private fun OnboardingThemeColors(workspace: MockWorkspace) {
+    ThemeColorSettings(
+        workspace.themeColor,
+        workspace::useSystemThemeColor,
+        workspace::selectThemePreset,
+        workspace::applyCustomThemeColor,
+    )
 }
 
 @Composable
