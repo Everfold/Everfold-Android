@@ -97,7 +97,6 @@ import everfold.shared.generated.resources.setup_mode
 import everfold.shared.generated.resources.setup_nav_preferences
 import everfold.shared.generated.resources.setup_nav_welcome
 import everfold.shared.generated.resources.setup_preferences
-import everfold.shared.generated.resources.setup_step
 import everfold.shared.generated.resources.test_connection
 import everfold.shared.generated.resources.testing_connection
 import kotlinx.coroutines.delay
@@ -203,8 +202,6 @@ internal fun OnboardingScreen(
                     SetupSidebar(step, furthestStep, cluster, navigate)
                 }
                 Column(Modifier.weight(1f).fillMaxHeight().padding(horizontal = if (wide) 32.dp else 24.dp, vertical = 20.dp)) {
-                    if (!wide) Text("Everfold", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary)
-                    Text(localizedString(Res.string.setup_step, step.ordinal + 1, if (cluster) 4 else 3), Modifier.padding(vertical = 8.dp))
                     if (!wide) {
                         LinearProgressIndicator(
                             progress = { progress },
@@ -361,7 +358,6 @@ private fun SetupSidebar(
         windowInsets = WindowInsets(0),
     ) {
         Column(Modifier.padding(16.dp).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Text("Everfold", style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.primary)
             SetupStep.entries.take(if (cluster) 4 else 3).forEach { destination ->
                 val label =
                     when (destination) {
