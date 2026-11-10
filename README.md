@@ -1,10 +1,18 @@
 # Everfold Kotlin
 
+## Usage
+
+### Nix
+
+```bash
+nix run github:Everfold/Everfold-Kotlin#everfold-kotlin
+```
+
 ## Build
 
 ### Development Environment
 
-#### Nix
+#### Nix Develop
 
 ```bash
 # Nix Shell
@@ -14,6 +22,18 @@ nix develop
 apt install -y direnv
 echo 'use flake' > .envrc
 direnv allow
+
+# Update
+nix flake update
+
+# Update nix/deps.json
+"$(nix build --no-link --print-out-paths .#everfold-kotlin.mitmCache.updateScript)"
+```
+
+```fish
+# Fish
+set -l update_script (nix build --no-link --print-out-paths .#everfold-kotlin.mitmCache.updateScript)
+and "$update_script"
 ```
 
 ### Project
@@ -50,7 +70,7 @@ direnv allow
 ./gradlew dependencyUpdates
 ```
 
-#### Android Emulator
+### Android Emulator
 
 ```bash
 # Create Android Emulator
