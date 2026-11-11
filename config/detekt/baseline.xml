@@ -1,0 +1,66 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ComplexCondition:ClusterSetup.kt:ClusterSetup$method != ClusterMethod.Cloud &amp;&amp; !(method == ClusterMethod.Lan &amp;&amp; ip.isBlank() &amp;&amp; port.isBlank())</ID>
+    <ID>ComplexCondition:EverfoldApp.kt:it.type == KeyEventType.KeyDown &amp;&amp; it.key == Key.Escape &amp;&amp; ((!wide &amp;&amp; drawerState.isOpen) || destination != AppDestination.Sessions)</ID>
+    <ID>CyclomaticComplexMethod:ClusterConnectionForm.kt:@Composable internal fun ClusterConnectionForm</ID>
+    <ID>CyclomaticComplexMethod:ConversationScreen.kt:@Composable fun ConversationScreen</ID>
+    <ID>CyclomaticComplexMethod:EverfoldApp.kt:@Composable fun EverfoldApp</ID>
+    <ID>CyclomaticComplexMethod:OnboardingScreen.kt:@Composable internal fun OnboardingScreen</ID>
+    <ID>CyclomaticComplexMethod:SessionsScreen.kt:@OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class) @Composable fun SessionsScreen</ID>
+    <ID>EmptyFunctionBlock:ConversationScrollbar.android.kt:{ }</ID>
+    <ID>EmptyFunctionBlock:ConversationScrollbar.ios.kt:{ }</ID>
+    <ID>FunctionNaming:MainViewController.kt:@Suppress("ktlint:standard:function-naming") fun MainViewController</ID>
+    <ID>LongMethod:ClusterConnectionForm.kt:@Composable internal fun ClusterConnectionForm</ID>
+    <ID>LongMethod:ConnectionsScreen.kt:@Composable fun ConnectionsScreen</ID>
+    <ID>LongMethod:ConversationMessages.kt:@Composable internal fun ConversationMessages</ID>
+    <ID>LongMethod:ConversationScreen.kt:@Composable fun ConversationScreen</ID>
+    <ID>LongMethod:CustomColorDialog.kt:@Composable internal fun CustomColorDialog</ID>
+    <ID>LongMethod:EverfoldApp.kt:@Composable fun EverfoldApp</ID>
+    <ID>LongMethod:OnboardingScreen.kt:@Composable internal fun OnboardingScreen</ID>
+    <ID>LongMethod:SessionsScreen.kt:@OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class) @Composable fun SessionsScreen</ID>
+    <ID>LongMethod:SettingsScreen.kt:@Composable fun SettingsScreen</ID>
+    <ID>LongMethod:ThemeColorSettings.kt:@Composable internal fun ThemeColorSettings</ID>
+    <ID>MagicNumber:ClusterSetup.kt:255</ID>
+    <ID>MagicNumber:ClusterSetup.kt:3</ID>
+    <ID>MagicNumber:ClusterSetup.kt:4</ID>
+    <ID>MagicNumber:ClusterSetup.kt:8</ID>
+    <ID>MagicNumber:ConnectionsScreen.kt:900</ID>
+    <ID>MagicNumber:ConversationPreferences.kt:ConversationTextSize.ExtraLarge$1.25f</ID>
+    <ID>MagicNumber:ConversationPreferences.kt:ConversationTextSize.Large$1.125f</ID>
+    <ID>MagicNumber:ConversationPreferences.kt:ConversationTextSize.Small$0.875f</ID>
+    <ID>MagicNumber:CustomColorDialog.kt:16</ID>
+    <ID>MagicNumber:CustomColorDialog.kt:8</ID>
+    <ID>MagicNumber:EverfoldApp.kt:16f</ID>
+    <ID>MagicNumber:EverfoldApp.kt:260f</ID>
+    <ID>MagicNumber:MessageContent.kt:1600</ID>
+    <ID>MagicNumber:MockWorkspace.kt:MockWorkspace$3</ID>
+    <ID>MagicNumber:MockWorkspace.kt:MockWorkspace$350</ID>
+    <ID>MagicNumber:MockWorkspace.kt:MockWorkspace$45</ID>
+    <ID>MagicNumber:OnboardingScreen.kt:0.38f</ID>
+    <ID>MagicNumber:OnboardingScreen.kt:100</ID>
+    <ID>MagicNumber:OnboardingScreen.kt:160</ID>
+    <ID>MagicNumber:OnboardingScreen.kt:200</ID>
+    <ID>MagicNumber:OnboardingScreen.kt:240</ID>
+    <ID>MagicNumber:OnboardingScreen.kt:3</ID>
+    <ID>MagicNumber:OnboardingScreen.kt:4</ID>
+    <ID>MagicNumber:OnboardingScreen.kt:900</ID>
+    <ID>MagicNumber:ThemeColor.kt:0xFFFFFF</ID>
+    <ID>MagicNumber:ThemeColor.kt:16</ID>
+    <ID>MagicNumber:ThemeColor.kt:6</ID>
+    <ID>MagicNumber:ThemeColor.kt:ThemePreset.Blue$0xFF2196F3</ID>
+    <ID>MagicNumber:ThemeColor.kt:ThemePreset.Green$0xFF4CAF50</ID>
+    <ID>MagicNumber:ThemeColor.kt:ThemePreset.Orange$0xFFFF9800</ID>
+    <ID>MagicNumber:ThemeColor.kt:ThemePreset.Pink$0xFFE91E63</ID>
+    <ID>MagicNumber:ThemeColor.kt:ThemePreset.Purple$0xFF673AB7</ID>
+    <ID>MagicNumber:ThemeColor.kt:ThemePreset.Teal$0xFF009688</ID>
+    <ID>MagicNumber:ThemeColorSettings.kt:3</ID>
+    <ID>MatchingDeclarationName:AppIcon.kt:AppSymbol</ID>
+    <ID>MatchingDeclarationName:ConnectionPreviewOptions.kt:ConnectionPreviewResult</ID>
+    <ID>MatchingDeclarationName:EverfoldTheme.kt:ThemeMode</ID>
+    <ID>ReturnCount:ClusterSetup.kt:internal fun validIp: Boolean</ID>
+    <ID>ReturnCount:ThemeColor.kt:internal fun parseHexColor: Color?</ID>
+    <ID>TooManyFunctions:MockWorkspace.kt:MockWorkspace : ViewModel</ID>
+  </CurrentIssues>
+</SmellBaseline>

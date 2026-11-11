@@ -1,0 +1,23 @@
+config:
+  validation: true
+  warningsAsErrors: true
+
+complexity:
+  LongParameterList:
+    ignoreDefaultParameters: true
+  TooManyFunctions:
+    ignoreAnnotatedFunctions: ['Preview']
+
+naming:
+  FunctionNaming:
+    ignoreAnnotated: ['Composable']
+  TopLevelPropertyNaming:
+    # Accept both Kotlin constants and Compose's PascalCase constants.
+    constantPattern: '[A-Z][A-Za-z0-9_]*'
+
+style:
+  # Spotless/ktlint owns formatting checks.
+  MaxLineLength:
+    active: false
+  UnusedPrivateFunction:
+    ignoreAnnotated: ['Preview']

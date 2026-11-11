@@ -86,7 +86,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   ];
 
   gradleBuildTask = ":desktopApp:packageUberJarForCurrentOS";
-  gradleCheckTask = ":shared:jvmTest";
+  gradleCheckTask = ":detekt :shared:jvmTest";
   gradleUpdateTask = "${finalAttrs.gradleBuildTask} ${finalAttrs.gradleCheckTask}";
 
   doCheck = true;
