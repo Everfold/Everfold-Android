@@ -10,7 +10,8 @@ let
     systemImageTypes = [ "google_apis" ];
     abiVersions = [ "x86_64" ];
     includeSources = false;
-    includeNDK = false;
+    includeNDK = true;
+    ndkVersions = [ "28.2.13676358" ];
   };
   sdk = "${androidSdk.androidsdk}/libexec/android-sdk";
 in
