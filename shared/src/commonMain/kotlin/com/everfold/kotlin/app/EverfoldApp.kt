@@ -30,6 +30,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -41,6 +42,7 @@ import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.isCtrlPressed
@@ -116,6 +118,13 @@ fun EverfoldApp(
         ) {
             val wide = maxWidth >= 900.dp
             val drawerState = remember(wide) { DrawerState(DrawerValue.Closed) }
+            val drawerClosed = drawerState.isClosed && drawerState.targetValue == DrawerValue.Closed
+            var drawerHasFocus by remember(wide) { mutableStateOf(false) }
+            LaunchedEffect(drawerClosed, drawerHasFocus) {
+                if (!wide && drawerClosed && drawerHasFocus) {
+                    focusManager.clearFocus(force = true)
+                }
+            }
             val closeDrawer: () -> Unit = {
                 focusManager.clearFocus()
                 scope.launch { drawerState.close() }
@@ -229,7 +238,13 @@ fun EverfoldApp(
                 gesturesEnabled = !wide && drawerState.isOpen,
                 drawerContent = {
                     if (!wide) {
-                        ModalDrawerSheet(Modifier.widthIn(max = 360.dp).fillMaxHeight().focusable()) {
+                        ModalDrawerSheet(
+                            Modifier
+                                .widthIn(max = 360.dp)
+                                .fillMaxHeight()
+                                .onFocusChanged { drawerHasFocus = it.hasFocus }
+                                .focusable(),
+                        ) {
                             sessions(Modifier.weight(1f))
                             HorizontalDivider()
                             listOf(AppDestination.Connections, AppDestination.Settings).forEach { item ->
